@@ -2,4 +2,8 @@
 
 const router = require('express').Router();
 
+const adminController = require('../controllers/admin');
+
+router.get('/products/:userId', adminController.getAllProductsByUser);
+
 module.exports = router;

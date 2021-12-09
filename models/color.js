@@ -2,23 +2,17 @@ const { DataTypes } = require('sequelize');
 
 const sequelize = require('../utils/database');
 
-const User = require('./user');
-
-const Cart = sequelize.define('cart', {
+const Color = sequelize.define('color', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
   },
-  userId: {
-    type: DataTypes.INTEGER,
+  color: {
+    type: DataTypes.STRING(20),
     unique: true,
-    references: {
-      model: User,
-      key: 'id',
-    },
     allowNull: false,
   },
 });
 
-module.exports = Cart;
+module.exports = Color;

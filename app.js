@@ -1,4 +1,5 @@
-const app = require('express')();
+const express = require('express');
+const cors = require('cors');
 
 const User = require('./models/user');
 
@@ -7,6 +8,15 @@ const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
 
+const app = express();
+
+app.use(
+  cors({
+    origin: 'http://localhost:3000',
+    optionsSuccessStatus: 200,
+  })
+);
+app.use(express.json({ type: 'application/json' }));
 app.use(async (req, res, next) => {
   const user = await User.findByPk(1);
   req.user = user;
