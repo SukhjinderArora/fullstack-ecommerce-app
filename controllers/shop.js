@@ -1,9 +1,11 @@
 const { Op } = require('sequelize');
 
 const Product = require('../models/product');
+const ProductVariant = require('../models/productVariant');
 const Category = require('../models/category');
-const Color = require('../models/color');
 const Size = require('../models/size');
+
+const logger = require('../utils/logger');
 
 const getAllProducts = async (req, res) => {
   const { categories, colors, sizes } = req.query;
@@ -19,18 +21,18 @@ const getAllProducts = async (req, res) => {
           },
         },
         {
-          model: Color,
+          model: ProductVariant,
           where: {
             color: {
               [Op.or]: colors ? colors.split(',') : [],
             },
           },
-        },
-        {
-          model: Size,
-          where: {
-            size: {
-              [Op.or]: sizes ? sizes.split(',') : [],
+          include: {
+            model: Size,
+            where: {
+              size: {
+                [Op.or]: sizes ? sizes.split(',') : [],
+              },
             },
           },
         },
@@ -38,24 +40,32 @@ const getAllProducts = async (req, res) => {
     });
     res.status(200).json(products);
   } catch (error) {
-    console.log(error);
+    logger.error(error);
   }
 };
 
 const getProductById = async (req, res) => {
   const { id } = req.params;
-  const product = await Product.findByPk(id, {
-    include: [
-      {
-        model: Color,
-      },
-      {
-        model: Size,
-      },
-    ],
+  const product = await ProductVariant.findByPk(id, {
+    include: {
+      model: Size,
+    },
   });
+
   if (product) {
-    return res.status(200).json(product);
+    const productVariants = await ProductVariant.findAll({
+      where: {
+        productId: product.productId,
+      },
+    });
+    const colors = [];
+    productVariants.forEach((variant) => {
+      colors.push({
+        color: variant.color,
+        id: variant.id,
+      });
+    });
+    return res.status(200).json({ ...product.get(), colors });
   }
   return res.status(404).json({ message: 'Product not found.' });
 };

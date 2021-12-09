@@ -9,9 +9,12 @@ const Size = sequelize.define('size', {
     autoIncrement: true,
   },
   size: {
-    type: DataTypes.STRING(5),
+    type: DataTypes.STRING(10),
     allowNull: false,
     unique: true,
+    set(value) {
+      this.setDataValue('size', value.toLowerCase());
+    },
   },
 });
 

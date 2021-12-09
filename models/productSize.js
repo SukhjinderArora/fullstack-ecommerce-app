@@ -1,14 +1,14 @@
 const { DataTypes } = require('sequelize');
 
 const sequelize = require('../utils/database');
-const Product = require('./product');
+const ProductVariant = require('./productVariant');
 const Size = require('./size');
 
 const ProductSize = sequelize.define('product_size', {
-  productId: {
+  productVariantId: {
     type: DataTypes.INTEGER,
     references: {
-      model: Product,
+      model: ProductVariant,
       key: 'id',
     },
   },
@@ -18,6 +18,10 @@ const ProductSize = sequelize.define('product_size', {
       model: Size,
       key: 'id',
     },
+  },
+  productQty: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
   },
 });
 

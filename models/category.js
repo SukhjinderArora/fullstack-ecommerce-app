@@ -12,6 +12,9 @@ const Category = sequelize.define('category', {
     type: DataTypes.STRING(20),
     allowNull: false,
     unique: true,
+    set(value) {
+      this.setDataValue('category', value.toLowerCase());
+    },
   },
 });
 
