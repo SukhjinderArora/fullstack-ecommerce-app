@@ -5,9 +5,7 @@ const ProductVariant = require('../models/productVariant');
 const Category = require('../models/category');
 const Size = require('../models/size');
 
-const logger = require('../utils/logger');
-
-const getAllProducts = async (req, res) => {
+const getAllProducts = async (req, res, next) => {
   const { categories, colors, sizes } = req.query;
   try {
     const products = await Product.findAll({
@@ -40,37 +38,54 @@ const getAllProducts = async (req, res) => {
     });
     res.status(200).json(products);
   } catch (error) {
-    logger.error(error);
+    next(error);
   }
 };
 
-const getProductById = async (req, res) => {
-  const { id } = req.params;
-  const product = await ProductVariant.findByPk(id, {
-    include: {
-      model: Size,
-    },
-  });
-
-  if (product) {
-    const productVariants = await ProductVariant.findAll({
-      where: {
-        productId: product.productId,
+const getProductById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    if (Number(id) !== parseInt(id, 10)) {
+      const error = new Error('Invalid product ID');
+      error.status = 422;
+      throw error;
+    }
+    const product = await ProductVariant.findByPk(id, {
+      include: {
+        model: Size,
       },
     });
-    const colors = [];
-    productVariants.forEach((variant) => {
-      colors.push({
-        color: variant.color,
-        id: variant.id,
+    if (product) {
+      const productVariants = await ProductVariant.findAll({
+        where: {
+          productId: product.productId,
+        },
       });
-    });
-    return res.status(200).json({ ...product.get(), colors });
+      const colors = [];
+      productVariants.forEach((variant) => {
+        colors.push({
+          color: variant.color,
+          id: variant.id,
+        });
+      });
+      res.status(200).json({ ...product.get(), colors });
+    } else {
+      const error = new Error('Product not found.');
+      error.status = 404;
+      throw error;
+    }
+  } catch (error) {
+    next(error);
   }
-  return res.status(404).json({ message: 'Product not found.' });
 };
+
+const addProductToCart = async (req, res) => {};
+
+const modifyCart = (req, res) => {};
 
 module.exports = {
   getAllProducts,
   getProductById,
+  addProductToCart,
+  modifyCart,
 };

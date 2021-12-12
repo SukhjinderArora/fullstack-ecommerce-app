@@ -38,26 +38,26 @@ const ProductVariant = require('./models/productVariant');
     ProductVariant.belongsToMany(Cart, { through: ProductCart });
     Cart.belongsToMany(ProductVariant, { through: ProductCart });
     await sequelize.sync();
-    await Size.bulkCreate([
-      {
-        size: 's',
-      },
-      { size: 'm' },
-      { size: 'l' },
-      { size: 'xl' },
-      { size: 'xxl' },
-      { size: 'free size' },
-    ]);
-    await Category.bulkCreate([
-      { category: 'men' },
-      { category: 'Women' },
-      { category: 'Shirt' },
-      { category: 'T-shirt' },
-      { category: 'hoodie' },
-      { category: 'jeans' },
-      { category: 'saree' },
-      { category: 'lehenga' },
-    ]);
+    // await Size.bulkCreate([
+    //   {
+    //     size: 's',
+    //   },
+    //   { size: 'm' },
+    //   { size: 'l' },
+    //   { size: 'xl' },
+    //   { size: 'xxl' },
+    //   { size: 'free size' },
+    // ]);
+    // await Category.bulkCreate([
+    //   { category: 'men' },
+    //   { category: 'Women' },
+    //   { category: 'Shirt' },
+    //   { category: 'T-shirt' },
+    //   { category: 'hoodie' },
+    //   { category: 'jeans' },
+    //   { category: 'saree' },
+    //   { category: 'lehenga' },
+    // ]);
   } catch (error) {
     logger.error(error);
   }

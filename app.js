@@ -7,6 +7,7 @@ const cartRoutes = require('./routes/cart');
 const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
+const { errorLogger, errorResponder } = require('./utils/middlewares');
 
 const app = express();
 
@@ -27,6 +28,13 @@ app.use('/api/cart', cartRoutes);
 app.use('/api/shop', shopRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
-app.use((req, res) => res.status(404).json({ message: 'not found!' }));
+app.use((req, res, next) => {
+  const error = new Error('Not Found');
+  error.status = 404;
+  next(error);
+});
+
+app.use(errorLogger);
+app.use(errorResponder);
 
 module.exports = app;

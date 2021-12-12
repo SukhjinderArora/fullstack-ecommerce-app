@@ -4,7 +4,7 @@ const { validationResult } = require('express-validator');
 
 const User = require('../models/user');
 
-const login = async (req, res) => {
+const login = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -17,7 +17,9 @@ const login = async (req, res) => {
       },
     });
     if (!user) {
-      return res.status(401).json({ message: 'invalid username or password' });
+      const error = new Error('Invalid username or password');
+      error.status = 401;
+      throw error;
     }
     const passwordMatched = await bcrypt.compare(password, user.hashedPassword);
     if (passwordMatched) {
@@ -30,18 +32,20 @@ const login = async (req, res) => {
           expiresIn: '1h',
         }
       );
-      return res.status(201).json({
+      res.status(201).json({
         user,
         token,
       });
     }
-    return res.status(401).json({ message: 'invalid username or password' });
+    const error = new Error('Invalid username or password');
+    error.status = 401;
+    throw error;
   } catch (error) {
-    return res.status(500).json({ message: 'server error' });
+    return next(error);
   }
 };
 
-const register = async (req, res) => {
+const register = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -50,20 +54,17 @@ const register = async (req, res) => {
 
   const saltRounds = 12;
 
-  const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-  const user = await User.create({
-    firstName,
-    lastName,
-    username,
-    email,
-    hashedPassword,
-    isAdmin: true,
-  });
-
-  await user.createCart();
-
   try {
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const user = await User.create({
+      firstName,
+      lastName,
+      username,
+      email,
+      hashedPassword,
+      isAdmin: true,
+    });
+    await user.createCart();
     const token = jwt.sign(
       {
         userId: user.id,
@@ -78,7 +79,7 @@ const register = async (req, res) => {
       token,
     });
   } catch (error) {
-    return res.status(500).json({ message: 'server error' });
+    return next(error);
   }
 };
 

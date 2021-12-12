@@ -23,6 +23,13 @@ const ProductCart = sequelize.define('product_cart', {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
+  productSize: {
+    type: DataTypes.STRING(10),
+    allowNull: false,
+    set(value) {
+      this.setDataValue('productSize', value.toLowerCase());
+    },
+  },
 });
 
 module.exports = ProductCart;
