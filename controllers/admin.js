@@ -1,7 +1,7 @@
 const User = require('../models/user');
 const Product = require('../models/product');
-const Size = require('../models/size');
 const Category = require('../models/category');
+const ProductSize = require('../models/productSize');
 
 const getAllProductsByUser = async (req, res) => {
   const { userId } = req.params;
@@ -19,16 +19,8 @@ const createNewProduct = async (req, res, next) => {
       error.status = 401;
       throw error;
     }
-    const {
-      title,
-      description,
-      color,
-      img,
-      price,
-      quantity,
-      sizes,
-      categories,
-    } = req.body;
+    const { title, description, color, img, price, sizes, categories } =
+      req.body;
 
     const { productId } = req.query;
     let product;
@@ -40,26 +32,26 @@ const createNewProduct = async (req, res, next) => {
         throw error;
       }
     } else {
-      product = await user.createProduct();
+      product = await user.createProduct({
+        title,
+        description,
+      });
     }
     const productVariant = await product.createProduct_variant({
-      title,
-      description,
       color,
       img,
       price,
-      quantity,
     });
-    const productSizes = await Size.findAll({
-      where: {
-        size: sizes,
-      },
-    });
-    await productVariant.setSizes(productSizes, {
-      through: {
-        productQty: quantity,
-      },
-    });
+    const productSizes = await Promise.all(
+      sizes.map(async (size) =>
+        ProductSize.create({
+          size: size.size,
+          quantity: size.quantity,
+          productVariantId: productVariant.id,
+        })
+      )
+    );
+    await productVariant.setSizes(productSizes);
     const productCategories = await Category.findAll({
       where: {
         category: categories,

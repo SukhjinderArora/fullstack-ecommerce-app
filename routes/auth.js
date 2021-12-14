@@ -1,5 +1,3 @@
-// auth routes like login signup forgot password etc
-
 const router = require('express').Router();
 const { body } = require('express-validator');
 

@@ -1,33 +1,37 @@
 const { DataTypes } = require('sequelize');
 
 const sequelize = require('../utils/database');
-const Product = require('./product');
-const Category = require('./category');
+const ProductSize = require('./productSize');
+const Cart = require('./cart');
 
-const ProductCategory = sequelize.define('product_category', {
+const CartItem = sequelize.define('cart_item', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
   },
-  productId: {
+  productsizeId: {
     type: DataTypes.INTEGER,
-    unique: 'product_category_unique_const',
+    unique: 'cart_item_unique_const',
     allowNull: false,
     references: {
-      model: Product,
+      model: ProductSize,
       key: 'id',
     },
   },
-  categoryId: {
+  cartId: {
     type: DataTypes.INTEGER,
-    unique: 'product_category_unique_const',
+    unique: 'cart_item_unique_const',
     allowNull: false,
     references: {
-      model: Category,
+      model: Cart,
       key: 'id',
     },
+  },
+  quantity: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
   },
 });
 
-module.exports = ProductCategory;
+module.exports = CartItem;

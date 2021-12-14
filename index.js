@@ -7,13 +7,12 @@ const logger = require('./utils/logger');
 
 const User = require('./models/user');
 const Cart = require('./models/cart');
+const CartItem = require('./models/cartItem');
 const Product = require('./models/product');
-const Size = require('./models/size');
+const ProductVariant = require('./models/productVariant');
 const ProductSize = require('./models/productSize');
 const Category = require('./models/category');
 const ProductCategory = require('./models/productCategory');
-const ProductCart = require('./models/productCart');
-const ProductVariant = require('./models/productVariant');
 
 (async function setupDatabase() {
   try {
@@ -33,31 +32,15 @@ const ProductVariant = require('./models/productVariant');
       onDelete: 'CASCADE',
     });
     ProductVariant.belongsTo(Product);
-    ProductVariant.belongsToMany(Size, { through: ProductSize });
-    Size.belongsToMany(ProductVariant, { through: ProductSize });
-    ProductVariant.belongsToMany(Cart, { through: ProductCart });
-    Cart.belongsToMany(ProductVariant, { through: ProductCart });
+    ProductVariant.hasMany(ProductSize, {
+      as: 'sizes',
+      // foreignKey: 'productVariantId',
+      onDelete: 'CASCADE',
+    });
+    ProductSize.belongsTo(ProductVariant);
+    ProductSize.belongsToMany(Cart, { through: CartItem });
+    Cart.belongsToMany(ProductSize, { through: CartItem });
     await sequelize.sync();
-    // await Size.bulkCreate([
-    //   {
-    //     size: 's',
-    //   },
-    //   { size: 'm' },
-    //   { size: 'l' },
-    //   { size: 'xl' },
-    //   { size: 'xxl' },
-    //   { size: 'free size' },
-    // ]);
-    // await Category.bulkCreate([
-    //   { category: 'men' },
-    //   { category: 'Women' },
-    //   { category: 'Shirt' },
-    //   { category: 'T-shirt' },
-    //   { category: 'hoodie' },
-    //   { category: 'jeans' },
-    //   { category: 'saree' },
-    //   { category: 'lehenga' },
-    // ]);
   } catch (error) {
     logger.error(error);
   }
