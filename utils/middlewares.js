@@ -12,6 +12,7 @@ const verifyToken = async (req, res, next) => {
       decodedToken = jwt.verify(jwToken, process.env.JWT_SECRET);
     } catch (error) {
       error.status = 401;
+      error.message = 'Invalid token';
       next(error);
     }
     const { userId } = decodedToken;
@@ -40,7 +41,7 @@ const errorResponder = (error, req, res, next) => {
   return res.status(error.status || 500).json({
     error: {
       status: error.status || 500,
-      message: error.message || 'Internal Server Error',
+      message: error.status ? error.message : 'Internal Server Error',
     },
   });
 };

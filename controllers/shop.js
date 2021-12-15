@@ -1,9 +1,11 @@
 const { Op, Sequelize } = require('sequelize');
+const { validationResult } = require('express-validator');
 
 const Product = require('../models/product');
 const ProductVariant = require('../models/productVariant');
 const ProductSize = require('../models/productSize');
 const Category = require('../models/category');
+const CartItem = require('../models/cartItem');
 
 const getAllProducts = async (req, res, next) => {
   const { categories, colors, sizes } = req.query;
@@ -108,13 +110,71 @@ const getProductById = async (req, res, next) => {
   }
 };
 
-const addProductToCart = async (req, res) => {};
-
-const modifyCart = (req, res) => {};
+const addProductToCart = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  const { productSizeId, quantity } = req.body;
+  const { user } = req;
+  try {
+    const productSizeItem = await ProductSize.findByPk(productSizeId);
+    if (!productSizeItem) {
+      const error = new Error('Product not found');
+      error.status = 404;
+      throw error;
+    }
+    const cart = await user.getCart();
+    const cartItem = await CartItem.findOne({
+      where: {
+        productsizeId: productSizeItem.id,
+        cartId: cart.id,
+      },
+    });
+    let cartQuantity = quantity;
+    if (cartItem) {
+      cartQuantity = cartItem.quantity + quantity;
+    }
+    if (cartQuantity > productSizeItem.quantity) {
+      const error = new Error(
+        'Cart quantity exceeds the product stock quantity'
+      );
+      error.status = 200;
+      throw error;
+    }
+    await cart.addProductsize(productSizeItem, {
+      through: {
+        quantity: cartQuantity,
+      },
+    });
+    const product = await ProductVariant.findOne({
+      include: [
+        { model: Product, required: true, attributes: [] },
+        {
+          model: ProductSize,
+          as: 'sizes',
+          required: true,
+          where: {
+            id: productSizeItem.id,
+          },
+          attributes: ['id', 'size'],
+        },
+      ],
+      attributes: {
+        include: [
+          [Sequelize.col('product.title'), 'title'],
+          [Sequelize.col('product.description'), 'description'],
+        ],
+      },
+    });
+    return res.status(201).json({ ...product.get(), cartQuantity });
+  } catch (error) {
+    return next(error);
+  }
+};
 
 module.exports = {
   getAllProducts,
   getProductById,
   addProductToCart,
-  modifyCart,
 };

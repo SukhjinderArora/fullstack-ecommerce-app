@@ -32,7 +32,7 @@ const login = async (req, res, next) => {
           expiresIn: '1h',
         }
       );
-      res.status(201).json({
+      return res.status(201).json({
         user,
         token,
       });
