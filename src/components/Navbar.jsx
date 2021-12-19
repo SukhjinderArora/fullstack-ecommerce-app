@@ -38,7 +38,7 @@ const SearchContainer = styled.div`
   position: relative;
 `;
 
-const SeachInput = styled.input`
+const SearchInput = styled.input`
   width: 100%;
   height: 40px;
   padding: 10px;
@@ -127,7 +127,7 @@ const Navbar = () => {
           <Brand href="/">Fashionista</Brand>
         </BrandContainer>
         <SearchContainer>
-          <SeachInput placeholder="Search entire store here..." />
+          <SearchInput placeholder="Search entire store here..." />
           <SearchButton>
             <SearchIcon color="grey" size="16" />
           </SearchButton>
