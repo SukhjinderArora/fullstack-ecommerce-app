@@ -58,7 +58,7 @@ const SlideIndicatorButton = styled.button`
 `;
 
 const SlideIndicatorIcon = styled(Minus)`
-  stroke: ${(props) => (props.active ? '#919090' : '#ccc')};
+  stroke: ${(props) => (props.$active ? '#919090' : '#ccc')};
   transition: all 0.5s ease-in-out;
 `;
 
@@ -122,7 +122,7 @@ const Slider = ({ items = [], slideIntervalInSeconds = 2 }) => {
             key={item.color}
             onClick={() => slideIndicatorHandler(index)}
           >
-            <SlideIndicatorIcon active={index === slideIndex} />
+            <SlideIndicatorIcon $active={index === slideIndex} />
           </SlideIndicatorButton>
         ))}
       </SlideIndicatorContainer>
