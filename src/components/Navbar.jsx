@@ -23,11 +23,14 @@ const Navigation = styled.nav`
 const BrandContainer = styled.div``;
 
 const Brand = styled.a`
-  color: black;
+  color: rgb(27, 40, 57);
   text-decoration: none;
   font-size: 24px;
   font-weight: 700;
   text-transform: uppercase;
+  &:hover {
+    color: teal;
+  }
 `;
 
 const SearchContainer = styled.div`
@@ -39,6 +42,11 @@ const SeachInput = styled.input`
   width: 100%;
   height: 40px;
   padding: 10px;
+  border: none;
+  outline: 1px solid grey;
+  &:focus {
+    outline: 1px solid teal;
+  }
 `;
 
 const SearchButton = styled.button`
@@ -63,9 +71,29 @@ const NavigationItem = styled.li`
 
 const NavigationLink = styled.a`
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   text-transform: uppercase;
   font-size: 14px;
+  &:hover {
+    color: teal;
+  }
+  &:hover svg {
+    stroke: teal;
+  }
+  &:hover > span {
+    color: teal;
+  }
+`;
+
+const LinkDescription = styled.span`
+  text-transform: capitalize;
+  font-weight: 700;
+  color: rgb(27, 40, 57);
+  display: inline-block;
+  margin-top: 3px;
 `;
 
 const IconContainer = styled.div`
@@ -112,21 +140,24 @@ const Navbar = () => {
             <NavigationLink>Login</NavigationLink>
           </NavigationItem>
           <NavigationItem>
-            <NavigationLink title="wishlist">
+            <NavigationLink title="Wishlist">
               <Heart color="#1b2839" size="20" />
+              <LinkDescription>Wishlist</LinkDescription>
             </NavigationLink>
           </NavigationItem>
           <NavigationItem>
-            <NavigationLink title="user">
+            <NavigationLink title="Profile">
               <User color="#1b2839" size="20" />
+              <LinkDescription>Profile</LinkDescription>
             </NavigationLink>
           </NavigationItem>
           <NavigationItem>
-            <NavigationLink title="cart">
+            <NavigationLink title="Cart">
               <IconContainer>
                 <ShoppingCart color="#1b2839" size="20" />
                 <CartBadge>12</CartBadge>
               </IconContainer>
+              <LinkDescription>Cart</LinkDescription>
             </NavigationLink>
           </NavigationItem>
         </NavigationList>
