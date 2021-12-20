@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, Children } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { ChevronLeft, ChevronRight, Minus } from 'react-feather';
@@ -13,13 +13,18 @@ const SliderContainer = styled.div`
   display: flex;
   width: ${(props) => props.slidesCount * 100}vw;
   transform: translateX(${(props) => props.currentSlideIndex * -100}vw);
-  transition: all 0.5s ease-in-out;
+  transition: all 0.6s ease-in-out;
 `;
 
 const Slide = styled.div`
   height: 100%;
   background-color: ${(props) => props.bg};
   width: 100vw;
+  & > * {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 `;
 
 const ArrowButton = styled.button`
@@ -62,9 +67,9 @@ const SlideIndicatorIcon = styled(Minus)`
   transition: all 0.5s ease-in-out;
 `;
 
-const Slider = ({ items = [], slideIntervalInSeconds = 2 }) => {
+const Slider = ({ children, slideIntervalInSeconds = 2 }) => {
   const [slideIndex, setSlideIndex] = useState(0);
-  const slidesCount = items.length;
+  const slidesCount = Children.count(children);
 
   const intervalID = useRef(null);
   useEffect(() => {
@@ -106,8 +111,8 @@ const Slider = ({ items = [], slideIntervalInSeconds = 2 }) => {
   return (
     <Container>
       <SliderContainer slidesCount={slidesCount} currentSlideIndex={slideIndex}>
-        {items.map((item) => (
-          <Slide bg={item.color} key={item.color} />
+        {Children.map(children, (child) => (
+          <Slide>{child}</Slide>
         ))}
       </SliderContainer>
       <ArrowButton position="left" onClick={() => slideButtonHandler('left')}>
@@ -117,11 +122,8 @@ const Slider = ({ items = [], slideIntervalInSeconds = 2 }) => {
         <ChevronRight stroke="#2c4152" />
       </ArrowButton>
       <SlideIndicatorContainer>
-        {items.map((item, index) => (
-          <SlideIndicatorButton
-            key={item.color}
-            onClick={() => slideIndicatorHandler(index)}
-          >
+        {Children.map(children, (child, index) => (
+          <SlideIndicatorButton onClick={() => slideIndicatorHandler(index)}>
             <SlideIndicatorIcon $active={index === slideIndex} />
           </SlideIndicatorButton>
         ))}
@@ -131,7 +133,7 @@ const Slider = ({ items = [], slideIntervalInSeconds = 2 }) => {
 };
 
 Slider.propTypes = {
-  items: PropTypes.arrayOf(PropTypes.object).isRequired,
+  children: PropTypes.arrayOf(PropTypes.object).isRequired,
   slideIntervalInSeconds: PropTypes.number,
 };
 
