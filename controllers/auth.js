@@ -62,7 +62,7 @@ const register = async (req, res, next) => {
       username,
       email,
       hashedPassword,
-      isAdmin: true,
+      isAdmin: false,
     });
     await user.createCart();
     const token = jwt.sign(

@@ -29,6 +29,21 @@ const verifyToken = async (req, res, next) => {
   }
 };
 
+const isAdmin = (req, res, next) => {
+  const { user } = req;
+  try {
+    if (!user.isAdmin) {
+      const error = new Error('User is not authorized to add new products');
+      error.status = 401;
+      throw error;
+    } else {
+      next();
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
 const errorLogger = (error, req, res, next) => {
   logger.error('\x1b[31m', error);
   next(error);
@@ -48,6 +63,7 @@ const errorResponder = (error, req, res, next) => {
 
 module.exports = {
   verifyToken,
+  isAdmin,
   errorLogger,
   errorResponder,
 };

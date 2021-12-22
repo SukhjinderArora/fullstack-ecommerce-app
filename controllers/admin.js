@@ -1,3 +1,5 @@
+const { validationResult } = require('express-validator');
+
 const User = require('../models/user');
 const Product = require('../models/product');
 const Category = require('../models/category');
@@ -12,13 +14,12 @@ const getAllProductsByUser = async (req, res) => {
 };
 
 const createNewProduct = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
   try {
     const { user } = req;
-    if (!user.isAdmin) {
-      const error = new Error('User is not authorized to add new products');
-      error.status = 401;
-      throw error;
-    }
     const { title, description, color, img, price, sizes, categories } =
       req.body;
 
@@ -58,9 +59,9 @@ const createNewProduct = async (req, res, next) => {
       },
     });
     await product.setCategories(productCategories);
-    res.status(201).json({ message: 'Product created' });
+    return res.status(201).json({ message: 'Product created' });
   } catch (error) {
-    next(error);
+    return next(error);
   }
 };
 
