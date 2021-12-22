@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState, Children } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { ChevronLeft, ChevronRight, Minus } from 'react-feather';
+import { Minus } from 'react-feather';
+
+import ArrowButton from './shared/ArrowButton';
 
 const Container = styled.div`
   position: relative;
@@ -18,34 +20,11 @@ const SliderContainer = styled.div`
 
 const Slide = styled.div`
   height: 100%;
-  background-color: ${(props) => props.bg};
   width: 100vw;
   & > * {
     width: 100%;
     height: 100%;
     object-fit: cover;
-  }
-`;
-
-const ArrowButton = styled.button`
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  left: ${(props) => props.position === 'left' && 0};
-  right: ${(props) => props.position === 'right' && 0};
-  cursor: pointer;
-  background-color: white;
-  border: none;
-  width: 50px;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  box-shadow: 0 4px 6px -3px #9a9a9a;
-  transition: all 0.3s ease-in-out;
-  &:hover {
-    background-color: #f5f5f5;
   }
 `;
 
@@ -115,12 +94,14 @@ const Slider = ({ children, slideIntervalInSeconds = 2 }) => {
           <Slide>{child}</Slide>
         ))}
       </SliderContainer>
-      <ArrowButton position="left" onClick={() => slideButtonHandler('left')}>
-        <ChevronLeft stroke="#2c4152" />
-      </ArrowButton>
-      <ArrowButton position="right" onClick={() => slideButtonHandler('right')}>
-        <ChevronRight stroke="#2c4152" />
-      </ArrowButton>
+      <ArrowButton
+        position="left"
+        clickHandler={() => slideButtonHandler('left')}
+      />
+      <ArrowButton
+        position="right"
+        clickHandler={() => slideButtonHandler('right')}
+      />
       <SlideIndicatorContainer>
         {Children.map(children, (child, index) => (
           <SlideIndicatorButton onClick={() => slideIndicatorHandler(index)}>
