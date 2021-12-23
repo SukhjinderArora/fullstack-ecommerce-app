@@ -26,16 +26,16 @@ const Carousel = ({ children }) => {
   const totalItems = Children.count(children);
   const containerRef = useRef(null);
 
-  const { inViewRef, inView: lastItemInView } = useInView({
+  const { inView: lastItemInView, inViewRef } = useInView({
     root: containerRef.current,
-    threshold: 1,
+    threshold: 1.0,
   });
 
-  const itemRef = useCallback(
+  const carouselItemRef = useCallback(
     (node) => {
       if (node !== null) {
         setCarouselItemWidth(node.getBoundingClientRect().width);
-        inViewRef(node);
+        inViewRef(node.firstChild);
       }
     },
     [inViewRef]
@@ -67,7 +67,7 @@ const Carousel = ({ children }) => {
         currentItemIndexAtLeft={currentItemIndexAtLeft}
       >
         {Children.map(children, (child, index) => (
-          <CarouselItem ref={index === totalItems - 1 ? itemRef : null}>
+          <CarouselItem ref={index === totalItems - 1 ? carouselItemRef : null}>
             {child}
           </CarouselItem>
         ))}
