@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useRef, useState, Children } from 'react';
+import { useCallback, useRef, useState, Children } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 import ArrowButton from './shared/ArrowButton';
+import useInView from '../hooks/useInView';
 
 const Container = styled.div`
   overflow: hidden;
@@ -22,37 +23,32 @@ const CarouselItem = styled.div``;
 const Carousel = ({ children }) => {
   const [carouselItemWidth, setCarouselItemWidth] = useState(0);
   const [currentItemIndexAtLeft, setCurrentItemIndexAtLeft] = useState(0);
-  const [isLastItemInViewport, setIsLastItemInViewport] = useState(false);
   const totalItems = Children.count(children);
-
-  const itemRef = useCallback((node) => {
-    if (node !== null) {
-      setCarouselItemWidth(node.getBoundingClientRect().width);
-    }
-  }, []);
-
   const containerRef = useRef(null);
 
-  useEffect(() => {
-    const containerRect = containerRef.current.getBoundingClientRect();
-    const lastElementIsInViewPort =
-      totalItems * carouselItemWidth -
-        carouselItemWidth * currentItemIndexAtLeft <=
-      containerRect.right;
-    setIsLastItemInViewport(lastElementIsInViewPort);
-  }, [currentItemIndexAtLeft, carouselItemWidth, totalItems]);
+  const { inViewRef, inView: lastItemInView } = useInView({
+    root: containerRef.current,
+    threshold: 1,
+  });
+
+  const itemRef = useCallback(
+    (node) => {
+      if (node !== null) {
+        setCarouselItemWidth(node.getBoundingClientRect().width);
+        inViewRef(node);
+      }
+    },
+    [inViewRef]
+  );
 
   const carouselButtonHandler = (position) => {
     if (position === 'right') {
       setCurrentItemIndexAtLeft((prevIndex) => {
-        if (isLastItemInViewport) {
+        if (lastItemInView) {
           return 0;
         }
         return prevIndex + 1;
       });
-      if (isLastItemInViewport) {
-        setIsLastItemInViewport(false);
-      }
     } else {
       setCurrentItemIndexAtLeft((prevIndex) => {
         if (prevIndex === 0) {
@@ -71,7 +67,7 @@ const Carousel = ({ children }) => {
         currentItemIndexAtLeft={currentItemIndexAtLeft}
       >
         {Children.map(children, (child, index) => (
-          <CarouselItem ref={index === 0 ? itemRef : null}>
+          <CarouselItem ref={index === totalItems - 1 ? itemRef : null}>
             {child}
           </CarouselItem>
         ))}

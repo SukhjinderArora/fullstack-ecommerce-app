@@ -8,9 +8,14 @@ const Header = styled.header`
   display: flex;
   align-items: center;
   padding: 0 20px;
-  -webkit-box-shadow: 0px 8px 5px 0px rgba(240, 240, 240, 1);
-  -moz-box-shadow: 0px 8px 5px 0px rgba(240, 240, 240, 1);
-  box-shadow: 0px 8px 5px 0px rgba(240, 240, 240, 1);
+  -webkit-box-shadow: 0px 8px 5px 0px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: 0px 8px 5px 0px rgba(0, 0, 0, 0.05);
+  box-shadow: 0px 8px 5px 0px rgba(0, 0, 0, 0.05);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
 `;
 
 const Navigation = styled.nav`

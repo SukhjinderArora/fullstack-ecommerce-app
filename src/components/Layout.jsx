@@ -4,7 +4,9 @@ import styled from 'styled-components';
 
 import Navbar from './Navbar';
 
-const Container = styled.div``;
+const Container = styled.main`
+  margin-top: 70px;
+`;
 
 const Layout = () => {
   return (
