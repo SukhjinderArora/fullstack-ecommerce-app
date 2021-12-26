@@ -2,10 +2,12 @@ import styled from 'styled-components';
 
 import Slider from '../components/Slider';
 import Carousel from '../components/Carousel';
+import Category from '../components/Category';
+import FeaturedCategory from '../components/FeaturedCategory';
 
 const Container = styled.div``;
 
-const CategoriesSection = styled.div`
+const Section = styled.div`
   padding: 0 20px;
   margin: 40px 0;
 `;
@@ -16,29 +18,6 @@ const SectionTitle = styled.h1`
   text-align: center;
   color: rgb(27, 40, 57);
   margin-bottom: 40px;
-`;
-
-const CategoryContainer = styled.div`
-  display: block;
-  margin-right: 30px;
-`;
-
-const CategoryImageContainer = styled.div`
-  width: 300px;
-  height: 360px;
-`;
-
-const CategoryImage = styled.img`
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-`;
-
-const CategoryName = styled.h3`
-  color: rgb(27, 40, 57);
-  text-align: center;
-  text-transform: uppercase;
-  margin-top: 5px;
 `;
 
 const Home = () => {
@@ -54,53 +33,66 @@ const Home = () => {
           alt=""
         />
       </Slider>
-      <CategoriesSection>
+      <Section>
         <SectionTitle>Shop By Category</SectionTitle>
         <Carousel>
-          <CategoryContainer>
-            <CategoryImageContainer>
-              <CategoryImage src="https://webmerx.sgp1.cdn.digitaloceanspaces.com/funkytrend/category_images/7rh3LdvutCNGiaa8YeofXCPuNDQbu27XhCjIPjdrdGsr1OcKUAkLddEopWHC4iK9EUMpSyNR6Ch1628846506.jpg" />
-            </CategoryImageContainer>
-            <CategoryName>Men&apos;s Shirt</CategoryName>
-          </CategoryContainer>
-          <CategoryContainer>
-            <CategoryImageContainer>
-              <CategoryImage src="https://webmerx.sgp1.cdn.digitaloceanspaces.com/funkytrend/category_images/Ah92XX7NsepbmzG43OIVJkNmOoMnVc5UxtCZHPxnGA4RLlPr3bxJsLHCynTw7SvoYdC9Q4hWD5d1628846522.jpg" />
-            </CategoryImageContainer>
-            <CategoryName>Men&apos;s T-Shirt</CategoryName>
-          </CategoryContainer>
-          <CategoryContainer>
-            <CategoryImageContainer>
-              <CategoryImage src="https://webmerx.sgp1.cdn.digitaloceanspaces.com/funkytrend/category_images/dA07uUpUJPuLVixYOeJiddsbe0iRbEc5tR0m7nuhcU50XL0JuijEI5Ni6lSrPPgqmeTrElquOJH1628846538.jpg" />
-            </CategoryImageContainer>
-            <CategoryName>Hoodies</CategoryName>
-          </CategoryContainer>
-          <CategoryContainer>
-            <CategoryImageContainer>
-              <CategoryImage src="https://webmerx.sgp1.cdn.digitaloceanspaces.com/funkytrend/category_images/3WsOhHu7x7JChKhjyFpFovSq5jYDYDIKDkHJNmmKXuA1DmObcDEgXP8a9MxyKC3AQhWFLFa8iMx1628846553.jpg" />
-            </CategoryImageContainer>
-            <CategoryName>Women&apos;s Night Suit</CategoryName>
-          </CategoryContainer>
-          <CategoryContainer>
-            <CategoryImageContainer>
-              <CategoryImage src="https://webmerx.sgp1.cdn.digitaloceanspaces.com/funkytrend/category_images/QHmCjDkpJlaDM2txW8Fv3RWt1CUfKgd9lCE55F7xtp4pCNLVwspJzjbkogBcQSKeATMKjWjM5bI1628846595.jpg" />
-            </CategoryImageContainer>
-            <CategoryName>Saree</CategoryName>
-          </CategoryContainer>
-          <CategoryContainer>
-            <CategoryImageContainer>
-              <CategoryImage src="https://webmerx.sgp1.cdn.digitaloceanspaces.com/funkytrend/product_images/1628849256.2.png" />
-            </CategoryImageContainer>
-            <CategoryName>Lehenga</CategoryName>
-          </CategoryContainer>
-          <CategoryContainer>
-            <CategoryImageContainer>
-              <CategoryImage src="https://webmerx.sgp1.cdn.digitaloceanspaces.com/funkytrend/product_images/1638783960.17.jpg" />
-            </CategoryImageContainer>
-            <CategoryName>Men&apos;s Jackets & Cardigans</CategoryName>
-          </CategoryContainer>
+          <Category
+            name="Men's Shirt"
+            imgUrl="https://webmerx.sgp1.cdn.digitaloceanspaces.com/funkytrend/category_images/7rh3LdvutCNGiaa8YeofXCPuNDQbu27XhCjIPjdrdGsr1OcKUAkLddEopWHC4iK9EUMpSyNR6Ch1628846506.jpg"
+          />
+          <Category
+            name="Men's T-Shirt"
+            imgUrl="https://webmerx.sgp1.cdn.digitaloceanspaces.com/funkytrend/category_images/Ah92XX7NsepbmzG43OIVJkNmOoMnVc5UxtCZHPxnGA4RLlPr3bxJsLHCynTw7SvoYdC9Q4hWD5d1628846522.jpg"
+          />
+          <Category
+            name="Hoodies"
+            imgUrl="https://webmerx.sgp1.cdn.digitaloceanspaces.com/funkytrend/category_images/dA07uUpUJPuLVixYOeJiddsbe0iRbEc5tR0m7nuhcU50XL0JuijEI5Ni6lSrPPgqmeTrElquOJH1628846538.jpg"
+          />
+          <Category
+            name="Women's Night Suit"
+            imgUrl="https://webmerx.sgp1.cdn.digitaloceanspaces.com/funkytrend/category_images/3WsOhHu7x7JChKhjyFpFovSq5jYDYDIKDkHJNmmKXuA1DmObcDEgXP8a9MxyKC3AQhWFLFa8iMx1628846553.jpg"
+          />
+          <Category
+            name="Saree"
+            imgUrl="https://webmerx.sgp1.cdn.digitaloceanspaces.com/funkytrend/category_images/QHmCjDkpJlaDM2txW8Fv3RWt1CUfKgd9lCE55F7xtp4pCNLVwspJzjbkogBcQSKeATMKjWjM5bI1628846595.jpg"
+          />
+          <Category
+            name="Lehenga"
+            imgUrl="https://webmerx.sgp1.cdn.digitaloceanspaces.com/funkytrend/product_images/1628849256.2.png"
+          />
+          <Category
+            name="Men's Jackets & Cardigans"
+            imgUrl="https://webmerx.sgp1.cdn.digitaloceanspaces.com/funkytrend/product_images/1638783960.17.jpg"
+          />
         </Carousel>
-      </CategoriesSection>
+      </Section>
+      <Section>
+        <SectionTitle>Popular Categories</SectionTitle>
+        <FeaturedCategory
+          categoryName="Men's shirt"
+          description="NEW LAUNCHES EVERY DAY, STYLES THAT PROMISE TO CAPTURE YOUR HEART"
+          imgUrl="https://funkytrend.in/themes/oxygen/assets/images/side-l-1.jpg"
+          imagePosition="right"
+        />
+        <FeaturedCategory
+          categoryName="MEN'S T-SHIRT"
+          description="EXPLORE A SECTION OF BREEZY FLUID SILHOUETTES TO FLATTER YOUR BODY"
+          imgUrl="https://funkytrend.in/themes/oxygen/assets/images/side-s-2.jpg"
+          imagePosition="left"
+        />
+        <FeaturedCategory
+          categoryName="HOODIES"
+          description="FROM EVERYDAY CLASSICS TO FESTIVE OCCASIONWEAR, THESE ARE WARDROBE STAPLES FOR A REASON"
+          imgUrl="https://funkytrend.in/themes/oxygen/assets/images/side-s-3.jpg"
+          imagePosition="right"
+        />
+        <FeaturedCategory
+          categoryName="WOMEN'S NIGHT SUIT"
+          description="A CURATION OF VIVID ENSEMBLES LADEN WITH SPARKLES AND BRIGHT COLORS"
+          imgUrl="https://funkytrend.in/themes/oxygen/assets/images/side-s-4.jpg"
+          imagePosition="left"
+        />
+      </Section>
     </Container>
   );
 };
