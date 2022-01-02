@@ -4,6 +4,10 @@ import Slider from '../components/Slider';
 import Carousel from '../components/Carousel';
 import Category from '../components/Category';
 import FeaturedCategory from '../components/FeaturedCategory';
+import Product from '../components/Product';
+
+import { newProducts, bestSellerProducts } from '../dummyData';
+import ProductList from '../components/ProductList';
 
 const Container = styled.div``;
 
@@ -18,6 +22,18 @@ const SectionTitle = styled.h1`
   text-align: center;
   color: rgb(27, 40, 57);
   margin-bottom: 40px;
+`;
+
+const ShowMoreButton = styled.button`
+  display: block;
+  background-color: teal;
+  border: none;
+  color: white;
+  padding: 15px 20px;
+  font-size: 16px;
+  text-transform: uppercase;
+  cursor: pointer;
+  margin: 0 auto;
 `;
 
 const Home = () => {
@@ -92,6 +108,16 @@ const Home = () => {
           imgUrl="https://funkytrend.in/themes/oxygen/assets/images/side-s-4.jpg"
           imagePosition="left"
         />
+      </Section>
+      <Section>
+        <SectionTitle>New Arrivals</SectionTitle>
+        <ProductList products={newProducts} />
+        <ShowMoreButton>Show more</ShowMoreButton>
+      </Section>
+      <Section>
+        <SectionTitle>Best Seller</SectionTitle>
+        <ProductList products={bestSellerProducts} />
+        <ShowMoreButton>Show more</ShowMoreButton>
       </Section>
     </Container>
   );
