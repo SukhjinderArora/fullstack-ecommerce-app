@@ -1,4 +1,6 @@
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
+
 import Product from './Product';
 
 const Container = styled.div`
@@ -17,6 +19,10 @@ const ProductList = ({ products }) => {
     />
   ));
   return <Container>{productList}</Container>;
+};
+
+ProductList.propTypes = {
+  products: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 export default ProductList;

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 const Container = styled.div`
   width: 300px;
@@ -93,6 +94,13 @@ const Product = ({ title, img, priceNew, priceOld }) => {
       </ProductPriceContainer>
     </Container>
   );
+};
+
+Product.propTypes = {
+  title: PropTypes.string.isRequired,
+  img: PropTypes.string.isRequired,
+  priceNew: PropTypes.number.isRequired,
+  priceOld: PropTypes.number.isRequired,
 };
 
 export default Product;
