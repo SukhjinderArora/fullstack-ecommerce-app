@@ -4,7 +4,6 @@ import Slider from '../components/Slider';
 import Carousel from '../components/Carousel';
 import Category from '../components/Category';
 import FeaturedCategory from '../components/FeaturedCategory';
-import Product from '../components/Product';
 
 import { newProducts, bestSellerProducts } from '../dummyData';
 import ProductList from '../components/ProductList';

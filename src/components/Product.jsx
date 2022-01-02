@@ -89,8 +89,8 @@ const Product = ({ title, img, priceNew, priceOld }) => {
       </ProductImageContainer>
       <ProductName>{title}</ProductName>
       <ProductPriceContainer>
-        <ProductPriceNew>{priceNew} INR</ProductPriceNew>
-        <ProductPriceOld>{priceOld} INR</ProductPriceOld>
+        <ProductPriceNew>&#8377; {priceNew}</ProductPriceNew>
+        <ProductPriceOld>&#8377; {priceOld}</ProductPriceOld>
       </ProductPriceContainer>
     </Container>
   );
