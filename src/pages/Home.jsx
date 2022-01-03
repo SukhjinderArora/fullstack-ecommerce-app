@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import styled from 'styled-components';
 
 import Slider from '../components/Slider';
@@ -36,6 +37,9 @@ const ShowMoreButton = styled.button`
 `;
 
 const Home = () => {
+  useEffect(() => {
+    document.title = 'Fashionista - Home';
+  }, []);
   return (
     <Container>
       <Slider slideIntervalInSeconds={5}>

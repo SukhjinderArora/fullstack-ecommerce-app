@@ -50,12 +50,8 @@ const Slider = ({ children, slideIntervalInSeconds = 2 }) => {
   const [slideIndex, setSlideIndex] = useState(0);
   const slidesCount = Children.count(children);
 
-  const intervalID = useRef(null);
   useEffect(() => {
-    if (intervalID.current) {
-      clearInterval(intervalID.current);
-    }
-    intervalID.current = setInterval(() => {
+    const intervalID = setInterval(() => {
       setSlideIndex((prevIndex) => {
         if (prevIndex === slidesCount - 1) {
           return 0;
@@ -63,6 +59,7 @@ const Slider = ({ children, slideIntervalInSeconds = 2 }) => {
         return prevIndex + 1;
       });
     }, slideIntervalInSeconds * 1000);
+    return () => clearInterval(intervalID);
   }, [slideIndex, slideIntervalInSeconds, slidesCount]);
 
   const slideButtonHandler = (position) => {
