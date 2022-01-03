@@ -6,7 +6,7 @@ const FooterContainer = styled.footer``;
 const SiteFeatures = styled.div`
   display: flex;
   justify-content: space-evenly;
-  background: #e7e7e7;
+  background: teal;
   padding: 25px 0;
 `;
 
@@ -19,18 +19,18 @@ const FeatureIcon = styled.div``;
 const FeatureTitle = styled.p`
   font-size: 18px;
   font-weight: 500;
-  color: rgb(27, 40, 57);
+  color: #fff;
   line-height: 25px;
 `;
 
 const FeatureSubTitle = styled.p`
   font-size: 15px;
-  color: rgb(19 19 19);
+  color: #fff;
   line-height: 18px;
 `;
 
 const MainFooter = styled.div`
-  background: rgba(0, 0, 0, 0.05);
+  background: #fafbfc;
   display: flex;
   align-items: flex-start;
   justify-content: space-around;
@@ -61,28 +61,28 @@ const Footer = () => {
       <SiteFeatures>
         <SiteFeature>
           <FeatureIcon>
-            <Truck />
+            <Truck stroke="white" />
           </FeatureIcon>
           <FeatureTitle>All India Shipping</FeatureTitle>
           <FeatureSubTitle>Cash On Delivery</FeatureSubTitle>
         </SiteFeature>
         <SiteFeature>
           <FeatureIcon>
-            <Phone />
+            <Phone stroke="white" />
           </FeatureIcon>
           <FeatureTitle>24/7 Support</FeatureTitle>
           <FeatureSubTitle>Online 24 Hours</FeatureSubTitle>
         </SiteFeature>
         <SiteFeature>
           <FeatureIcon>
-            <Star />
+            <Star stroke="white" />
           </FeatureIcon>
           <FeatureTitle>Premium Quality</FeatureTitle>
           <FeatureSubTitle>Genuine Products</FeatureSubTitle>
         </SiteFeature>
         <SiteFeature>
           <FeatureIcon>
-            <Lock />
+            <Lock stroke="white" />
           </FeatureIcon>
           <FeatureTitle>Secure Payment</FeatureTitle>
           <FeatureSubTitle>100% Payment Protection</FeatureSubTitle>
