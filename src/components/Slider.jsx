@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, Children } from 'react';
+import { useEffect, useState, Children } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Minus } from 'react-feather';
