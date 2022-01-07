@@ -74,12 +74,11 @@ const ProductButton = styled.button`
 const Product = ({ title, img, priceNew, priceOld }) => {
   const [isHovered, setIsHovered] = useState(false);
 
-  const handleHover = () => {
-    setIsHovered((prevHoverState) => !prevHoverState);
-  };
-
   return (
-    <Container onMouseEnter={handleHover} onMouseLeave={handleHover}>
+    <Container
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       <ProductImageContainer>
         <ProductImage src={img} />
         <ProductButtonContainer isHovered={isHovered}>

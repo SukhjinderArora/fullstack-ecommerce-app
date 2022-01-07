@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import { Heart, User, ShoppingCart, Search as SearchIcon } from 'react-feather';
 
 const Header = styled.header`
@@ -27,8 +28,8 @@ const Navigation = styled.nav`
 
 const BrandContainer = styled.div``;
 
-const Brand = styled.a`
-  color: rgb(27, 40, 57);
+const Brand = styled(Link)`
+  color: #1b2839;
   text-decoration: none;
   font-size: 24px;
   font-weight: 700;
@@ -74,13 +75,15 @@ const NavigationItem = styled.li`
   margin-right: 20px;
 `;
 
-const NavigationLink = styled.a`
+const NavigationLink = styled(Link)`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  color: #1b2839;
   cursor: pointer;
   text-transform: uppercase;
+  text-decoration: none;
   font-size: 14px;
   &:hover {
     color: teal;
@@ -129,7 +132,7 @@ const Navbar = () => {
     <Header>
       <Navigation>
         <BrandContainer>
-          <Brand href="/">Fashionista</Brand>
+          <Brand to="/">Fashionista</Brand>
         </BrandContainer>
         <SearchContainer>
           <SearchInput placeholder="Search entire store here..." />
@@ -139,25 +142,25 @@ const Navbar = () => {
         </SearchContainer>
         <NavigationList>
           <NavigationItem>
-            <NavigationLink>Register</NavigationLink>
+            <NavigationLink to="/">Register</NavigationLink>
           </NavigationItem>
           <NavigationItem>
-            <NavigationLink>Login</NavigationLink>
+            <NavigationLink to="/">Login</NavigationLink>
           </NavigationItem>
           <NavigationItem>
-            <NavigationLink title="Wishlist">
+            <NavigationLink to="/" title="Wishlist">
               <Heart color="#1b2839" size="20" />
               <LinkDescription>Wishlist</LinkDescription>
             </NavigationLink>
           </NavigationItem>
           <NavigationItem>
-            <NavigationLink title="Profile">
+            <NavigationLink to="/" title="Profile">
               <User color="#1b2839" size="20" />
               <LinkDescription>Profile</LinkDescription>
             </NavigationLink>
           </NavigationItem>
           <NavigationItem>
-            <NavigationLink title="Cart">
+            <NavigationLink to="/cart" title="Cart">
               <IconContainer>
                 <ShoppingCart color="#1b2839" size="20" />
                 <CartBadge>12</CartBadge>
