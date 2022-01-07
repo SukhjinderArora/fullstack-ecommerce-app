@@ -2,7 +2,122 @@ import styled from 'styled-components';
 import { Minus, Plus } from 'react-feather';
 import { useState } from 'react';
 
-import { product } from '../dummyData';
+import PrimaryButton from '../components/shared/PrimaryButton';
+import Carousel from '../components/Carousel';
+import ProductView from '../components/Product';
+
+import { product, relatedProducts } from '../dummyData';
+
+const Product = () => {
+  const { title, images, priceNew, priceOld } = product;
+  const [image, setImage] = useState(images[0]);
+
+  const imageChangeHandler = (imageUrl) => {
+    setImage(imageUrl);
+  };
+
+  return (
+    <Container>
+      <ProductContainer>
+        <ImagesContainer>
+          <Thumbnails>
+            {images.map((imageURL, index) => (
+              <ThumbnailContainer
+                selected={image === imageURL}
+                onClick={() => imageChangeHandler(imageURL)}
+                key={index}
+              >
+                <Thumbnail src={imageURL} />
+              </ThumbnailContainer>
+            ))}
+          </Thumbnails>
+          <ImageContainer>
+            <Image src={image} />
+          </ImageContainer>
+        </ImagesContainer>
+        <ProductInfoContainer>
+          <Title>{title}</Title>
+          <PriceContainer>
+            <NewPrice>INR 499.00</NewPrice>
+            <OldPrice>INR 1499.00</OldPrice>
+          </PriceContainer>
+          <SizeLabel>Size:</SizeLabel>
+          <SizesContainer>
+            <SizeBox>S</SizeBox>
+            <SizeBox>M</SizeBox>
+            <SizeBox>L</SizeBox>
+            <SizeBox>XL</SizeBox>
+          </SizesContainer>
+          <QuantityContainer>
+            <QuantityLabel>Qty:</QuantityLabel>
+            <QuantityBox>
+              <DecreaseQtyButton>
+                <Minus />
+              </DecreaseQtyButton>
+              <Quantity value={1} />
+              <IncreaseQtyButton>
+                <Plus />
+              </IncreaseQtyButton>
+            </QuantityBox>
+          </QuantityContainer>
+          <ProductButtonsContainer>
+            <AddToCartButton>Add to Cart</AddToCartButton>
+            <BuyNowButton>Buy Now</BuyNowButton>
+          </ProductButtonsContainer>
+        </ProductInfoContainer>
+      </ProductContainer>
+      <DescriptionContainer>
+        <p>DESCRIPTION</p>
+        <p>
+          Knitted stretch fabric. Regular collar. Long buttoned sleeve. Button
+          fastening on the front section. Patch pocket with button on the chest.
+        </p>
+        <p>
+          -A classic pique dobby shirt in Yellow
+          <br />
+          -Can be worn for from office to after meeting evening get together.
+          <br />
+          -Liked by Father and Son age groups -Regular collar
+          <br />
+          -100% premium Cotton pique dobby solid shirt
+          <br />
+          -Full Sleeves
+          <br />
+          -Tailored Fit / Perfected pattern after extensive research on body
+          measurements.
+          <br />- Hand Wash - For detailed instructions- follow the wash-care
+          label on the garment.
+        </p>
+        <p>
+          <strong>SIZE</strong>
+          <br />
+          Model height 188cm. The model (Chest-39,Waist-32,Hips-38) is wearing a
+          size M
+        </p>
+      </DescriptionContainer>
+      <Section>
+        <SectionTitle>Related Products</SectionTitle>
+        <Carousel>
+          {relatedProducts.map((p) => (
+            <div
+              style={{
+                margin: '0 20px',
+              }}
+            >
+              <ProductView
+                title={p.title}
+                img={p.img}
+                priceNew={p.priceNew}
+                priceOld={p.priceOld}
+                id={p.id}
+              />
+            </div>
+          ))}
+        </Carousel>
+      </Section>
+    </Container>
+  );
+};
 
 const Container = styled.div`
   padding: 50px 20px;
@@ -131,88 +246,49 @@ const IncreaseQtyButton = styled.button`
 
 const ProductButtonsContainer = styled.div``;
 
-const AddToCartButton = styled.button`
+const AddToCartButton = styled(PrimaryButton)`
   font-size: 18px;
   padding: 10px 15px;
   display: inline-block;
   margin-right: 20px;
-  background: teal;
   border: 1px solid transparent;
-  color: white;
-  text-transform: uppercase;
-  cursor: pointer;
 `;
 
-const BuyNowButton = styled.button`
+const BuyNowButton = styled(PrimaryButton)`
   font-size: 18px;
   padding: 10px 15px;
   color: teal;
   background: white;
   border: 1px solid teal;
-  text-transform: uppercase;
-  cursor: pointer;
 `;
 
-const Product = () => {
-  const { title, images, priceNew, priceOld } = product;
-  const [image, setImage] = useState(images[0]);
+const DescriptionContainer = styled.div`
+  color: #262626;
+  border: 1px solid #cfcfcf;
+  padding: 20px;
 
-  const imageChangeHandler = (imageUrl) => {
-    setImage(imageUrl);
-  };
+  & p {
+    margin-bottom: 30px;
+  }
 
-  return (
-    <Container>
-      <ProductContainer>
-        <ImagesContainer>
-          <Thumbnails>
-            {images.map((imageURL, index) => (
-              <ThumbnailContainer
-                selected={image === imageURL}
-                onClick={() => imageChangeHandler(imageURL)}
-                key={index}
-              >
-                <Thumbnail src={imageURL} />
-              </ThumbnailContainer>
-            ))}
-          </Thumbnails>
-          <ImageContainer>
-            <Image src={image} />
-          </ImageContainer>
-        </ImagesContainer>
-        <ProductInfoContainer>
-          <Title>{title}</Title>
-          <PriceContainer>
-            <NewPrice>INR 499.00</NewPrice>
-            <OldPrice>INR 1499.00</OldPrice>
-          </PriceContainer>
-          <SizeLabel>Size:</SizeLabel>
-          <SizesContainer>
-            <SizeBox>S</SizeBox>
-            <SizeBox>M</SizeBox>
-            <SizeBox>L</SizeBox>
-            <SizeBox>XL</SizeBox>
-          </SizesContainer>
-          <QuantityContainer>
-            <QuantityLabel>Qty:</QuantityLabel>
-            <QuantityBox>
-              <DecreaseQtyButton>
-                <Minus />
-              </DecreaseQtyButton>
-              <Quantity value={1} />
-              <IncreaseQtyButton>
-                <Plus />
-              </IncreaseQtyButton>
-            </QuantityBox>
-          </QuantityContainer>
-          <ProductButtonsContainer>
-            <AddToCartButton>Add to Cart</AddToCartButton>
-            <BuyNowButton>Buy Now</BuyNowButton>
-          </ProductButtonsContainer>
-        </ProductInfoContainer>
-      </ProductContainer>
-    </Container>
-  );
-};
+  & p br {
+    display: block;
+    content: '';
+    margin-bottom: 10px;
+  }
+`;
+
+const Section = styled.div`
+  padding: 0 20px;
+  margin: 40px 0;
+`;
+
+const SectionTitle = styled.h1`
+  font-size: 30px;
+  text-transform: uppercase;
+  text-align: center;
+  color: rgb(27, 40, 57);
+  margin-bottom: 40px;
+`;
 
 export default Product;

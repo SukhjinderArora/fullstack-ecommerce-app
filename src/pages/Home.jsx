@@ -5,36 +5,10 @@ import Slider from '../components/Slider';
 import Carousel from '../components/Carousel';
 import Category from '../components/Category';
 import FeaturedCategory from '../components/FeaturedCategory';
+import ProductList from '../components/ProductList';
+import PrimaryButton from '../components/shared/PrimaryButton';
 
 import { newProducts, bestSellerProducts } from '../dummyData';
-import ProductList from '../components/ProductList';
-
-const Container = styled.div``;
-
-const Section = styled.div`
-  padding: 0 20px;
-  margin: 40px 0;
-`;
-
-const SectionTitle = styled.h1`
-  font-size: 30px;
-  text-transform: uppercase;
-  text-align: center;
-  color: rgb(27, 40, 57);
-  margin-bottom: 40px;
-`;
-
-const ShowMoreButton = styled.button`
-  display: block;
-  background-color: teal;
-  border: none;
-  color: white;
-  padding: 15px 20px;
-  font-size: 16px;
-  text-transform: uppercase;
-  cursor: pointer;
-  margin: 0 auto;
-`;
 
 const Home = () => {
   useEffect(() => {
@@ -125,5 +99,25 @@ const Home = () => {
     </Container>
   );
 };
+
+const Container = styled.div``;
+
+const Section = styled.div`
+  padding: 0 20px;
+  margin: 40px 0;
+`;
+
+const SectionTitle = styled.h1`
+  font-size: 30px;
+  text-transform: uppercase;
+  text-align: center;
+  color: rgb(27, 40, 57);
+  margin-bottom: 40px;
+`;
+
+const ShowMoreButton = styled(PrimaryButton)`
+  display: block;
+  margin: 0 auto;
+`;
 
 export default Home;
