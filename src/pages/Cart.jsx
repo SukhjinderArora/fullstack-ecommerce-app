@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { ChevronLeft, Minus, Plus, Trash2 } from 'react-feather';
@@ -5,7 +6,7 @@ import { ChevronLeft, Minus, Plus, Trash2 } from 'react-feather';
 import PrimaryButton from '../components/shared/PrimaryButton';
 
 const Cart = () => {
-  const isCartEmpty = false;
+  const [isCartEmpty, setIsEmpty] = useState(false);
   return (
     <Container>
       <Title>My Cart</Title>

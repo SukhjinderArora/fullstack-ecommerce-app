@@ -162,6 +162,8 @@ const ProductInfoContainer = styled.div`
 `;
 
 const Title = styled.h1`
+  font-size: 25px;
+  font-weight: 300;
   color: rgb(27, 40, 57);
 `;
 
