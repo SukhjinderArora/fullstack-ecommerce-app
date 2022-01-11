@@ -8,6 +8,8 @@ import Products from './pages/Products';
 import useScrollToTop from './hooks/useScrollToTop';
 
 import { product } from './dummyData';
+import Register from './pages/Register';
+import Login from './pages/Login';
 
 const App = () => {
   useScrollToTop();
@@ -18,6 +20,8 @@ const App = () => {
         <Route path="product" element={<Product product={product} />} />
         <Route path="cart" element={<Cart />} />
         <Route path="products" element={<Products />} />
+        <Route path="register" element={<Register />} />
+        <Route path="login" element={<Login />} />
       </Route>
     </Routes>
   );

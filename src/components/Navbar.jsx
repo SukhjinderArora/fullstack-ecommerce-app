@@ -2,6 +2,53 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { Heart, User, ShoppingCart, Search as SearchIcon } from 'react-feather';
 
+const Navbar = () => {
+  return (
+    <Header>
+      <Navigation>
+        <BrandContainer>
+          <Brand to="/">Fashionista</Brand>
+        </BrandContainer>
+        <SearchContainer>
+          <SearchInput placeholder="Search entire store here..." />
+          <SearchButton>
+            <SearchIcon color="grey" size="16" />
+          </SearchButton>
+        </SearchContainer>
+        <NavigationList>
+          <NavigationItem>
+            <NavigationLink to="/register">Register</NavigationLink>
+          </NavigationItem>
+          <NavigationItem>
+            <NavigationLink to="/login">Login</NavigationLink>
+          </NavigationItem>
+          <NavigationItem>
+            <NavigationLink to="/" title="Wishlist">
+              <Heart color="#1b2839" size="20" />
+              <LinkDescription>Wishlist</LinkDescription>
+            </NavigationLink>
+          </NavigationItem>
+          <NavigationItem>
+            <NavigationLink to="/" title="Profile">
+              <User color="#1b2839" size="20" />
+              <LinkDescription>Profile</LinkDescription>
+            </NavigationLink>
+          </NavigationItem>
+          <NavigationItem>
+            <NavigationLink to="/cart" title="Cart">
+              <IconContainer>
+                <ShoppingCart color="#1b2839" size="20" />
+                <CartBadge>12</CartBadge>
+              </IconContainer>
+              <LinkDescription>Cart</LinkDescription>
+            </NavigationLink>
+          </NavigationItem>
+        </NavigationList>
+      </Navigation>
+    </Header>
+  );
+};
+
 const Header = styled.header`
   height: 70px;
   width: 100%;
@@ -126,52 +173,5 @@ const CartBadge = styled.span`
   bottom: 0;
   left: 22px;
 `;
-
-const Navbar = () => {
-  return (
-    <Header>
-      <Navigation>
-        <BrandContainer>
-          <Brand to="/">Fashionista</Brand>
-        </BrandContainer>
-        <SearchContainer>
-          <SearchInput placeholder="Search entire store here..." />
-          <SearchButton>
-            <SearchIcon color="grey" size="16" />
-          </SearchButton>
-        </SearchContainer>
-        <NavigationList>
-          <NavigationItem>
-            <NavigationLink to="/">Register</NavigationLink>
-          </NavigationItem>
-          <NavigationItem>
-            <NavigationLink to="/">Login</NavigationLink>
-          </NavigationItem>
-          <NavigationItem>
-            <NavigationLink to="/" title="Wishlist">
-              <Heart color="#1b2839" size="20" />
-              <LinkDescription>Wishlist</LinkDescription>
-            </NavigationLink>
-          </NavigationItem>
-          <NavigationItem>
-            <NavigationLink to="/" title="Profile">
-              <User color="#1b2839" size="20" />
-              <LinkDescription>Profile</LinkDescription>
-            </NavigationLink>
-          </NavigationItem>
-          <NavigationItem>
-            <NavigationLink to="/cart" title="Cart">
-              <IconContainer>
-                <ShoppingCart color="#1b2839" size="20" />
-                <CartBadge>12</CartBadge>
-              </IconContainer>
-              <LinkDescription>Cart</LinkDescription>
-            </NavigationLink>
-          </NavigationItem>
-        </NavigationList>
-      </Navigation>
-    </Header>
-  );
-};
 
 export default Navbar;
