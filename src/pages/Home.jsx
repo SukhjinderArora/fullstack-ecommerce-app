@@ -8,12 +8,12 @@ import FeaturedCategory from '../components/FeaturedCategory';
 import ProductList from '../components/ProductList';
 import PrimaryButton from '../components/shared/PrimaryButton';
 
+import usePageTitle from '../hooks/usePageTitle';
+
 import { newProducts, bestSellerProducts } from '../dummyData';
 
 const Home = () => {
-  useEffect(() => {
-    document.title = 'Fashionista - Home';
-  }, []);
+  usePageTitle('Fashionista - Home');
   return (
     <Container>
       <Slider slideIntervalInSeconds={5}>
