@@ -1,6 +1,6 @@
 import { useEffect, useReducer } from 'react';
 
-import { setAllObjectProperties } from '../utils';
+import { setAllObjectProperties, checkIfEmpty } from '../utils';
 
 const actionTypes = {
   TOUCHED: 'touched',
@@ -8,6 +8,7 @@ const actionTypes = {
   RESET: 'reset',
   ERROR: 'error',
   TOUCHALL: 'touchall',
+  FOCUSED: 'focused',
 };
 
 const formReducer = (state, action) => {
@@ -16,6 +17,11 @@ const formReducer = (state, action) => {
       return {
         ...state,
         touched: { ...state.touched, [action.input.name]: true },
+      };
+    case actionTypes.FOCUSED:
+      return {
+        ...state,
+        focused: { ...state.focused, [action.input.name]: action.input.value },
       };
     case actionTypes.CHANGE:
       return {
@@ -44,9 +50,10 @@ const useForm = ({
     values: initialValues || {},
     errors: {},
     touched: setAllObjectProperties(initialValues, false),
+    focused: setAllObjectProperties(initialValues, false),
   };
 
-  const [{ values, errors, touched }, dispatch] = useReducer(
+  const [{ values, errors, touched, focused }, dispatch] = useReducer(
     formReducer,
     initialFormState
   );
@@ -59,13 +66,28 @@ const useForm = ({
     });
   }, [values, touched, validate]);
 
-  const handleFocus = () => {};
+  const handleFocus = (evt) => {
+    dispatch({
+      type: actionTypes.FOCUSED,
+      input: {
+        name: evt.target.name,
+        value: true,
+      },
+    });
+  };
 
   const handleBlur = (evt) => {
     dispatch({
       type: actionTypes.TOUCHED,
       input: {
         name: evt.target.name,
+      },
+    });
+    dispatch({
+      type: actionTypes.FOCUSED,
+      input: {
+        name: evt.target.name,
+        value: false,
       },
     });
   };
@@ -92,7 +114,7 @@ const useForm = ({
     dispatch({
       type: actionTypes.TOUCHALL,
     });
-    if (!errors) {
+    if (checkIfEmpty(errors)) {
       onSubmit(values, { resetForm });
     }
   };
@@ -101,6 +123,7 @@ const useForm = ({
     values,
     errors,
     touched,
+    focused,
     handleFocus,
     handleBlur,
     handleChange,

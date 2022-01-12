@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { useReducer } from 'react';
 import { Link } from 'react-router-dom';
 import validator from 'validator';
 import {
@@ -8,161 +7,74 @@ import {
   Lock as LockIcon,
 } from 'react-feather';
 
-import { ReactComponent as BackgroundSVG } from '../assets/images/svg/undraw_web_shopping_re_owap.svg';
 import usePageTitle from '../hooks/usePageTitle';
+import useForm from '../hooks/useForm';
 
-const initialInputState = {
-  firstName: {
-    value: '',
-    isFocused: false,
-    hasError: false,
-    error: '',
-  },
-  lastName: {
-    value: '',
-    isFocused: false,
-    hasError: false,
-    error: '',
-  },
-  email: { value: '', isFocused: false, hasError: false, error: '' },
-  password: { value: '', isFocused: false, hasError: false, error: '' },
-  confirmPassword: { value: '', isFocused: false, hasError: false, error: '' },
-};
+import { ReactComponent as BackgroundSVG } from '../assets/images/svg/undraw_web_shopping_re_owap.svg';
 
-function inputReducer(state, action) {
-  switch (action.type) {
-    case 'focus':
-      return {
-        ...state,
-        [action.input.name]: {
-          ...state[action.input.name],
-          isFocused: action.input.isFocused,
-        },
-      };
-    case 'blur':
-      return {
-        ...state,
-        [action.input.name]: {
-          ...state[action.input.name],
-          isFocused: action.input.isFocused,
-          hasError: action.input.hasError,
-          error: action.input.error,
-        },
-      };
-    case 'change':
-      return {
-        ...state,
-        [action.input.name]: {
-          ...state[action.input.name],
-          value: action.input.value,
-        },
-      };
-    default:
-      return state;
+const validate = (values) => {
+  const errors = {};
+  if (!values.firstName) {
+    errors.firstName = 'Required';
+  } else if (values.firstName.length < 2) {
+    errors.firstName = 'First Name cannot be less than 2 characters';
+  } else if (values.firstName.length > 15) {
+    errors.firstName = 'First Name cannot be more than 15 characters';
   }
-}
+
+  if (!values.lastName) {
+    errors.lastName = 'Required';
+  } else if (values.lastName.length < 2) {
+    errors.lastName = 'Last Name cannot be less than 2 characters';
+  } else if (values.lastName.length > 15) {
+    errors.lastName = 'Last Name cannot be more than 15 characters';
+  }
+
+  if (!values.email) {
+    errors.email = 'Required';
+  } else if (!validator.isEmail(values.email)) {
+    errors.email = 'Invalid email address';
+  }
+
+  if (!values.password) {
+    errors.password = 'Required';
+  } else if (values.password.length < 8) {
+    errors.password = 'Password cannot be less than 8 characters';
+  } else if (values.password.length > 16) {
+    errors.password = 'Password cannot be more than 16 characters';
+  }
+
+  if (!values.confirmPassword) {
+    errors.confirmPassword = 'Required';
+  } else if (values.confirmPassword !== values.password) {
+    errors.confirmPassword = 'Confirm Password does not match the passoword';
+  }
+
+  return errors;
+};
 
 const Register = () => {
   usePageTitle('Sign Up | Fashionista');
-  const [input, dispatch] = useReducer(inputReducer, initialInputState);
-  const validate = (fieldName) => {
-    const error = {
-      hasError: false,
-      error: '',
-    };
-    const inputValue = input[fieldName].value.trim();
-    if (inputValue === '') {
-      error.hasError = true;
-      error.error = 'Required';
-      return error;
-    }
-    if (fieldName === 'firstName' || fieldName === 'lastName') {
-      if (
-        !validator.isLength(inputValue, {
-          min: 2,
-          max: 15,
-        })
-      ) {
-        error.hasError = true;
-        error.error = 'Must be between 2 and 15 characters';
-        return error;
-      }
-      if (!validator.isAlpha(inputValue)) {
-        error.hasError = true;
-        error.error = 'Should only contains letters';
-        return error;
-      }
-    }
-    if (fieldName === 'email') {
-      if (!validator.isEmail(inputValue)) {
-        error.hasError = true;
-        error.error = 'Invalid email';
-      }
-    }
-    if (fieldName === 'password') {
-      if (
-        !validator.isLength(inputValue, {
-          min: 8,
-          max: 16,
-        })
-      ) {
-        error.hasError = true;
-        error.error = 'Password should be between 8 and 16 characters length';
-      }
-      if (!validator.isStrongPassword(inputValue)) {
-        error.hasError = true;
-        error.error = 'Weak password';
-      }
-    }
-    if (fieldName === 'confirmPassword') {
-      if (inputValue !== input.password.value) {
-        error.hasError = true;
-        error.error = 'Confirm password does not match the password';
-      }
-    }
-    return error;
-  };
-  const inputFocusHandler = (evt) => {
-    dispatch({
-      type: 'focus',
-      input: {
-        name: evt.target.name,
-        isFocused: true,
-      },
-    });
-  };
-  const inputBlurHandler = (evt) => {
-    const error = validate(evt.target.name);
-    dispatch({
-      type: 'blur',
-      input: {
-        name: evt.target.name,
-        isFocused: false,
-        ...error,
-      },
-    });
-  };
-  const inputChangeHandler = (evt) => {
-    dispatch({
-      type: 'change',
-      input: {
-        name: evt.target.name,
-        value: evt.target.value,
-        hasError: false,
-        error: '',
-      },
-    });
-  };
-  const formSubmissionHandler = (evt) => {
-    evt.preventDefault();
-  };
+  const form = useForm({
+    initialValues: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
+    validate,
+    onSubmit: (values, { resetForm }) => {
+      resetForm();
+    },
+  });
   return (
     <Container>
       <FormWrapper>
-        <Form onSubmit={formSubmissionHandler}>
+        <Form onSubmit={form.handleSubmit}>
           <FormTitle>Create New Account</FormTitle>
           <FormGroup>
-            {!input.firstName.isFocused && input.firstName.value.trim() === '' && (
+            {!form.focused.firstName && form.values.firstName.trim() === '' && (
               <Label htmlFor="firstName">
                 <InputIconContainer>
                   <UserIcon />
@@ -172,19 +84,19 @@ const Register = () => {
             )}
             <Input
               type="text"
-              onFocus={inputFocusHandler}
-              onBlur={inputBlurHandler}
-              onChange={inputChangeHandler}
+              onFocus={form.handleFocus}
+              onBlur={form.handleBlur}
+              onChange={form.handleChange}
               name="firstName"
               id="firstName"
-              value={input.firstName.value}
+              value={form.values.firstName}
             />
             <ValidationError>
-              <span>{input.firstName.hasError && input.firstName.error}</span>
+              <span>{form.touched.firstName && form.errors.firstName}</span>
             </ValidationError>
           </FormGroup>
           <FormGroup>
-            {!input.lastName.isFocused && input.lastName.value.trim() === '' && (
+            {!form.focused.lastName && form.values.lastName.trim() === '' && (
               <Label htmlFor="lastName">
                 <InputIconContainer>
                   <UserIcon />
@@ -194,19 +106,19 @@ const Register = () => {
             )}
             <Input
               type="text"
-              onFocus={inputFocusHandler}
-              onBlur={inputBlurHandler}
-              onChange={inputChangeHandler}
+              onFocus={form.handleFocus}
+              onBlur={form.handleBlur}
+              onChange={form.handleChange}
               name="lastName"
               id="lastName"
-              value={input.lastName.value}
+              value={form.values.lastName}
             />
             <ValidationError>
-              <span>{input.lastName.hasError && input.lastName.error}</span>
+              <span>{form.touched.lastName && form.errors.lastName}</span>
             </ValidationError>
           </FormGroup>
           <FormGroup>
-            {!input.email.isFocused && input.email.value.trim() === '' && (
+            {!form.focused.email && form.values.email.trim() === '' && (
               <Label htmlFor="email">
                 <InputIconContainer>
                   <EmailIcon />
@@ -216,19 +128,19 @@ const Register = () => {
             )}
             <Input
               type="email"
-              onFocus={inputFocusHandler}
-              onBlur={inputBlurHandler}
-              onChange={inputChangeHandler}
+              onFocus={form.handleFocus}
+              onBlur={form.handleBlur}
+              onChange={form.handleChange}
               name="email"
               id="email"
-              value={input.email.value}
+              value={form.values.email}
             />
             <ValidationError>
-              <span>{input.email.hasError && input.email.error}</span>
+              <span>{form.touched.email && form.errors.email}</span>
             </ValidationError>
           </FormGroup>
           <FormGroup>
-            {!input.password.isFocused && input.password.value.trim() === '' && (
+            {!form.focused.password && form.values.password.trim() === '' && (
               <Label htmlFor="password">
                 <InputIconContainer>
                   <LockIcon />
@@ -238,20 +150,20 @@ const Register = () => {
             )}
             <Input
               type="password"
-              onFocus={inputFocusHandler}
-              onBlur={inputBlurHandler}
-              onChange={inputChangeHandler}
+              onFocus={form.handleFocus}
+              onBlur={form.handleBlur}
+              onChange={form.handleChange}
               name="password"
               id="password"
-              value={input.password.value}
+              value={form.values.password}
             />
             <ValidationError>
-              <span>{input.password.hasError && input.password.error}</span>
+              <span>{form.touched.password && form.errors.password}</span>
             </ValidationError>
           </FormGroup>
           <FormGroup>
-            {!input.confirmPassword.isFocused &&
-              input.confirmPassword.value.trim() === '' && (
+            {!form.focused.confirmPassword &&
+              form.values.confirmPassword.trim() === '' && (
                 <Label htmlFor="confirmPassword">
                   <InputIconContainer>
                     <LockIcon />
@@ -261,16 +173,16 @@ const Register = () => {
               )}
             <Input
               type="password"
-              onFocus={inputFocusHandler}
-              onBlur={inputBlurHandler}
-              onChange={inputChangeHandler}
+              onFocus={form.handleFocus}
+              onBlur={form.handleBlur}
+              onChange={form.handleChange}
               name="confirmPassword"
               id="confirmPassword"
-              value={input.confirmPassword.value}
+              value={form.values.confirmPassword}
             />
             <ValidationError>
               <span>
-                {input.confirmPassword.hasError && input.confirmPassword.error}
+                {form.touched.confirmPassword && form.errors.confirmPassword}
               </span>
             </ValidationError>
           </FormGroup>
@@ -278,7 +190,7 @@ const Register = () => {
             <SubmitButton type="submit">Sign Up</SubmitButton>
           </FormGroup>
           <Text>
-            Already Have an Account?{' '}
+            Already Have an Account?
             <StyledLink to="/login">Login Here</StyledLink>
           </Text>
         </Form>
