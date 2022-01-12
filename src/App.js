@@ -10,6 +10,7 @@ import useScrollToTop from './hooks/useScrollToTop';
 import { product } from './dummyData';
 import Register from './pages/Register';
 import Login from './pages/Login';
+import DemoForm from './pages/DemoForm';
 
 const App = () => {
   useScrollToTop();

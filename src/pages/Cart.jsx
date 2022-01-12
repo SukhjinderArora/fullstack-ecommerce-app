@@ -127,6 +127,7 @@ const Title = styled.h1`
   text-align: center;
   color: rgb(27, 40, 57);
   text-transform: uppercase;
+  font-weight: 500;
 `;
 
 const Text = styled.p`
@@ -180,6 +181,7 @@ const ItemTitle = styled.h1`
   text-transform: uppercase;
   color: #1b2839;
   margin-bottom: 10px;
+  font-weight: 500;
 `;
 
 const ItemSize = styled.p`
