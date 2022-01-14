@@ -14,38 +14,39 @@ import { ReactComponent as BackgroundSVG } from '../assets/images/svg/undraw_web
 
 const validate = (values) => {
   const errors = {};
-  if (!values.firstName) {
-    errors.firstName = 'Required';
+  if (!values.firstName.trim()) {
+    errors.firstName = 'Please enter your first name';
   } else if (values.firstName.length < 2) {
     errors.firstName = 'First Name cannot be less than 2 characters';
   } else if (values.firstName.length > 15) {
     errors.firstName = 'First Name cannot be more than 15 characters';
   }
 
-  if (!values.lastName) {
-    errors.lastName = 'Required';
+  if (!values.lastName.trim()) {
+    errors.lastName = 'Please enter your last name';
   } else if (values.lastName.length < 2) {
     errors.lastName = 'Last Name cannot be less than 2 characters';
   } else if (values.lastName.length > 15) {
     errors.lastName = 'Last Name cannot be more than 15 characters';
   }
 
-  if (!values.email) {
-    errors.email = 'Required';
+  if (!values.email.trim()) {
+    errors.email = 'Please enter your email address';
   } else if (!validator.isEmail(values.email)) {
-    errors.email = 'Invalid email address';
+    errors.email =
+      'Email address is invalid. Please enter a valid email address.';
   }
 
-  if (!values.password) {
-    errors.password = 'Required';
+  if (!values.password.trim()) {
+    errors.password = 'Please enter a password';
   } else if (values.password.length < 8) {
     errors.password = 'Password cannot be less than 8 characters';
   } else if (values.password.length > 16) {
     errors.password = 'Password cannot be more than 16 characters';
   }
 
-  if (!values.confirmPassword) {
-    errors.confirmPassword = 'Required';
+  if (!values.confirmPassword.trim()) {
+    errors.confirmPassword = 'Please enter a password';
   } else if (values.confirmPassword !== values.password) {
     errors.confirmPassword = 'Confirm Password does not match the passoword';
   }
@@ -90,6 +91,8 @@ const Register = () => {
               name="firstName"
               id="firstName"
               value={form.values.firstName}
+              aria-label="First Name"
+              required
             />
             <ValidationError>
               <span>{form.touched.firstName && form.errors.firstName}</span>
@@ -112,6 +115,8 @@ const Register = () => {
               name="lastName"
               id="lastName"
               value={form.values.lastName}
+              aria-label="Last Name"
+              required
             />
             <ValidationError>
               <span>{form.touched.lastName && form.errors.lastName}</span>
@@ -134,6 +139,8 @@ const Register = () => {
               name="email"
               id="email"
               value={form.values.email}
+              aria-label="Email"
+              required
             />
             <ValidationError>
               <span>{form.touched.email && form.errors.email}</span>
@@ -156,6 +163,8 @@ const Register = () => {
               name="password"
               id="password"
               value={form.values.password}
+              aria-label="Password"
+              required
             />
             <ValidationError>
               <span>{form.touched.password && form.errors.password}</span>
@@ -179,6 +188,8 @@ const Register = () => {
               name="confirmPassword"
               id="confirmPassword"
               value={form.values.confirmPassword}
+              aria-label="Confirm Password"
+              required
             />
             <ValidationError>
               <span>
@@ -254,6 +265,7 @@ const Input = styled.input`
   outline: 1px solid #d4d5d9;
   border: none;
   color: #282c3f;
+  caret-color: teal;
   font-weight: 500;
   &:focus {
     outline: 1px solid teal;

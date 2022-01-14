@@ -4,8 +4,10 @@ import { Link } from 'react-router-dom';
 import { ChevronLeft, Minus, Plus, Trash2 } from 'react-feather';
 
 import PrimaryButton from '../components/shared/PrimaryButton';
+import usePageTitle from '../hooks/usePageTitle';
 
 const Cart = () => {
+  usePageTitle('Cart | Fashionista');
   const [isCartEmpty, setIsEmpty] = useState(false);
   return (
     <Container>
