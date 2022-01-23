@@ -8,14 +8,17 @@ const Category = require('../models/category');
 const CartItem = require('../models/cartItem');
 
 const getAllProducts = async (req, res, next) => {
-  const { categories, colors, sizes } = req.query;
+  const { categories, colors, sizes, limit, offset } = req.query;
   try {
-    const products = await ProductVariant.findAll({
+    const { count, rows: products } = await ProductVariant.findAndCountAll({
       where: {
         color: {
           [Op.or]: colors ? colors.split(',') : [],
         },
       },
+      limit: Number(limit) || 10,
+      offset: Number(offset) || 0,
+      distinct: true,
       include: [
         {
           model: Product,
@@ -30,7 +33,6 @@ const getAllProducts = async (req, res, next) => {
               },
             },
           },
-          attributes: [],
         },
         {
           model: ProductSize,
@@ -53,7 +55,7 @@ const getAllProducts = async (req, res, next) => {
         exclude: ['createdAt', 'updatedAt'],
       },
     });
-    res.status(200).json(products);
+    res.status(200).json({ products, totalProducts: count });
   } catch (error) {
     next(error);
   }
