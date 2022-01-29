@@ -6,6 +6,8 @@ const { verifyToken } = require('../utils/middlewares');
 
 router.get('/products', shopController.getAllProducts);
 router.get('/product/:id', shopController.getProductById);
+router.get('/categories', shopController.getAllCategories);
+router.get('/sizes', shopController.getAllSizes);
 router.post(
   '/cart/add',
   verifyToken,

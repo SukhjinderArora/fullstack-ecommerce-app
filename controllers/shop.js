@@ -6,14 +6,18 @@ const ProductVariant = require('../models/productVariant');
 const ProductSize = require('../models/productSize');
 const Category = require('../models/category');
 const CartItem = require('../models/cartItem');
+const Size = require('../models/size');
 
 const getAllProducts = async (req, res, next) => {
-  const { categories, colors, sizes, limit, offset } = req.query;
+  const { categories, colors, sizes, limit, offset, priceRange } = req.query;
   try {
     const { count, rows: products } = await ProductVariant.findAndCountAll({
       where: {
         color: {
           [Op.or]: colors ? colors.split(',') : [],
+        },
+        price: {
+          [Op.between]: priceRange,
         },
       },
       limit: Number(limit) || 10,
@@ -112,6 +116,33 @@ const getProductById = async (req, res, next) => {
   }
 };
 
+const getAllCategories = async (req, res, next) => {
+  try {
+    const result = await Category.findAll({
+      attributes: {
+        exclude: ['createdAt', 'updatedAt'],
+      },
+    });
+    return res.status(200).json(result);
+  } catch (error) {
+    return next(error);
+  }
+};
+
+const getAllSizes = async (req, res, next) => {
+  try {
+    const result = await Size.findAll({
+      order: ['id'],
+      attributes: {
+        exclude: ['createdAt', 'updatedAt'],
+      },
+    });
+    return res.status(200).json(result);
+  } catch (error) {
+    return next(error);
+  }
+};
+
 const addProductToCart = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -178,5 +209,7 @@ const addProductToCart = async (req, res, next) => {
 module.exports = {
   getAllProducts,
   getProductById,
+  getAllCategories,
+  getAllSizes,
   addProductToCart,
 };
