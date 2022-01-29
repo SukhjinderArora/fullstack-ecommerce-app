@@ -7,6 +7,7 @@ const Container = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
+  justify-items: center;
 `;
 // const Container = styled.div`
 //   display: flex;
@@ -24,8 +25,8 @@ const ProductList = ({ products }) => {
     <Product
       title={product.title}
       img={product.img}
-      priceNew={product.priceNew}
-      priceOld={product.priceOld}
+      priceNew={product.price}
+      priceOld={product.price}
       key={product.id}
     />
   ));

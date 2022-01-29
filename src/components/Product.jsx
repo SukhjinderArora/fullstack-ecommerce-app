@@ -2,6 +2,37 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
+const Product = ({ title, img, priceNew, priceOld }) => {
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <Container
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <ProductImageContainer>
+        <ProductImage src={img} />
+        <ProductButtonContainer isHovered={isHovered}>
+          <ProductButton>Add to cart</ProductButton>
+          <ProductButton>Buy Now</ProductButton>
+        </ProductButtonContainer>
+      </ProductImageContainer>
+      <ProductName>{title}</ProductName>
+      <ProductPriceContainer>
+        <ProductPriceNew>&#8377; {priceNew}</ProductPriceNew>
+        <ProductPriceOld>&#8377; {priceOld}</ProductPriceOld>
+      </ProductPriceContainer>
+    </Container>
+  );
+};
+
+Product.propTypes = {
+  title: PropTypes.string.isRequired,
+  img: PropTypes.string.isRequired,
+  priceNew: PropTypes.number.isRequired,
+  priceOld: PropTypes.number.isRequired,
+};
+
 const Container = styled.div`
   width: 300px;
   cursor: pointer;
@@ -70,36 +101,5 @@ const ProductButton = styled.button`
     color: white;
   }
 `;
-
-const Product = ({ title, img, priceNew, priceOld }) => {
-  const [isHovered, setIsHovered] = useState(false);
-
-  return (
-    <Container
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      <ProductImageContainer>
-        <ProductImage src={img} />
-        <ProductButtonContainer isHovered={isHovered}>
-          <ProductButton>Add to cart</ProductButton>
-          <ProductButton>Buy Now</ProductButton>
-        </ProductButtonContainer>
-      </ProductImageContainer>
-      <ProductName>{title}</ProductName>
-      <ProductPriceContainer>
-        <ProductPriceNew>&#8377; {priceNew}</ProductPriceNew>
-        <ProductPriceOld>&#8377; {priceOld}</ProductPriceOld>
-      </ProductPriceContainer>
-    </Container>
-  );
-};
-
-Product.propTypes = {
-  title: PropTypes.string.isRequired,
-  img: PropTypes.string.isRequired,
-  priceNew: PropTypes.number.isRequired,
-  priceOld: PropTypes.number.isRequired,
-};
 
 export default Product;

@@ -41,7 +41,7 @@ const Login = () => {
               Email
             </Label>
             <Input
-              type="text"
+              type="email"
               name="email"
               id="email"
               onFocus={form.handleFocus}
@@ -49,6 +49,7 @@ const Login = () => {
               onChange={form.handleChange}
               value={form.values.email}
               aria-label="Email"
+              required
             />
             <ValidationError>
               {form.touched.email && form.errors.email}
@@ -71,6 +72,7 @@ const Login = () => {
               onChange={form.handleChange}
               value={form.values.password}
               aria-label="Password"
+              required
             />
             <ValidationError>
               {form.touched.password && form.errors.password}
@@ -130,6 +132,7 @@ const Input = styled.input`
   color: #282c3f;
   caret-color: teal;
   font-weight: 500;
+  border-radius: 5px;
   &:focus {
     outline: 1px solid teal;
   }
@@ -144,7 +147,7 @@ const Label = styled.label`
   transform: ${(props) =>
     props.isFocused || props.isInputFilled
       ? 'scale(0.75, 0.75) translate(0, 2px)'
-      : 'translate(0, 18px)'};
+      : 'translate(0, 10px)'};
   pointer-events: none;
   transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
   transform-origin: left;

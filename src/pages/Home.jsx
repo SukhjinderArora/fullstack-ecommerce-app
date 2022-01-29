@@ -62,7 +62,7 @@ const Home = () => {
       <Section>
         <SectionTitle>Popular Categories</SectionTitle>
         <FeaturedCategory
-          categoryName="Men's shirt"
+          categoryName="MEN'S SHIRT"
           description="NEW LAUNCHES EVERY DAY, STYLES THAT PROMISE TO CAPTURE YOUR HEART"
           imgUrl="https://funkytrend.in/themes/oxygen/assets/images/side-l-1.jpg"
           imagePosition="right"
