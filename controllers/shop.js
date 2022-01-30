@@ -9,7 +9,24 @@ const CartItem = require('../models/cartItem');
 const Size = require('../models/size');
 
 const getAllProducts = async (req, res, next) => {
-  const { categories, colors, sizes, limit, offset, priceRange } = req.query;
+  const {
+    categories,
+    colors,
+    sizes,
+    limit,
+    offset,
+    priceRange,
+    sortBy,
+    orderBy,
+  } = req.query;
+
+  let order = [];
+  if (sortBy === 'price') {
+    order = [['price', orderBy === 'asc' ? 'ASC' : 'DESC'], ['id']];
+  } else if (sortBy === 'date') {
+    order = [['createdAt', 'DESC']];
+  }
+
   try {
     const { count, rows: products } = await ProductVariant.findAndCountAll({
       where: {
@@ -17,9 +34,10 @@ const getAllProducts = async (req, res, next) => {
           [Op.or]: colors ? colors.split(',') : [],
         },
         price: {
-          [Op.between]: priceRange,
+          [Op.between]: priceRange || [0, 100000],
         },
       },
+      order,
       limit: Number(limit) || 10,
       offset: Number(offset) || 0,
       distinct: true,
@@ -56,7 +74,6 @@ const getAllProducts = async (req, res, next) => {
           [Sequelize.col('product.title'), 'title'],
           [Sequelize.col('product.description'), 'description'],
         ],
-        exclude: ['createdAt', 'updatedAt'],
       },
     });
     res.status(200).json({ products, totalProducts: count });
