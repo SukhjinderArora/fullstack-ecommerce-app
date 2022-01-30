@@ -10,16 +10,39 @@ import useInView from '../hooks/useInView';
 import SideDrawer from '../components/SideDrawer';
 import Filters from '../components/Filters';
 
+const sortOptions = [
+  {
+    sortBy: 'price',
+    orderBy: 'asc',
+    name: 'Price: Low - High',
+  },
+  {
+    sortBy: 'price',
+    orderBy: 'desc',
+    name: 'Price: High - Low',
+  },
+  {
+    sortBy: 'date',
+    orderBy: 'desc',
+    name: `What's new`,
+  },
+];
+
 const Products = () => {
   const dispatch = useDispatch();
   const { products, totalProducts } = useSelector((state) => state.products);
   const { category, sizes, priceRange } = useSelector((state) => state.filters);
   const { inView: showMoreButtonInView, ref } = useInView();
   const [showSideDrawer, setShowSideDrawer] = useState(false);
+  const [selectedSort, setSelectedSort] = useState({
+    sortBy: '',
+    orderBy: '',
+    name: '',
+  });
 
   useEffect(() => {
     dispatch(clearProducts());
-  }, [category, sizes, priceRange, dispatch]);
+  }, [category, sizes, priceRange, selectedSort, dispatch]);
 
   useEffect(() => {
     dispatch(
@@ -27,9 +50,11 @@ const Products = () => {
         category,
         sizes,
         priceRange,
+        sortBy: selectedSort.sortBy,
+        orderBy: selectedSort.orderBy,
       })
     );
-  }, [dispatch, category, sizes, priceRange]);
+  }, [dispatch, category, sizes, priceRange, selectedSort]);
 
   const showMoreProducts = () => {
     dispatch(
@@ -37,6 +62,8 @@ const Products = () => {
         category,
         sizes,
         priceRange,
+        sortBy: selectedSort.sortBy,
+        orderBy: selectedSort.orderBy,
       })
     );
   };
@@ -48,10 +75,29 @@ const Products = () => {
           category,
           sizes,
           priceRange,
+          sortBy: selectedSort.sortBy,
+          orderBy: selectedSort.orderBy,
         })
       );
     }
-  }, [showMoreButtonInView, dispatch, category, sizes, priceRange]);
+  }, [
+    showMoreButtonInView,
+    dispatch,
+    category,
+    sizes,
+    priceRange,
+    selectedSort,
+  ]);
+
+  const handleSelectInputChange = (e) => {
+    setSelectedSort(
+      sortOptions.find((sort) => sort.name === e.target.value) || {
+        sortBy: '',
+        orderBy: '',
+        name: '',
+      }
+    );
+  };
 
   return (
     <Container>
@@ -75,16 +121,16 @@ const Products = () => {
             </span>
             Filters
           </FilterButton>
-          <SortBySelect>
-            <SortByOption>Sort By</SortByOption>
-            <SortByOption>What&apos;s New</SortByOption>
-            <SortByOption>A - Z</SortByOption>
-            <SortByOption>Z - A</SortByOption>
-            <SortByOption>Price: High - Low</SortByOption>
-            <SortByOption>Price: Low - High</SortByOption>
-            <SortByOption>Best Seller</SortByOption>
-            <SortByOption>Most Liked</SortByOption>
-            <SortByOption>Discount</SortByOption>
+          <SortBySelect
+            value={selectedSort.name}
+            onChange={handleSelectInputChange}
+          >
+            <SortByOption value="">Sort By</SortByOption>
+            {sortOptions.map((sort) => (
+              <SortByOption value={sort.name} key={sort.name}>
+                {sort.name}
+              </SortByOption>
+            ))}
           </SortBySelect>
         </FiltersContainer>
       </Wrapper>

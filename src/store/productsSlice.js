@@ -10,7 +10,10 @@ const initialState = {
 
 export const fetchProducts = createAsyncThunk(
   'products/fetchProducts',
-  async ({ category, sizes, priceRange }, { getState }) => {
+  async (
+    { category, sizes, priceRange, sortBy = '', orderBy = '' },
+    { getState }
+  ) => {
     const offset = getState().products.products.length;
     const limit = 12;
     const response = await axios.get('/api/shop/products', {
@@ -20,15 +23,15 @@ export const fetchProducts = createAsyncThunk(
         categories: category,
         sizes,
         priceRange,
-        // sizes: 'free size,s',
+        sortBy,
+        orderBy,
       },
     });
-    console.log(response.data);
     return response.data;
   },
   {
     condition: (_, { getState }) => {
-      const { status, products, totalProducts } = getState().products;
+      const { status } = getState().products;
       if (status === 'loading') {
         return false;
       }
@@ -48,17 +51,15 @@ const productsSlice = createSlice({
   },
   extraReducers(builder) {
     builder
-      .addCase(fetchProducts.pending, (state, action) => {
+      .addCase(fetchProducts.pending, (state) => {
         state.status = 'loading';
       })
       .addCase(fetchProducts.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        // state.products
         state.products.push(...action.payload.products);
-        // state.products = action.payload.products;
         state.totalProducts = action.payload.totalProducts;
       })
-      .addCase(fetchProducts.rejected, (state, action) => {
+      .addCase(fetchProducts.rejected, (state) => {
         state.status = 'failed';
       });
   },
