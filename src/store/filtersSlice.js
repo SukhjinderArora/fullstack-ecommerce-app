@@ -15,9 +15,12 @@ const filtersSlice = createSlice({
       state.sizes = action.payload.sizes;
       state.priceRange = action.payload.priceRange;
     },
+    resetFilters() {
+      return initialState;
+    },
   },
 });
 
-export const { setFilters } = filtersSlice.actions;
+export const { setFilters, resetFilters } = filtersSlice.actions;
 
 export default filtersSlice.reducer;

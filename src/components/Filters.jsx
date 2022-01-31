@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import axios from 'axios';
 import { X } from 'react-feather';
 import Slider from '@mui/material/Slider';
 
-import { setFilters } from '../store/filtersSlice';
+import { setFilters, resetFilters } from '../store/filtersSlice';
 import CustomCheckBox from './shared/CustomCheckBox';
 import CustomRadioButton from './shared/CustomRadioButton';
 
@@ -48,6 +49,14 @@ const Filters = ({ closeSideDrawer }) => {
 
   const onPriceSliderChangeHandler = (e, value) => {
     setPriceRange(value);
+  };
+
+  const clearFilters = () => {
+    dispatch(resetFilters());
+    setSelectedCategory('');
+    setSelectedSizes({});
+    setPriceRange([0, 3000]);
+    closeSideDrawer();
   };
 
   const onSubmitHandler = () => {
@@ -119,7 +128,7 @@ const Filters = ({ closeSideDrawer }) => {
           </Filter>
         ))}
         <ButtonsContainer>
-          <ClearButton>Clear</ClearButton>
+          <ClearButton onClick={clearFilters}>Clear</ClearButton>
           <SubmitButton onClick={onSubmitHandler}>Submit</SubmitButton>
         </ButtonsContainer>
       </FilterContainer>
@@ -166,11 +175,7 @@ const Filter = styled.div`
   margin-bottom: 5px;
 `;
 
-const SizeLabel = styled.div``;
-
 const PriceRange = styled.p``;
-
-const SizeContainer = styled.div``;
 
 const ButtonsContainer = styled.div`
   margin-top: 20px;
@@ -222,5 +227,9 @@ const SubmitButton = styled(Button)`
     border: 1px solid teal;
   }
 `;
+
+Filters.propTypes = {
+  closeSideDrawer: PropTypes.func.isRequired,
+};
 
 export default Filters;

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Filter } from 'react-feather';
 
@@ -29,8 +30,11 @@ const sortOptions = [
 ];
 
 const Products = () => {
+  const { categoryName } = useParams();
   const dispatch = useDispatch();
-  const { products, totalProducts } = useSelector((state) => state.products);
+  const { products, totalProducts, status } = useSelector(
+    (state) => state.products
+  );
   const { category, sizes, priceRange } = useSelector((state) => state.filters);
   const { inView: showMoreButtonInView, ref } = useInView();
   const [showSideDrawer, setShowSideDrawer] = useState(false);
@@ -135,6 +139,9 @@ const Products = () => {
         </FiltersContainer>
       </Wrapper>
       <ProductsContainer>
+        {status !== 'loading' && totalProducts === 0 && (
+          <Paragraph>No Products Found!</Paragraph>
+        )}
         <ProductList products={products} />
         {totalProducts > 0 && (
           <Paragraph>

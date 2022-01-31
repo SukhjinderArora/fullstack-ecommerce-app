@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
 import styled from 'styled-components';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 import Slider from '../components/Slider';
 import Carousel from '../components/Carousel';
@@ -9,11 +11,17 @@ import ProductList from '../components/ProductList';
 import PrimaryButton from '../components/shared/PrimaryButton';
 
 import usePageTitle from '../hooks/usePageTitle';
+import { fetchAllCategories } from '../store/categoriesSlice';
 
 import { newProducts, bestSellerProducts } from '../dummyData';
 
 const Home = () => {
   usePageTitle('Fashionista - Home');
+  const dispatch = useDispatch();
+  const { categories } = useSelector((state) => state.categories);
+  useEffect(() => {
+    dispatch(fetchAllCategories());
+  }, [dispatch]);
   return (
     <Container>
       <Slider slideIntervalInSeconds={5}>
@@ -29,34 +37,11 @@ const Home = () => {
       <Section>
         <SectionTitle>Shop By Category</SectionTitle>
         <Carousel>
-          <Category
-            name="Men's Shirt"
-            imgUrl="https://webmerx.sgp1.cdn.digitaloceanspaces.com/funkytrend/category_images/7rh3LdvutCNGiaa8YeofXCPuNDQbu27XhCjIPjdrdGsr1OcKUAkLddEopWHC4iK9EUMpSyNR6Ch1628846506.jpg"
-          />
-          <Category
-            name="Men's T-Shirt"
-            imgUrl="https://webmerx.sgp1.cdn.digitaloceanspaces.com/funkytrend/category_images/Ah92XX7NsepbmzG43OIVJkNmOoMnVc5UxtCZHPxnGA4RLlPr3bxJsLHCynTw7SvoYdC9Q4hWD5d1628846522.jpg"
-          />
-          <Category
-            name="Hoodies"
-            imgUrl="https://webmerx.sgp1.cdn.digitaloceanspaces.com/funkytrend/category_images/dA07uUpUJPuLVixYOeJiddsbe0iRbEc5tR0m7nuhcU50XL0JuijEI5Ni6lSrPPgqmeTrElquOJH1628846538.jpg"
-          />
-          <Category
-            name="Women's Night Suit"
-            imgUrl="https://webmerx.sgp1.cdn.digitaloceanspaces.com/funkytrend/category_images/3WsOhHu7x7JChKhjyFpFovSq5jYDYDIKDkHJNmmKXuA1DmObcDEgXP8a9MxyKC3AQhWFLFa8iMx1628846553.jpg"
-          />
-          <Category
-            name="Saree"
-            imgUrl="https://webmerx.sgp1.cdn.digitaloceanspaces.com/funkytrend/category_images/QHmCjDkpJlaDM2txW8Fv3RWt1CUfKgd9lCE55F7xtp4pCNLVwspJzjbkogBcQSKeATMKjWjM5bI1628846595.jpg"
-          />
-          <Category
-            name="Lehenga"
-            imgUrl="https://webmerx.sgp1.cdn.digitaloceanspaces.com/funkytrend/product_images/1628849256.2.png"
-          />
-          <Category
-            name="Men's Jackets & Cardigans"
-            imgUrl="https://webmerx.sgp1.cdn.digitaloceanspaces.com/funkytrend/product_images/1638783960.17.jpg"
-          />
+          {categories.map(({ id, category, img }) => (
+            <StyledLink to={`/products/${category}`} key={id}>
+              <Category name={category} imgUrl={img} />
+            </StyledLink>
+          ))}
         </Carousel>
       </Section>
       <Section>
@@ -118,6 +103,10 @@ const SectionTitle = styled.h1`
 const ShowMoreButton = styled(PrimaryButton)`
   display: block;
   margin: 0 auto;
+`;
+
+const StyledLink = styled(Link)`
+  text-decoration: none;
 `;
 
 export default Home;
