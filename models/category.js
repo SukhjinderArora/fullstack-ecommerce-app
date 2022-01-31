@@ -16,6 +16,9 @@ const Category = sequelize.define('category', {
       this.setDataValue('category', value.toLowerCase());
     },
   },
+  img: {
+    type: DataTypes.STRING(255),
+  },
 });
 
 module.exports = Category;

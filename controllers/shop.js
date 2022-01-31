@@ -24,7 +24,7 @@ const getAllProducts = async (req, res, next) => {
   if (sortBy === 'price') {
     order = [['price', orderBy === 'asc' ? 'ASC' : 'DESC'], ['id']];
   } else if (sortBy === 'date') {
-    order = [['createdAt', 'DESC']];
+    order = [['createdAt', 'DESC'], ['id']];
   }
 
   try {

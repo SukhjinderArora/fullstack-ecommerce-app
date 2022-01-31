@@ -41,6 +41,7 @@ const ProductCategory = require('./models/productCategory');
     ProductSize.belongsToMany(Cart, { through: CartItem });
     Cart.belongsToMany(ProductSize, { through: CartItem });
     await sequelize.sync();
+    await Category.sync({ alter: true });
   } catch (error) {
     logger.error(error);
   }
