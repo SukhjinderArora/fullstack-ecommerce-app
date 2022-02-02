@@ -1,15 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useLayoutEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Filter } from 'react-feather';
 
 import { fetchProducts, clearProducts } from '../store/productsSlice';
+import { setSelectedCategory } from '../store/filtersSlice';
 import ProductList from '../components/ProductList';
 import PrimaryButton from '../components/shared/PrimaryButton';
 import useInView from '../hooks/useInView';
 import SideDrawer from '../components/SideDrawer';
 import Filters from '../components/Filters';
+import useQuery from '../hooks/useQuery';
 
 const sortOptions = [
   {
@@ -30,12 +32,13 @@ const sortOptions = [
 ];
 
 const Products = () => {
-  const { categoryName } = useParams();
   const dispatch = useDispatch();
   const { products, totalProducts, status } = useSelector(
     (state) => state.products
   );
-  const { category, sizes, priceRange } = useSelector((state) => state.filters);
+  const { selectedCategory, selectedSizes, priceRange } = useSelector(
+    (state) => state.filters
+  );
   const { inView: showMoreButtonInView, ref } = useInView();
   const [showSideDrawer, setShowSideDrawer] = useState(false);
   const [selectedSort, setSelectedSort] = useState({
@@ -44,54 +47,34 @@ const Products = () => {
     name: '',
   });
 
+  const getProducts = useCallback(() => {
+    dispatch(
+      fetchProducts({
+        sortBy: selectedSort.sortBy,
+        orderBy: selectedSort.orderBy,
+      })
+    );
+  }, [selectedSort, dispatch]);
+
   useEffect(() => {
     dispatch(clearProducts());
-  }, [category, sizes, priceRange, selectedSort, dispatch]);
-
-  useEffect(() => {
     dispatch(
       fetchProducts({
-        category,
-        sizes,
-        priceRange,
         sortBy: selectedSort.sortBy,
         orderBy: selectedSort.orderBy,
       })
     );
-  }, [dispatch, category, sizes, priceRange, selectedSort]);
+  }, [selectedCategory, selectedSizes, priceRange, selectedSort, dispatch]);
 
   const showMoreProducts = () => {
-    dispatch(
-      fetchProducts({
-        category,
-        sizes,
-        priceRange,
-        sortBy: selectedSort.sortBy,
-        orderBy: selectedSort.orderBy,
-      })
-    );
+    getProducts();
   };
 
   useEffect(() => {
     if (showMoreButtonInView) {
-      dispatch(
-        fetchProducts({
-          category,
-          sizes,
-          priceRange,
-          sortBy: selectedSort.sortBy,
-          orderBy: selectedSort.orderBy,
-        })
-      );
+      getProducts();
     }
-  }, [
-    showMoreButtonInView,
-    dispatch,
-    category,
-    sizes,
-    priceRange,
-    selectedSort,
-  ]);
+  }, [showMoreButtonInView, dispatch, getProducts]);
 
   const handleSelectInputChange = (e) => {
     setSelectedSort(
@@ -113,7 +96,7 @@ const Products = () => {
         <Filters closeSideDrawer={() => setShowSideDrawer(false)} />
       </SideDrawer>
       <Wrapper>
-        <Title>{category || 'All Categories'}</Title>
+        <Title>{selectedCategory || 'All Categories'}</Title>
         <FiltersContainer>
           <FilterButton
             onClick={() => {

@@ -10,17 +10,19 @@ const initialState = {
 
 export const fetchProducts = createAsyncThunk(
   'products/fetchProducts',
-  async (
-    { category, sizes, priceRange, sortBy = '', orderBy = '' },
-    { getState }
-  ) => {
+  async ({ sortBy = '', orderBy = '' }, { getState }) => {
     const offset = getState().products.products.length;
     const limit = 12;
+    const {
+      selectedCategory: categories,
+      selectedSizes: sizes,
+      priceRange,
+    } = getState().filters;
     const response = await axios.get('/api/shop/products', {
       params: {
         offset,
         limit,
-        categories: category,
+        categories,
         sizes,
         priceRange,
         sortBy,
@@ -44,9 +46,8 @@ const productsSlice = createSlice({
   name: 'products',
   initialState,
   reducers: {
-    clearProducts(state) {
-      state.products = [];
-      state.totalProducts = 0;
+    clearProducts() {
+      return initialState;
     },
   },
   extraReducers(builder) {

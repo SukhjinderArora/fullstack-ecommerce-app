@@ -1,18 +1,25 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  category: '',
-  sizes: '',
+  selectedCategory: '',
+  selectedSizes: '',
   priceRange: [100, 3000],
+  sort: {
+    sortBy: '',
+    orderBy: '',
+  },
 };
 
 const filtersSlice = createSlice({
   name: 'filters',
   initialState,
   reducers: {
+    setSelectedCategory(state, action) {
+      state.selectedCategory = action.payload;
+    },
     setFilters(state, action) {
-      state.category = action.payload.category;
-      state.sizes = action.payload.sizes;
+      state.selectedCategory = action.payload.category;
+      state.selectedSizes = action.payload.sizes;
       state.priceRange = action.payload.priceRange;
     },
     resetFilters() {
@@ -21,6 +28,7 @@ const filtersSlice = createSlice({
   },
 });
 
-export const { setFilters, resetFilters } = filtersSlice.actions;
+export const { setSelectedCategory, setFilters, resetFilters } =
+  filtersSlice.actions;
 
 export default filtersSlice.reducer;

@@ -1,50 +1,45 @@
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useSearchParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import axios from 'axios';
 import { X } from 'react-feather';
 import Slider from '@mui/material/Slider';
 
-import { setFilters, resetFilters } from '../store/filtersSlice';
 import CustomCheckBox from './shared/CustomCheckBox';
 import CustomRadioButton from './shared/CustomRadioButton';
 
+import { setFilters, resetFilters } from '../store/filtersSlice';
+import { fetchAllCategories } from '../store/categoriesSlice';
+import { fetchAllSizes } from '../store/sizesSlice';
+
+import useQuery from '../hooks/useQuery';
+
 const Filters = ({ closeSideDrawer }) => {
+  const [selectedCategory, setSelectedCategory] = useState({});
   const [selectedSizes, setSelectedSizes] = useState({});
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [allCategories, setAllCategories] = useState([]);
-  const [allSizes, setAllSizes] = useState([]);
   const [priceRange, setPriceRange] = useState([100, 3000]);
+
+  const { sizes } = useSelector((state) => state.sizes);
+  const { categories } = useSelector((state) => state.categories);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const getAllCategories = async () => {
-      const response = await axios.get('/api/shop/categories');
-      setAllCategories(response.data);
-    };
-    getAllCategories();
-    const getAllSizes = async () => {
-      const response = await axios.get('/api/shop/sizes');
-      setAllSizes(response.data);
-    };
-    getAllSizes();
-  }, []);
+    dispatch(fetchAllCategories());
+    dispatch(fetchAllSizes());
+  }, [dispatch]);
 
   const onCheckBoxChangeHandler = (id, value, e) => {
-    if (e.target.checked) {
-      setSelectedSizes((prev) => ({ ...prev, [id]: value }));
-    } else {
-      setSelectedSizes((prev) => {
-        const newSelectedState = { ...prev };
-        delete newSelectedState[id];
-        return newSelectedState;
-      });
-    }
+    const { checked } = e.target;
+    setSelectedSizes((prev) => ({
+      ...prev,
+      [id]: checked,
+    }));
   };
 
-  const onRadioBtnChangeHandler = (id, name, value, e) => {
-    setSelectedCategory(e.target.id);
+  const onRadioBtnChangeHandler = (id) => {
+    setSelectedCategory(categories.find(({ category }) => category === id));
   };
 
   const onPriceSliderChangeHandler = (e, value) => {
@@ -53,21 +48,20 @@ const Filters = ({ closeSideDrawer }) => {
 
   const clearFilters = () => {
     dispatch(resetFilters());
-    setSelectedCategory('');
+    setSelectedCategory({});
     setSelectedSizes({});
-    setPriceRange([0, 3000]);
+    setPriceRange([100, 3000]);
     closeSideDrawer();
   };
 
   const onSubmitHandler = () => {
-    const sizesString = Object.keys(selectedSizes).reduce(
-      (acc, cur) => `${acc},${cur}`,
-      ''
-    );
     dispatch(
       setFilters({
-        category: selectedCategory,
-        sizes: sizesString,
+        category: selectedCategory.category,
+        sizes: Object.keys(selectedSizes).reduce(
+          (acc, cur) => (selectedSizes[cur] ? `${acc},${cur}` : acc),
+          ''
+        ),
         priceRange,
       })
     );
@@ -84,14 +78,14 @@ const Filters = ({ closeSideDrawer }) => {
       </Header>
       <FilterContainer>
         <FilterText>Categories</FilterText>
-        {allCategories.map((category) => (
+        {categories.map((category) => (
           <Filter key={category.id}>
             <CustomRadioButton
               id={category.category}
               name="category"
               value={category.category}
               radioBtnChangeHandler={onRadioBtnChangeHandler}
-              checked={selectedCategory === category.category}
+              checked={selectedCategory.category === category.category}
             />
           </Filter>
         ))}
@@ -116,7 +110,7 @@ const Filters = ({ closeSideDrawer }) => {
       </FilterContainer>
       <FilterContainer>
         <FilterText>Size</FilterText>
-        {allSizes.map((size) => (
+        {sizes.map((size) => (
           <Filter key={size.id}>
             <CustomCheckBox
               id={size.size}

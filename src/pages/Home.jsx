@@ -37,8 +37,8 @@ const Home = () => {
       <Section>
         <SectionTitle>Shop By Category</SectionTitle>
         <Carousel>
-          {categories.map(({ id, category, img }) => (
-            <StyledLink to={`/products/${category}`} key={id}>
+          {categories.map(({ id, category, img, slug }) => (
+            <StyledLink to={`/products/${slug}`} key={id}>
               <Category name={category} imgUrl={img} />
             </StyledLink>
           ))}

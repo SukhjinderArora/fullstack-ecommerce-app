@@ -1,6 +1,6 @@
+import { useState } from 'react';
 import styled from 'styled-components';
 import { Minus, Plus } from 'react-feather';
-import { useState } from 'react';
 
 import PrimaryButton from '../components/shared/PrimaryButton';
 import Carousel from '../components/Carousel';
