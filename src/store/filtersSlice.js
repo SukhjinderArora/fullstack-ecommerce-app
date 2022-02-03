@@ -17,8 +17,17 @@ const filtersSlice = createSlice({
     setSelectedCategory(state, action) {
       state.selectedCategory = action.payload;
     },
+    setSelectedSizes(state, action) {
+      state.selectedSizes = action.payload;
+    },
+    setPriceRange(state, action) {
+      state.priceRange = action.payload;
+    },
+    setSort(state, action) {
+      state.sort = action.payload;
+    },
     setFilters(state, action) {
-      state.selectedCategory = action.payload.category;
+      // state.selectedCategory = action.payload.category;
       state.selectedSizes = action.payload.sizes;
       state.priceRange = action.payload.priceRange;
     },
@@ -28,7 +37,13 @@ const filtersSlice = createSlice({
   },
 });
 
-export const { setSelectedCategory, setFilters, resetFilters } =
-  filtersSlice.actions;
+export const {
+  setSelectedCategory,
+  setSelectedSizes,
+  setPriceRange,
+  setSort,
+  setFilters,
+  resetFilters,
+} = filtersSlice.actions;
 
 export default filtersSlice.reducer;

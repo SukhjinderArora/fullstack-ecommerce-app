@@ -12,6 +12,15 @@ export const fetchAllCategories = createAsyncThunk(
   async () => {
     const response = await axios.get('/api/shop/categories');
     return response.data;
+  },
+  {
+    condition: (_, { getState }) => {
+      const { categories, status } = getState().categories;
+      if (categories.length > 0 || status === 'loading') {
+        return false;
+      }
+      return true;
+    },
   }
 );
 

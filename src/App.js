@@ -5,11 +5,12 @@ import Home from './pages/Home';
 import Product from './pages/Product';
 import Cart from './pages/Cart';
 import Products from './pages/Products';
-import useScrollToTop from './hooks/useScrollToTop';
-
-import { product } from './dummyData';
 import Register from './pages/Register';
 import Login from './pages/Login';
+import PageNotFound from './pages/PageNotFound';
+
+import { product } from './dummyData';
+import useScrollToTop from './hooks/useScrollToTop';
 
 const App = () => {
   useScrollToTop();
@@ -21,10 +22,11 @@ const App = () => {
         <Route path="cart" element={<Cart />} />
         <Route path="products">
           <Route index element={<Products />} />
-          <Route path=":productCategory" element={<Products />} />
+          <Route path=":categorySlug" element={<Products />} />
         </Route>
         <Route path="register" element={<Register />} />
         <Route path="login" element={<Login />} />
+        <Route path="*" element={<PageNotFound />} />
       </Route>
     </Routes>
   );

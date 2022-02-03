@@ -50,24 +50,28 @@ const Home = () => {
           categoryName="MEN'S SHIRT"
           description="NEW LAUNCHES EVERY DAY, STYLES THAT PROMISE TO CAPTURE YOUR HEART"
           imgUrl="https://funkytrend.in/themes/oxygen/assets/images/side-l-1.jpg"
+          categoryUrl="/products/mens-shirt"
           imagePosition="right"
         />
         <FeaturedCategory
           categoryName="MEN'S T-SHIRT"
           description="EXPLORE A SECTION OF BREEZY FLUID SILHOUETTES TO FLATTER YOUR BODY"
           imgUrl="https://funkytrend.in/themes/oxygen/assets/images/side-s-2.jpg"
+          categoryUrl="/products/mens-t-shirt"
           imagePosition="left"
         />
         <FeaturedCategory
           categoryName="HOODIES"
           description="FROM EVERYDAY CLASSICS TO FESTIVE OCCASIONWEAR, THESE ARE WARDROBE STAPLES FOR A REASON"
           imgUrl="https://funkytrend.in/themes/oxygen/assets/images/side-s-3.jpg"
+          categoryUrl="/products/hoodies"
           imagePosition="right"
         />
         <FeaturedCategory
           categoryName="WOMEN'S NIGHT SUIT"
           description="A CURATION OF VIVID ENSEMBLES LADEN WITH SPARKLES AND BRIGHT COLORS"
           imgUrl="https://funkytrend.in/themes/oxygen/assets/images/side-s-4.jpg"
+          categoryUrl="/products/womens-night-suit"
           imagePosition="left"
         />
       </Section>

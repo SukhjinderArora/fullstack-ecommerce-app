@@ -25,8 +25,8 @@ const ProductList = ({ products }) => {
     <Product
       title={product.title}
       img={product.img}
-      priceNew={product.price}
-      priceOld={product.price}
+      priceNew={Number(product.price)}
+      priceOld={Number(product.price)}
       key={product.id}
     />
   ));

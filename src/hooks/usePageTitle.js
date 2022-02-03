@@ -1,10 +1,15 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 
 const usePageTitle = (title) => {
   useEffect(() => {
-    document.title = title;
+    if (title) {
+      document.title = title;
+    }
   }, [title]);
-  return null;
+  const setPageTitle = useCallback((pageTitle) => {
+    document.title = pageTitle;
+  }, []);
+  return { setPageTitle };
 };
 
 export default usePageTitle;

@@ -1,6 +1,17 @@
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
+const Category = ({ name, imgUrl }) => {
+  return (
+    <CategoryContainer>
+      <CategoryImageContainer>
+        <CategoryImage src={imgUrl} />
+      </CategoryImageContainer>
+      <CategoryName>{name}</CategoryName>
+    </CategoryContainer>
+  );
+};
+
 const CategoryContainer = styled.div`
   display: block;
   margin-right: 30px;
@@ -23,17 +34,6 @@ const CategoryName = styled.h3`
   text-transform: uppercase;
   margin-top: 5px;
 `;
-
-const Category = ({ name, imgUrl }) => {
-  return (
-    <CategoryContainer>
-      <CategoryImageContainer>
-        <CategoryImage src={imgUrl} />
-      </CategoryImageContainer>
-      <CategoryName>{name}</CategoryName>
-    </CategoryContainer>
-  );
-};
 
 Category.propTypes = {
   name: PropTypes.string.isRequired,

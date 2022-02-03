@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import { motion, useAnimation } from 'framer-motion';
 
-import PrimaryButton from './shared/PrimaryButton';
 import useInView from '../hooks/useInView';
 
 const FeaturedCategory = ({
@@ -52,7 +52,7 @@ const FeaturedCategory = ({
       <ContentContainer position={imagePosition}>
         <Title>{categoryName}</Title>
         <Description>{description}</Description>
-        <ShowMoreButton>Show More</ShowMoreButton>
+        <ShowMoreButton to={categoryUrl}>Show More</ShowMoreButton>
       </ContentContainer>
     </Container>
   );
@@ -105,6 +105,16 @@ const Description = styled.p`
   margin-bottom: 12px;
 `;
 
-const ShowMoreButton = styled(PrimaryButton)``;
+const ShowMoreButton = styled(Link)`
+  display: inline-block;
+  text-decoration: none;
+  background-color: teal;
+  border: none;
+  color: white;
+  padding: 15px 20px;
+  font-size: 16px;
+  text-transform: uppercase;
+  cursor: pointer;
+`;
 
 export default FeaturedCategory;

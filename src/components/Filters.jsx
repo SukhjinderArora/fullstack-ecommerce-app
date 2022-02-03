@@ -1,29 +1,36 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useSearchParams } from 'react-router-dom';
+import { NavLink, useSearchParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { X } from 'react-feather';
 import Slider from '@mui/material/Slider';
 
 import CustomCheckBox from './shared/CustomCheckBox';
-import CustomRadioButton from './shared/CustomRadioButton';
 
 import { setFilters, resetFilters } from '../store/filtersSlice';
 import { fetchAllCategories } from '../store/categoriesSlice';
 import { fetchAllSizes } from '../store/sizesSlice';
 
-import useQuery from '../hooks/useQuery';
-
 const Filters = ({ closeSideDrawer }) => {
+  const { selectedSizes: selectedSizesString, priceRange: filteredPriceRange } =
+    useSelector((state) => state.filters);
   const [selectedCategory, setSelectedCategory] = useState({});
-  const [selectedSizes, setSelectedSizes] = useState({});
-  const [priceRange, setPriceRange] = useState([100, 3000]);
+  const [selectedSizes, setSelectedSizes] = useState(() => {
+    return selectedSizesString.split(',').reduce((acc, cur) => {
+      if (cur) {
+        acc[cur] = true;
+      }
+      return acc;
+    }, {});
+  });
+  const [priceRange, setPriceRange] = useState(filteredPriceRange);
 
   const { sizes } = useSelector((state) => state.sizes);
   const { categories } = useSelector((state) => state.categories);
 
   const dispatch = useDispatch();
+  const setSearchParams = useSearchParams()[1];
 
   useEffect(() => {
     dispatch(fetchAllCategories());
@@ -34,12 +41,8 @@ const Filters = ({ closeSideDrawer }) => {
     const { checked } = e.target;
     setSelectedSizes((prev) => ({
       ...prev,
-      [id]: checked,
+      [value]: checked,
     }));
-  };
-
-  const onRadioBtnChangeHandler = (id) => {
-    setSelectedCategory(categories.find(({ category }) => category === id));
   };
 
   const onPriceSliderChangeHandler = (e, value) => {
@@ -55,16 +58,21 @@ const Filters = ({ closeSideDrawer }) => {
   };
 
   const onSubmitHandler = () => {
+    const sizesString = Object.keys(selectedSizes).reduce(
+      (acc, cur) => (selectedSizes[cur] ? `${acc},${cur}` : acc),
+      ''
+    );
     dispatch(
       setFilters({
         category: selectedCategory.category,
-        sizes: Object.keys(selectedSizes).reduce(
-          (acc, cur) => (selectedSizes[cur] ? `${acc},${cur}` : acc),
-          ''
-        ),
+        sizes: sizesString,
         priceRange,
       })
     );
+    setSearchParams({
+      sizes: sizesString,
+      priceRange,
+    });
     closeSideDrawer();
   };
 
@@ -80,13 +88,15 @@ const Filters = ({ closeSideDrawer }) => {
         <FilterText>Categories</FilterText>
         {categories.map((category) => (
           <Filter key={category.id}>
-            <CustomRadioButton
-              id={category.category}
-              name="category"
-              value={category.category}
-              radioBtnChangeHandler={onRadioBtnChangeHandler}
-              checked={selectedCategory.category === category.category}
-            />
+            <CategoriesLink
+              to={`/products/${category.slug}`}
+              onClick={() => {
+                dispatch(resetFilters());
+                closeSideDrawer();
+              }}
+            >
+              {category.category}
+            </CategoriesLink>
           </Filter>
         ))}
       </FilterContainer>
@@ -113,7 +123,7 @@ const Filters = ({ closeSideDrawer }) => {
         {sizes.map((size) => (
           <Filter key={size.id}>
             <CustomCheckBox
-              id={size.size}
+              id={size.id}
               name="size"
               value={size.size}
               selected={!!selectedSizes[size.size]}
@@ -167,6 +177,16 @@ const FilterText = styled.h2`
 const Filter = styled.div`
   font-size: 18px;
   margin-bottom: 5px;
+`;
+
+const CategoriesLink = styled(NavLink)`
+  text-decoration: none;
+  color: #000;
+  &:hover,
+  &.active {
+    color: teal;
+    font-weight: 500;
+  }
 `;
 
 const PriceRange = styled.p``;

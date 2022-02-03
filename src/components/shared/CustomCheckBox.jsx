@@ -15,7 +15,7 @@ const CustomCheckBox = ({
         type="checkbox"
         id={id}
         name={name}
-        value={id}
+        value={value}
         checked={selected}
         onChange={(e) => checkBoxChangeHandler(id, value, e)}
       />

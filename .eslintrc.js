@@ -42,9 +42,6 @@ module.exports = {
         assert: 'either', // either check for `htmlFor` or `nesting`
       },
     ],
-    'no-param-reassign': [
-      'error',
-      { props: true, ignorePropertyModificationsFor: ['state'] },
-    ],
+    'no-param-reassign': ['error', { props: false }],
   },
 };

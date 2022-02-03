@@ -6,6 +6,9 @@ const useScrollToTop = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
+  useEffect(() => {
+    window.history.scrollRestoration = 'manual';
+  }, []);
   return null;
 };
 

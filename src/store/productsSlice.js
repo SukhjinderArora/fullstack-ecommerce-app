@@ -10,19 +10,24 @@ const initialState = {
 
 export const fetchProducts = createAsyncThunk(
   'products/fetchProducts',
-  async ({ sortBy = '', orderBy = '' }, { getState }) => {
+  async (
+    {
+      sortBy = '',
+      orderBy = '',
+      category = '',
+      priceRange = [100, 3000],
+      sizes = '',
+    },
+    { getState }
+  ) => {
     const offset = getState().products.products.length;
     const limit = 12;
-    const {
-      selectedCategory: categories,
-      selectedSizes: sizes,
-      priceRange,
-    } = getState().filters;
+    const { selectedCategory } = getState().filters;
     const response = await axios.get('/api/shop/products', {
       params: {
         offset,
         limit,
-        categories,
+        categories: category || selectedCategory,
         sizes,
         priceRange,
         sortBy,
@@ -60,8 +65,9 @@ const productsSlice = createSlice({
         state.products.push(...action.payload.products);
         state.totalProducts = action.payload.totalProducts;
       })
-      .addCase(fetchProducts.rejected, (state) => {
+      .addCase(fetchProducts.rejected, (state, action) => {
         state.status = 'failed';
+        state.error = action;
       });
   },
 });

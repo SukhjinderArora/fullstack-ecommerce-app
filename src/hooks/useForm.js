@@ -1,7 +1,7 @@
-import { eventWrapper } from '@testing-library/user-event/dist/utils';
 import { useEffect, useReducer } from 'react';
 
 import { setAllObjectProperties, checkIfEmpty } from '../utils';
+import * as logger from '../utils/logger';
 
 const actionTypes = {
   TOUCHED: 'touched',
@@ -45,7 +45,7 @@ const formReducer = (state, action) => {
 const defaultValidationFunction = () => ({});
 
 const defaultSubmitFunction = () => {
-  console.warn('Please pass the onSubmit function as the function argument');
+  logger.warn('Please pass the onSubmit function as the function argument');
 };
 
 const useForm = ({
