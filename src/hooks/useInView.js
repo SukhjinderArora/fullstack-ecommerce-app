@@ -10,6 +10,8 @@ const useInView = (
   const [inView, setInView] = useState(false);
   const targetRef = useRef(null);
 
+  const isMounted = useRef(true);
+
   const inViewRef = useCallback((node) => {
     if (node) {
       targetRef.current = node;
@@ -17,12 +19,20 @@ const useInView = (
   }, []);
 
   useEffect(() => {
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+
+  useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          setInView(true);
-        } else {
-          setInView(false);
+        if (isMounted.current) {
+          if (entry.isIntersecting) {
+            setInView(true);
+          } else {
+            setInView(false);
+          }
         }
       });
     }, options);

@@ -28,6 +28,7 @@ const ProductList = ({ products }) => {
       priceNew={Number(product.price)}
       priceOld={Number(product.price)}
       key={product.id}
+      id={product.id}
     />
   ));
   return <Container>{productList}</Container>;

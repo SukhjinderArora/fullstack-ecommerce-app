@@ -67,9 +67,9 @@ const Products = () => {
     };
   }, [dispatch]);
 
-  useEffect(() => {
-    dispatch(clearProducts());
-  }, [selectedSort, selectedSizes, priceRange, dispatch]);
+  // useEffect(() => {
+  //   dispatch(clearProducts());
+  // }, [selectedSort, selectedSizes, priceRange, dispatch]);
 
   useEffect(() => {
     if (categorySlug) {

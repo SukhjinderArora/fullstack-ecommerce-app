@@ -9,7 +9,6 @@ import Register from './pages/Register';
 import Login from './pages/Login';
 import PageNotFound from './pages/PageNotFound';
 
-import { product } from './dummyData';
 import useScrollToTop from './hooks/useScrollToTop';
 
 const App = () => {
@@ -18,7 +17,7 @@ const App = () => {
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
-        <Route path="product" element={<Product product={product} />} />
+        <Route path="product/:id" element={<Product />} />
         <Route path="cart" element={<Cart />} />
         <Route path="products">
           <Route index element={<Products />} />

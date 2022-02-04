@@ -1,20 +1,29 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-const Product = ({ title, img, priceNew, priceOld }) => {
+const Product = ({ title, img, priceNew, priceOld, id }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const navigate = useNavigate();
+
+  const onProductClickHandler = () => {
+    navigate(`/product/${id}`);
+  };
 
   return (
     <Container
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onClick={onProductClickHandler}
     >
       <ProductImageContainer>
         <ProductImage src={img} />
         <ProductButtonContainer isHovered={isHovered}>
-          <ProductButton>Add to cart</ProductButton>
-          <ProductButton>Buy Now</ProductButton>
+          <ProductButton onClick={onProductClickHandler}>
+            Add to cart
+          </ProductButton>
+          <ProductButton onClick={onProductClickHandler}>Buy Now</ProductButton>
         </ProductButtonContainer>
       </ProductImageContainer>
       <ProductName>{title}</ProductName>
@@ -27,6 +36,7 @@ const Product = ({ title, img, priceNew, priceOld }) => {
 };
 
 Product.propTypes = {
+  id: PropTypes.number.isRequired,
   title: PropTypes.string.isRequired,
   img: PropTypes.string.isRequired,
   priceNew: PropTypes.number.isRequired,

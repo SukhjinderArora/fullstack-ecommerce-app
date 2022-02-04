@@ -1,7 +1,8 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 import Slider from '../components/Slider';
 import Carousel from '../components/Carousel';
@@ -13,15 +14,45 @@ import PrimaryButton from '../components/shared/PrimaryButton';
 import usePageTitle from '../hooks/usePageTitle';
 import { fetchAllCategories } from '../store/categoriesSlice';
 
-import { newProducts, bestSellerProducts } from '../dummyData';
-
 const Home = () => {
   usePageTitle('Fashionista - Home');
   const dispatch = useDispatch();
   const { categories } = useSelector((state) => state.categories);
+  const [newProducts, setNewProducts] = useState([]);
+  const [bestSellerProducts, setBestSellerProducts] = useState([]);
+
   useEffect(() => {
     dispatch(fetchAllCategories());
   }, [dispatch]);
+
+  useEffect(() => {
+    axios
+      .get('/api/shop/products', {
+        params: {
+          offset: 0,
+          limit: 4,
+          sortBy: 'date',
+          orderBy: 'desc',
+        },
+      })
+      .then((response) => {
+        setNewProducts(response.data.products);
+      });
+
+    axios
+      .get('/api/shop/products', {
+        params: {
+          offset: 0,
+          limit: 4,
+          sortBy: 'price',
+          orderBy: 'desc',
+        },
+      })
+      .then((response) => {
+        setBestSellerProducts(response.data.products);
+      });
+  }, []);
+
   return (
     <Container>
       <Slider slideIntervalInSeconds={5}>
@@ -78,12 +109,12 @@ const Home = () => {
       <Section>
         <SectionTitle>New Arrivals</SectionTitle>
         <ProductList products={newProducts} />
-        <ShowMoreButton>Show more</ShowMoreButton>
+        <ShowMoreButton to="/products">Show more</ShowMoreButton>
       </Section>
       <Section>
         <SectionTitle>Best Seller</SectionTitle>
         <ProductList products={bestSellerProducts} />
-        <ShowMoreButton>Show more</ShowMoreButton>
+        <ShowMoreButton to="/products">Show more</ShowMoreButton>
       </Section>
     </Container>
   );
@@ -104,9 +135,18 @@ const SectionTitle = styled.h1`
   margin-bottom: 40px;
 `;
 
-const ShowMoreButton = styled(PrimaryButton)`
+const ShowMoreButton = styled(Link)`
   display: block;
   margin: 0 auto;
+  background-color: teal;
+  border: none;
+  color: white;
+  padding: 15px 20px;
+  font-size: 16px;
+  text-transform: uppercase;
+  text-decoration: none;
+  width: fit-content;
+  cursor: pointer;
 `;
 
 const StyledLink = styled(Link)`

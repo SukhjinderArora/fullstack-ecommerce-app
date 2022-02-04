@@ -17,11 +17,11 @@ export const fetchProducts = createAsyncThunk(
       category = '',
       priceRange = [100, 3000],
       sizes = '',
+      limit = 12,
     },
     { getState }
   ) => {
     const offset = getState().products.products.length;
-    const limit = 12;
     const { selectedCategory } = getState().filters;
     const response = await axios.get('/api/shop/products', {
       params: {
@@ -67,7 +67,7 @@ const productsSlice = createSlice({
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action;
+        state.error = action.error;
       });
   },
 });

@@ -1,53 +1,90 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
 import styled from 'styled-components';
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Minus, Plus } from 'react-feather';
 
 import PrimaryButton from '../components/shared/PrimaryButton';
 import Carousel from '../components/Carousel';
 import ProductView from '../components/Product';
+import Spinner from '../components/shared/SpinnerRect';
 
-import { product, relatedProducts } from '../dummyData';
+import { fetchProduct, clearProduct } from '../store/productSlice';
+import { fetchProducts, clearProducts } from '../store/productsSlice';
+
+import { checkIfEmpty } from '../utils/index';
 
 const Product = () => {
-  const { title, images, priceNew, priceOld } = product;
-  const [image, setImage] = useState(images[0]);
+  const params = useParams();
+  const id = Number(params.id);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { product, status } = useSelector((state) => state.product);
+  const { products: relatedProducts } = useSelector((state) => state.products);
+  const { title, img, price, description, sizes, category, colors } = product;
 
-  const imageChangeHandler = (imageUrl) => {
-    setImage(imageUrl);
-  };
+  useEffect(() => {
+    dispatch(
+      fetchProduct({
+        id,
+      })
+    );
+    return () => {
+      dispatch(clearProduct());
+      dispatch(clearProducts());
+    };
+  }, [dispatch, id]);
+
+  useEffect(() => {
+    if (category) {
+      dispatch(
+        fetchProducts({
+          category,
+          limit: 10,
+        })
+      );
+    }
+  }, [category, dispatch, id]);
+
+  if (status === 'loading' || checkIfEmpty(product)) return <Spinner />;
 
   return (
     <Container>
       <ProductContainer>
         <ImagesContainer>
           <Thumbnails>
-            {images.map((imageURL, index) => (
-              <ThumbnailContainer
-                selected={image === imageURL}
-                onClick={() => imageChangeHandler(imageURL)}
-                key={index}
-              >
-                <Thumbnail src={imageURL} />
-              </ThumbnailContainer>
-            ))}
+            <ThumbnailContainer selected>
+              <Thumbnail src={img} />
+            </ThumbnailContainer>
           </Thumbnails>
           <ImageContainer>
-            <Image src={image} />
+            <Image src={img} />
           </ImageContainer>
         </ImagesContainer>
         <ProductInfoContainer>
           <Title>{title}</Title>
           <PriceContainer>
-            <NewPrice>INR 499.00</NewPrice>
-            <OldPrice>INR 1499.00</OldPrice>
+            <NewPrice>INR {price}</NewPrice>
           </PriceContainer>
           <SizeLabel>Size:</SizeLabel>
           <SizesContainer>
-            <SizeBox>S</SizeBox>
-            <SizeBox>M</SizeBox>
-            <SizeBox>L</SizeBox>
-            <SizeBox>XL</SizeBox>
+            {sizes.map((size) => (
+              <SizeBox key={size.id}>{size.size.toUpperCase()}</SizeBox>
+            ))}
           </SizesContainer>
+          <ColorLabel>Color:</ColorLabel>
+          <ColorsContainer>
+            {colors.map((color) => (
+              <Color
+                key={color.id}
+                color={color.color}
+                active={color.id === id}
+                onClick={() =>
+                  navigate(`/product/${color.id}`, { replace: true })
+                }
+              />
+            ))}
+          </ColorsContainer>
           <QuantityContainer>
             <QuantityLabel>Qty:</QuantityLabel>
             <QuantityBox>
@@ -68,51 +105,30 @@ const Product = () => {
       </ProductContainer>
       <DescriptionContainer>
         <p>DESCRIPTION</p>
-        <p>
-          Knitted stretch fabric. Regular collar. Long buttoned sleeve. Button
-          fastening on the front section. Patch pocket with button on the chest.
-        </p>
-        <p>
-          -A classic pique dobby shirt in Yellow
-          <br />
-          -Can be worn for from office to after meeting evening get together.
-          <br />
-          -Liked by Father and Son age groups -Regular collar
-          <br />
-          -100% premium Cotton pique dobby solid shirt
-          <br />
-          -Full Sleeves
-          <br />
-          -Tailored Fit / Perfected pattern after extensive research on body
-          measurements.
-          <br />- Hand Wash - For detailed instructions- follow the wash-care
-          label on the garment.
-        </p>
-        <p>
-          <strong>SIZE</strong>
-          <br />
-          Model height 188cm. The model (Chest-39,Waist-32,Hips-38) is wearing a
-          size M
-        </p>
+        <p>{description}</p>
       </DescriptionContainer>
       <Section>
         <SectionTitle>Related Products</SectionTitle>
         <Carousel>
-          {relatedProducts.map((p) => (
-            <div
-              style={{
-                margin: '0 20px',
-              }}
-            >
-              <ProductView
-                title={p.title}
-                img={p.img}
-                priceNew={p.priceNew}
-                priceOld={p.priceOld}
-                id={p.id}
-              />
-            </div>
-          ))}
+          {relatedProducts.map(
+            (p) =>
+              p.id !== id && (
+                <div
+                  key={p.id}
+                  style={{
+                    margin: '0 20px',
+                  }}
+                >
+                  <ProductView
+                    title={p.title}
+                    img={p.img}
+                    priceNew={p.price}
+                    priceOld={p.price}
+                    id={p.id}
+                  />
+                </div>
+              )
+          )}
         </Carousel>
       </Section>
     </Container>
@@ -165,6 +181,7 @@ const Title = styled.h1`
   font-size: 25px;
   font-weight: 300;
   color: rgb(27, 40, 57);
+  text-transform: uppercase;
 `;
 
 const PriceContainer = styled.div`
@@ -194,12 +211,32 @@ const SizesContainer = styled.div`
 `;
 
 const SizeBox = styled.div`
-  width: 50px;
+  min-width: 50px;
   height: 50px;
+  padding: 10px;
   border: 1px solid grey;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-right: 10px;
+  cursor: pointer;
+`;
+
+const ColorsContainer = styled.div`
+  margin: 20px 0;
+`;
+
+const ColorLabel = styled.p`
+  font-size: 18px;
+`;
+
+const Color = styled.button`
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: ${(props) => props.color};
+  border: 3px solid ${(props) => (props.active ? 'teal' : '#ccc')};
+  display: inline-block;
   margin-right: 10px;
   cursor: pointer;
 `;

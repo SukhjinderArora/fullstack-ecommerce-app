@@ -3,26 +3,26 @@ import PropTypes from 'prop-types';
 
 const Category = ({ name, imgUrl }) => {
   return (
-    <CategoryContainer>
-      <CategoryImageContainer>
-        <CategoryImage src={imgUrl} />
-      </CategoryImageContainer>
+    <Container>
+      <ImageContainer>
+        <Image src={imgUrl} />
+      </ImageContainer>
       <CategoryName>{name}</CategoryName>
-    </CategoryContainer>
+    </Container>
   );
 };
 
-const CategoryContainer = styled.div`
+const Container = styled.div`
   display: block;
   margin-right: 30px;
 `;
 
-const CategoryImageContainer = styled.div`
+const ImageContainer = styled.div`
   width: 300px;
   height: 360px;
 `;
 
-const CategoryImage = styled.img`
+const Image = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;

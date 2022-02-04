@@ -5,21 +5,6 @@ import styled from 'styled-components';
 import ArrowButton from './shared/ArrowButton';
 import useInView from '../hooks/useInView';
 
-const Container = styled.div`
-  overflow: hidden;
-  position: relative;
-`;
-
-const CarouselContainer = styled.div`
-  display: flex;
-  transform: translateX(
-    ${(props) => props.itemWidth * props.currentItemIndexAtLeft * -1}px
-  );
-  transition: all 0.5s ease-in-out;
-`;
-
-const CarouselItem = styled.div``;
-
 const Carousel = ({ children }) => {
   const [carouselItemWidth, setCarouselItemWidth] = useState(0);
   const [currentItemIndexAtLeft, setCurrentItemIndexAtLeft] = useState(0);
@@ -83,6 +68,21 @@ const Carousel = ({ children }) => {
     </Container>
   );
 };
+
+const Container = styled.div`
+  overflow: hidden;
+  position: relative;
+`;
+
+const CarouselContainer = styled.div`
+  display: flex;
+  transform: translateX(
+    ${(props) => props.itemWidth * props.currentItemIndexAtLeft * -1}px
+  );
+  transition: all 0.5s ease-in-out;
+`;
+
+const CarouselItem = styled.div``;
 
 Carousel.propTypes = {
   children: PropTypes.arrayOf(Object).isRequired,

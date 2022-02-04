@@ -4,6 +4,7 @@ import productsReducer from './productsSlice';
 import filtersReducer from './filtersSlice';
 import categoriesReducer from './categoriesSlice';
 import sizesReducer from './sizesSlice';
+import productReducer from './productSlice';
 
 const store = configureStore({
   reducer: {
@@ -11,6 +12,7 @@ const store = configureStore({
     filters: filtersReducer,
     categories: categoriesReducer,
     sizes: sizesReducer,
+    product: productReducer,
   },
 });
 
