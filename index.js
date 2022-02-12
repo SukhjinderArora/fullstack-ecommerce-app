@@ -13,6 +13,7 @@ const ProductVariant = require('./models/productVariant');
 const ProductSize = require('./models/productSize');
 const Category = require('./models/category');
 const ProductCategory = require('./models/productCategory');
+const Token = require('./models/token');
 
 (async function setupDatabase() {
   try {
@@ -26,6 +27,8 @@ const ProductCategory = require('./models/productCategory');
       onDelete: 'CASCADE',
     });
     Product.belongsTo(User);
+    User.hasMany(Token);
+    Token.belongsTo(User);
     Product.belongsToMany(Category, { through: ProductCategory });
     Category.belongsToMany(Product, { through: ProductCategory });
     Product.hasMany(ProductVariant, {
@@ -41,7 +44,6 @@ const ProductCategory = require('./models/productCategory');
     ProductSize.belongsToMany(Cart, { through: CartItem });
     Cart.belongsToMany(ProductSize, { through: CartItem });
     await sequelize.sync();
-    await Category.sync({ alter: true });
   } catch (error) {
     logger.error(error);
   }

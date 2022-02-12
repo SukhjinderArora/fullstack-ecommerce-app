@@ -2,12 +2,12 @@ const router = require('express').Router();
 const { body } = require('express-validator');
 
 const adminController = require('../controllers/admin');
-const { verifyToken, isAdmin } = require('../utils/middlewares');
+const { isAuthenticated, isAdmin } = require('../utils/middlewares');
 
 router.get('/products/:userId', adminController.getAllProductsByUser);
 router.post(
   '/products/add-new',
-  verifyToken,
+  isAuthenticated,
   isAdmin,
   body('title')
     .notEmpty()

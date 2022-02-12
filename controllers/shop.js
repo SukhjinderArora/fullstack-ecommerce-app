@@ -92,7 +92,14 @@ const getProductById = async (req, res, next) => {
     }
     const product = await ProductVariant.findByPk(id, {
       include: [
-        { model: Product, required: true, attributes: [] },
+        {
+          model: Product,
+          required: true,
+          include: {
+            model: Category,
+            attributes: [],
+          },
+        },
         {
           model: ProductSize,
           as: 'sizes',
@@ -105,6 +112,7 @@ const getProductById = async (req, res, next) => {
           [Sequelize.col('product.id'), 'productId'],
           [Sequelize.col('product.title'), 'title'],
           [Sequelize.col('product.description'), 'description'],
+          [Sequelize.col('product.categories.category'), 'category'],
         ],
         exclude: ['createdAt', 'updatedAt'],
       },

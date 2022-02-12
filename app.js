@@ -1,5 +1,7 @@
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
+const cookieParser = require('cookie-parser');
 
 const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
@@ -8,13 +10,17 @@ const { errorLogger, errorResponder } = require('./utils/middlewares');
 
 const app = express();
 
+app.use(helmet());
 app.use(
   cors({
     origin: 'http://localhost:3000',
     optionsSuccessStatus: 200,
+    credentials: true,
   })
 );
 app.use(express.json({ type: 'application/json' }));
+app.use(cookieParser(process.env.COOKIE_SECRET));
+
 app.use('/api/shop', shopRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);

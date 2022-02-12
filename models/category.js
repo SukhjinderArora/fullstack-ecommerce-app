@@ -18,6 +18,12 @@ const Category = sequelize.define('category', {
   },
   img: {
     type: DataTypes.STRING(255),
+    allowNull: false,
+  },
+  slug: {
+    type: DataTypes.STRING(30),
+    allowNull: false,
+    unique: true,
   },
 });
 
