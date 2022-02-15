@@ -9,6 +9,8 @@ import Carousel from '../components/Carousel';
 import ProductView from '../components/Product';
 import Spinner from '../components/shared/SpinnerRect';
 
+import PageNotFound from './PageNotFound';
+
 import { fetchProduct, clearProduct } from '../store/productSlice';
 import { fetchProducts, clearProducts } from '../store/productsSlice';
 
@@ -45,6 +47,8 @@ const Product = () => {
       );
     }
   }, [category, dispatch, id]);
+
+  if (status === 'failed') return <PageNotFound />;
 
   if (status === 'loading' || checkIfEmpty(product)) return <Spinner />;
 
@@ -122,8 +126,8 @@ const Product = () => {
                   <ProductView
                     title={p.title}
                     img={p.img}
-                    priceNew={p.price}
-                    priceOld={p.price}
+                    priceNew={Number(p.price)}
+                    priceOld={Number(p.price)}
                     id={p.id}
                   />
                 </div>

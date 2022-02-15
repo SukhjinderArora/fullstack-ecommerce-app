@@ -39,16 +39,14 @@ const FeaturedCategory = ({
   }, [inView, animationControl]);
   return (
     <Container position={imagePosition} ref={ref}>
-      {inView && (
-        <ImageContainer
-          position={imagePosition}
-          variants={imageVariant}
-          initial="hidden"
-          animate={animationControl}
-        >
-          <Image src={imgUrl} />
-        </ImageContainer>
-      )}
+      <ImageContainer
+        position={imagePosition}
+        variants={imageVariant}
+        initial="hidden"
+        animate={animationControl}
+      >
+        <Image src={imgUrl} />
+      </ImageContainer>
       <ContentContainer position={imagePosition}>
         <Title>{categoryName}</Title>
         <Description>{description}</Description>

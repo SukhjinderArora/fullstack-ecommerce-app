@@ -6,6 +6,7 @@ import Navbar from './Navbar';
 
 const Container = styled.main`
   margin-top: 70px;
+  min-height: 100vh;
 `;
 
 const Layout = () => {

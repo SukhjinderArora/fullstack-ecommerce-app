@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import validator from 'validator';
 import {
   User as UserIcon,
@@ -9,6 +11,8 @@ import {
 
 import usePageTitle from '../hooks/usePageTitle';
 import useForm from '../hooks/useForm';
+
+import { register } from '../store/authSlice';
 
 import { ReactComponent as BackgroundSVG } from '../assets/images/svg/undraw_web_shopping_re_owap.svg';
 
@@ -28,6 +32,16 @@ const validate = (values) => {
     errors.lastName = 'Last Name cannot be less than 2 characters';
   } else if (values.lastName.length > 15) {
     errors.lastName = 'Last Name cannot be more than 15 characters';
+  }
+
+  if (!values.username.trim()) {
+    errors.username = 'Please enter a username';
+  } else if (values.username.length < 3) {
+    errors.username = 'Username cannot be less than 3 characters';
+  } else if (values.username.length > 10) {
+    errors.username = 'Username cannot be more than 10 characters';
+  } else if (validator.isNumeric(values.username)) {
+    errors.username = 'Username must be alphanumeric';
   }
 
   if (!values.email.trim()) {
@@ -56,19 +70,35 @@ const validate = (values) => {
 
 const Register = () => {
   usePageTitle('Sign Up | Fashionista');
-  const form = useForm({
+  const dispatch = useDispatch();
+  const { error, status, user } = useSelector((state) => state.auth);
+
+  const { setFieldError, setMultipleFieldsError, ...form } = useForm({
     initialValues: {
       firstName: '',
       lastName: '',
+      username: '',
       email: '',
       password: '',
       confirmPassword: '',
     },
     validate,
     onSubmit: (values, { resetForm }) => {
-      resetForm();
+      dispatch(register({ ...values }));
     },
   });
+
+  useEffect(() => {
+    if (error) {
+      if (Array.isArray(error)) {
+        const errors = error.reduce((acc, cur) => {
+          acc[cur.param] = cur.msg;
+          return acc;
+        }, {});
+        setMultipleFieldsError(errors);
+      }
+    }
+  }, [error, setMultipleFieldsError]);
   return (
     <Container>
       <FormWrapper>
@@ -120,6 +150,30 @@ const Register = () => {
             />
             <ValidationError>
               <span>{form.touched.lastName && form.errors.lastName}</span>
+            </ValidationError>
+          </FormGroup>
+          <FormGroup>
+            {!form.focused.username && form.values.username.trim() === '' && (
+              <Label htmlFor="username">
+                <InputIconContainer>
+                  <UserIcon />
+                </InputIconContainer>
+                Username
+              </Label>
+            )}
+            <Input
+              type="text"
+              onFocus={form.handleFocus}
+              onBlur={form.handleBlur}
+              onChange={form.handleChange}
+              name="username"
+              id="username"
+              value={form.values.username}
+              aria-label="Username"
+              required
+            />
+            <ValidationError>
+              <span>{form.touched.username && form.errors.username}</span>
             </ValidationError>
           </FormGroup>
           <FormGroup>

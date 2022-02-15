@@ -1,9 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
+import { STATUS } from '../utils';
+
 const initialState = {
   sizes: [],
-  status: 'idle', // enum - idle loading succeeded failed
+  status: STATUS.IDLE, // enum - idle loading succeeded failed
   error: null,
 };
 
@@ -21,15 +23,15 @@ const sizesSlice = createSlice({
   extraReducers(builder) {
     builder
       .addCase(fetchAllSizes.pending, (state) => {
-        state.status = 'loading';
+        state.status = STATUS.LOADING;
       })
       .addCase(fetchAllSizes.fulfilled, (state, action) => {
-        state.status = 'succeeded';
+        state.status = STATUS.SUCCEEDED;
         state.sizes = action.payload;
         state.error = null;
       })
       .addCase(fetchAllSizes.rejected, (state) => {
-        state.status = 'failed';
+        state.status = STATUS.FAILED;
       });
   },
 });

@@ -6,7 +6,7 @@ const PageNotFound = () => {
     <Container>
       <Text>Page not found</Text>
       <Description>
-        Uh-oh! Looks like the page you are trying to access, doesn&apos;t exist.
+        Uh-oh! Looks like the page you are trying to access doesn&apos;t exist.
         Please start afresh.
       </Description>
       <Button to="/">Go Home</Button>

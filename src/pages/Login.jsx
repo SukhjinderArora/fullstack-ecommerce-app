@@ -1,7 +1,12 @@
+import { useEffect } from 'react';
 import styled from 'styled-components';
+import { useDispatch, useSelector } from 'react-redux';
 
 import useForm from '../hooks/useForm';
 import usePageTitle from '../hooks/usePageTitle';
+
+import { login } from '../store/authSlice';
+
 import BackgroundSVG from '../assets/images/svg/undraw_online_shopping_re_k1sv.svg';
 
 const validate = (values) => {
@@ -17,16 +22,39 @@ const validate = (values) => {
 
 const Login = () => {
   usePageTitle('Login | Fashionista');
-  const form = useForm({
+  const dispatch = useDispatch();
+  const { error } = useSelector((state) => state.auth);
+
+  const { setFieldError, setMultipleFieldsError, ...form } = useForm({
     initialValues: {
       email: '',
       password: '',
     },
     validate,
     onSubmit: (values, { resetForm }) => {
-      console.log('Form Submitted');
+      dispatch(
+        login({
+          email: values.email,
+          password: values.password,
+        })
+      );
     },
   });
+
+  useEffect(() => {
+    if (error) {
+      if (Array.isArray(error)) {
+        const errors = error.reduce((acc, cur) => {
+          acc[cur.param] = cur.msg;
+          return acc;
+        }, {});
+        setMultipleFieldsError(errors);
+      } else {
+        setFieldError('password', error.message);
+      }
+    }
+  }, [error, setFieldError, setMultipleFieldsError]);
+
   return (
     <Container>
       <FormWrapper>
@@ -161,6 +189,9 @@ const SubmitButton = styled.button`
   font-size: 14px;
   text-transform: uppercase;
   cursor: pointer;
+  :disabled {
+    background-color: grey;
+  }
 `;
 
 const ValidationError = styled.p`

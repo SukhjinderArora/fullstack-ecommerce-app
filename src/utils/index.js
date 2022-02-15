@@ -12,3 +12,21 @@ export const setAllObjectProperties = (obj, value) => {
   }, {});
   return newObj;
 };
+
+export const STATUS = {
+  IDLE: 'idle',
+  LOADING: 'loading',
+  SUCCEEDED: 'succeeded',
+  FAILED: 'failed',
+};
+
+Object.freeze(STATUS);
+
+export const cookies = {
+  get(name) {
+    return document.cookie
+      .split('; ')
+      .find((row) => row.startsWith(name))
+      ?.split('=')[1];
+  },
+};

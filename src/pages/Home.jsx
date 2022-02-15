@@ -80,31 +80,31 @@ const Home = () => {
         <FeaturedCategory
           categoryName="MEN'S SHIRT"
           description="NEW LAUNCHES EVERY DAY, STYLES THAT PROMISE TO CAPTURE YOUR HEART"
-          imgUrl="https://funkytrend.in/themes/oxygen/assets/images/side-l-1.jpg"
+          imgUrl="https://firebasestorage.googleapis.com/v0/b/ecommerce-app-d78cc.appspot.com/o/side-l-1.jpg?alt=media&token=b3722265-0558-4cca-ba60-36cdc61a6a16"
           categoryUrl="/products/mens-shirt"
           imagePosition="right"
         />
         <FeaturedCategory
           categoryName="MEN'S T-SHIRT"
           description="EXPLORE A SECTION OF BREEZY FLUID SILHOUETTES TO FLATTER YOUR BODY"
-          imgUrl="https://funkytrend.in/themes/oxygen/assets/images/side-s-2.jpg"
+          imgUrl="https://firebasestorage.googleapis.com/v0/b/ecommerce-app-d78cc.appspot.com/o/side-s-2.jpg?alt=media&token=f64b43d2-6da6-4853-aa61-fce2450a9afc"
           categoryUrl="/products/mens-t-shirt"
           imagePosition="left"
         />
         <FeaturedCategory
           categoryName="HOODIES"
           description="FROM EVERYDAY CLASSICS TO FESTIVE OCCASIONWEAR, THESE ARE WARDROBE STAPLES FOR A REASON"
-          imgUrl="https://funkytrend.in/themes/oxygen/assets/images/side-s-3.jpg"
+          imgUrl="https://firebasestorage.googleapis.com/v0/b/ecommerce-app-d78cc.appspot.com/o/side-s-3.jpg?alt=media&token=b927cee4-92ed-4dc1-93b0-b99cc1f3d29b"
           categoryUrl="/products/hoodies"
           imagePosition="right"
         />
-        <FeaturedCategory
+        {/* <FeaturedCategory
           categoryName="WOMEN'S NIGHT SUIT"
           description="A CURATION OF VIVID ENSEMBLES LADEN WITH SPARKLES AND BRIGHT COLORS"
           imgUrl="https://funkytrend.in/themes/oxygen/assets/images/side-s-4.jpg"
           categoryUrl="/products/womens-night-suit"
           imagePosition="left"
-        />
+        /> */}
       </Section>
       <Section>
         <SectionTitle>New Arrivals</SectionTitle>

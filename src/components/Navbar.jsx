@@ -1,8 +1,15 @@
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import { Heart, User, ShoppingCart, Search as SearchIcon } from 'react-feather';
 
+import { logout } from '../store/authSlice';
+import { STATUS } from '../utils';
+
 const Navbar = () => {
+  const { isAuthenticated, status } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   return (
     <Header>
       <Navigation>
@@ -16,20 +23,43 @@ const Navbar = () => {
           </SearchButton>
         </SearchContainer>
         <NavigationList>
+          {!isAuthenticated && (
+            <NavigationItem>
+              <NavigationLink to="/register">Register</NavigationLink>
+            </NavigationItem>
+          )}
+          {!isAuthenticated && (
+            <NavigationItem>
+              <NavigationLink to="/login">Login</NavigationLink>
+            </NavigationItem>
+          )}
+          {isAuthenticated && (
+            <NavigationItem>
+              <NavigationLink
+                as="button"
+                onClick={() => {
+                  dispatch(logout());
+                  navigate('/');
+                }}
+              >
+                Logout
+              </NavigationLink>
+            </NavigationItem>
+          )}
           <NavigationItem>
-            <NavigationLink to="/register">Register</NavigationLink>
-          </NavigationItem>
-          <NavigationItem>
-            <NavigationLink to="/login">Login</NavigationLink>
-          </NavigationItem>
-          <NavigationItem>
-            <NavigationLink to="/" title="Wishlist">
+            <NavigationLink
+              to={isAuthenticated ? '/' : '/login'}
+              title="Wishlist"
+            >
               <Heart color="#1b2839" size="20" />
               <LinkDescription>Wishlist</LinkDescription>
             </NavigationLink>
           </NavigationItem>
           <NavigationItem>
-            <NavigationLink to="/" title="Profile">
+            <NavigationLink
+              to={isAuthenticated ? '/' : '/login'}
+              title="Profile"
+            >
               <User color="#1b2839" size="20" />
               <LinkDescription>Profile</LinkDescription>
             </NavigationLink>
@@ -115,11 +145,14 @@ const SearchButton = styled.button`
 const NavigationList = styled.ul`
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   list-style: none;
+  flex-basis: 33%;
 `;
 
 const NavigationItem = styled.li`
   margin-right: 20px;
+  transition: all 5s;
 `;
 
 const NavigationLink = styled(Link)`
@@ -141,6 +174,9 @@ const NavigationLink = styled(Link)`
   &:hover > span {
     color: teal;
   }
+  // button styles
+  background: none;
+  border: none;
 `;
 
 const LinkDescription = styled.span`

@@ -1,9 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
+import { STATUS } from '../utils';
+
 const initialState = {
   products: [],
-  status: 'idle', // enum - idle loading succeeded failed
+  status: STATUS.IDLE,
   error: null,
   totalProducts: null,
 };
@@ -39,7 +41,7 @@ export const fetchProducts = createAsyncThunk(
   {
     condition: (_, { getState }) => {
       const { status } = getState().products;
-      if (status === 'loading') {
+      if (status === STATUS.LOADING) {
         return false;
       }
       return true;
@@ -58,15 +60,15 @@ const productsSlice = createSlice({
   extraReducers(builder) {
     builder
       .addCase(fetchProducts.pending, (state) => {
-        state.status = 'loading';
+        state.status = STATUS.LOADING;
       })
       .addCase(fetchProducts.fulfilled, (state, action) => {
-        state.status = 'succeeded';
+        state.status = STATUS.SUCCEEDED;
         state.products.push(...action.payload.products);
         state.totalProducts = action.payload.totalProducts;
       })
       .addCase(fetchProducts.rejected, (state, action) => {
-        state.status = 'failed';
+        state.status = STATUS.FAILED;
         state.error = action.error;
       });
   },
