@@ -5,6 +5,8 @@ const Product = require('../models/product');
 const Category = require('../models/category');
 const ProductSize = require('../models/productSize');
 
+const { createError } = require('../utils');
+
 const getAllProductsByUser = async (req, res) => {
   const { userId } = req.params;
   const productsByUser = await User.findByPk(userId, {
@@ -28,8 +30,7 @@ const createNewProduct = async (req, res, next) => {
     if (productId) {
       product = await Product.findByPk(productId);
       if (!product) {
-        const error = new Error('Existing product not found');
-        error.status = 404;
+        const error = createError('Existing product not found', 404);
         throw error;
       }
     } else {

@@ -8,6 +8,8 @@ const Category = require('../models/category');
 const CartItem = require('../models/cartItem');
 const Size = require('../models/size');
 
+const { createError } = require('../utils');
+
 const getAllProducts = async (req, res, next) => {
   const {
     categories,
@@ -86,8 +88,7 @@ const getProductById = async (req, res, next) => {
   try {
     const { id } = req.params;
     if (Number(id) !== parseInt(id, 10)) {
-      const error = new Error('Invalid product ID');
-      error.status = 422;
+      const error = createError('Invalid product ID', 422);
       throw error;
     }
     const product = await ProductVariant.findByPk(id, {
@@ -132,8 +133,7 @@ const getProductById = async (req, res, next) => {
       });
       res.status(200).json({ ...product.get(), colors });
     } else {
-      const error = new Error('Product not found.');
-      error.status = 404;
+      const error = createError('Product not found', 404);
       throw error;
     }
   } catch (error) {
@@ -178,8 +178,7 @@ const addProductToCart = async (req, res, next) => {
   try {
     const productSizeItem = await ProductSize.findByPk(productSizeId);
     if (!productSizeItem) {
-      const error = new Error('Product not found');
-      error.status = 404;
+      const error = createError('Product not found', 404);
       throw error;
     }
     const cart = await user.getCart();
@@ -194,10 +193,10 @@ const addProductToCart = async (req, res, next) => {
       cartQuantity = cartItem.quantity + quantity;
     }
     if (cartQuantity > productSizeItem.quantity) {
-      const error = new Error(
-        'Cart quantity exceeds the product stock quantity'
+      const error = createError(
+        'Cart quantity exceeds the product stock quantity',
+        422
       );
-      error.status = 200;
       throw error;
     }
     await cart.addProductsize(productSizeItem, {

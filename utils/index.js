@@ -2,6 +2,8 @@ const jwt = require('jsonwebtoken');
 const { nanoid } = require('nanoid');
 const ms = require('ms');
 
+const Token = require('../models/token');
+
 const dev = process.env.NODE_ENV === 'development';
 
 const generateJWT = (userId, secret, expirationTime) =>
@@ -38,6 +40,25 @@ const COOKIE_OPTIONS = {
   signed: true,
 };
 
+const clearTokens = async (req, res) => {
+  const { signedCookies = {} } = req;
+  const { refreshToken } = signedCookies;
+  if (refreshToken) {
+    await Token.destroy({
+      where: {
+        refreshToken,
+      },
+    });
+  }
+  res.clearCookie('XSRF-TOKEN', {
+    ...COOKIE_OPTIONS,
+    httpOnly: false,
+    signed: false,
+  });
+  res.clearCookie('XSRF-TOKEN-HTTP-ONLY', COOKIE_OPTIONS);
+  res.clearCookie('refreshToken', COOKIE_OPTIONS);
+};
+
 const createError = (message = 'Internal Server Error', statusCode = 500) => {
   const error = new Error(message);
   error.status = statusCode;
@@ -50,4 +71,5 @@ module.exports = {
   generateAccessAndXSRFToken,
   COOKIE_OPTIONS,
   createError,
+  clearTokens,
 };

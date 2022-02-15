@@ -32,6 +32,7 @@ const generateAuthTokens = async (req, res, next) => {
       xsrfToken,
       expiresAt,
     } = generateAccessAndXSRFToken(req.userId);
+    console.log(xsrfToken);
     await Token.create({
       refreshToken,
       xsrfToken,
@@ -45,6 +46,7 @@ const generateAuthTokens = async (req, res, next) => {
     res.cookie('XSRF-TOKEN', xsrfToken, {
       ...COOKIE_OPTIONS,
       httpOnly: false,
+      signed: false,
       expires: new Date(Date.now() + ms(process.env.REFRESH_TOKEN_LIFE)),
     });
     res.cookie('XSRF-TOKEN-HTTP-ONLY', xsrfToken, {
@@ -55,7 +57,6 @@ const generateAuthTokens = async (req, res, next) => {
       user,
       token: accessToken,
       expiresAt,
-      xsrfToken,
     });
   } catch (error) {
     return next(error);

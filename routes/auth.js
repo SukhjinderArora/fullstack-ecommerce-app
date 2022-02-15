@@ -3,7 +3,7 @@ const { checkSchema } = require('express-validator');
 
 const authController = require('../controllers/auth');
 const { registrationSchema, loginSchema } = require('../utils/validation');
-const { generateAuthTokens } = require('../utils/middlewares');
+const { generateAuthTokens, isAuthenticated } = require('../utils/middlewares');
 
 router.post(
   '/login',
@@ -19,7 +19,7 @@ router.post(
   generateAuthTokens
 );
 
-router.post('/logout', authController.logout);
+router.post('/logout', isAuthenticated, authController.logout);
 
 router.post('/verifyToken', authController.verifyAndGenerateToken);
 

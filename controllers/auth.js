@@ -9,6 +9,7 @@ const {
   generateAccessAndXSRFToken,
   createError,
   COOKIE_OPTIONS,
+  clearTokens,
 } = require('../utils');
 
 const login = async (req, res, next) => {
@@ -88,6 +89,7 @@ const verifyAndGenerateToken = async (req, res, next) => {
       !refreshTokenInDB ||
       xsrfToken !== refreshTokenInDB.xsrfToken
     ) {
+      await clearTokens(req, res);
       const error = createError('Invalid credentials', 401);
       throw error;
     }
@@ -96,6 +98,7 @@ const verifyAndGenerateToken = async (req, res, next) => {
       const { userId } = decodedToken;
       const user = await User.findByPk(userId);
       if (!user) {
+        await clearTokens(req, res);
         const error = createError('Invalid credentials', 401);
         throw error;
       }
@@ -115,6 +118,7 @@ const verifyAndGenerateToken = async (req, res, next) => {
       res.cookie('XSRF-TOKEN', newXsrfToken, {
         ...COOKIE_OPTIONS,
         httpOnly: false,
+        signed: false,
         expires: new Date(Date.now() + ms(process.env.REFRESH_TOKEN_LIFE)),
       });
       res.cookie('XSRF-TOKEN-HTTP-ONLY', newXsrfToken, {
@@ -125,7 +129,6 @@ const verifyAndGenerateToken = async (req, res, next) => {
         user,
         token: accessToken,
         expiresAt,
-        xsrfToken: newXsrfToken,
       });
     } catch (error) {
       return next(error);
@@ -136,18 +139,7 @@ const verifyAndGenerateToken = async (req, res, next) => {
 };
 
 const logout = async (req, res) => {
-  const { signedCookies = {} } = req;
-  const { refreshToken } = signedCookies;
-  if (refreshToken) {
-    await Token.destroy({
-      where: {
-        refreshToken,
-      },
-    });
-  }
-  res.clearCookie('XSRF-TOKEN', { ...COOKIE_OPTIONS, httpOnly: false });
-  res.clearCookie('XSRF-TOKEN-HTTP-ONLY', COOKIE_OPTIONS);
-  res.clearCookie('refreshToken', COOKIE_OPTIONS);
+  await clearTokens(req, res);
   return res.sendStatus(204);
 };
 
