@@ -1,6 +1,5 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { validationResult } = require('express-validator');
 const ms = require('ms');
 
 const User = require('../models/user');
@@ -13,12 +12,6 @@ const {
 } = require('../utils');
 
 const login = async (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({
-      errors: errors.array({ onlyFirstError: true }),
-    });
-  }
   const { email, password } = req.body;
   try {
     const user = await User.findOne({
@@ -43,12 +36,6 @@ const login = async (req, res, next) => {
 };
 
 const register = async (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({
-      errors: errors.array({ onlyFirstError: true }),
-    });
-  }
   const { firstName, lastName, username, email, password } = req.body;
   const saltRounds = 12;
   try {

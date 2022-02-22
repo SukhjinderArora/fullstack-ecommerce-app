@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const ms = require('ms');
+const { validationResult } = require('express-validator');
 
 const User = require('../models/user');
 const Token = require('../models/token');
@@ -32,7 +33,6 @@ const generateAuthTokens = async (req, res, next) => {
       xsrfToken,
       expiresAt,
     } = generateAccessAndXSRFToken(req.userId);
-    console.log(xsrfToken);
     await Token.create({
       refreshToken,
       xsrfToken,
@@ -66,7 +66,7 @@ const generateAuthTokens = async (req, res, next) => {
 const isAuthenticated = async (req, res, next) => {
   try {
     const authorizationToken = req.get('Authorization');
-    const jwToken = authorizationToken.split('Bearer ')[1];
+    const jwToken = authorizationToken?.split('Bearer ')[1];
     if (!jwToken) {
       const error = createError('Invalid Credentials', 401);
       throw error;
@@ -93,10 +93,14 @@ const isAuthenticated = async (req, res, next) => {
       const error = createError('Invalid Credentials', 401);
       throw error;
     }
+    console.log('ACCESS TOKEN - ', jwToken);
+    console.log(xsrfToken);
+    console.log(xsrfTokenFromCookie);
     let decodedToken;
     try {
       decodedToken = jwt.verify(jwToken, process.env.JWT_SECRET + xsrfToken);
     } catch (err) {
+      console.log(err);
       const error = createError('Invalid Credentials', 401);
       return next(error);
     }
@@ -130,6 +134,16 @@ const isAdmin = (req, res, next) => {
   }
 };
 
+const validateRequest = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      errors: errors.array({ onlyFirstError: true }),
+    });
+  }
+  return next();
+};
+
 const errorLogger = (error, req, res, next) => {
   logger.error('\x1b[31m', error);
   next(error);
@@ -151,6 +165,7 @@ module.exports = {
   generateAuthTokens,
   isAuthenticated,
   isAdmin,
+  validateRequest,
   errorLogger,
   errorResponder,
 };

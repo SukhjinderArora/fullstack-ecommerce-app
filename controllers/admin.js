@@ -1,5 +1,3 @@
-const { validationResult } = require('express-validator');
-
 const User = require('../models/user');
 const Product = require('../models/product');
 const Category = require('../models/category');
@@ -16,10 +14,6 @@ const getAllProductsByUser = async (req, res) => {
 };
 
 const createNewProduct = async (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
   try {
     const { user } = req;
     const { title, description, color, img, price, sizes, categories } =

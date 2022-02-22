@@ -1,5 +1,4 @@
 const { Op, Sequelize } = require('sequelize');
-const { validationResult } = require('express-validator');
 
 const Product = require('../models/product');
 const ProductVariant = require('../models/productVariant');
@@ -7,6 +6,7 @@ const ProductSize = require('../models/productSize');
 const Category = require('../models/category');
 const CartItem = require('../models/cartItem');
 const Size = require('../models/size');
+const Cart = require('../models/cart');
 
 const { createError } = require('../utils');
 
@@ -169,10 +169,6 @@ const getAllSizes = async (req, res, next) => {
 };
 
 const addProductToCart = async (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
   const { productSizeId, quantity } = req.body;
   const { user } = req;
   try {
@@ -224,7 +220,105 @@ const addProductToCart = async (req, res, next) => {
         ],
       },
     });
-    return res.status(201).json({ ...product.get(), cartQuantity });
+    return res.status(201).json({ product: product.get(), cartQuantity });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+const getUserCart = async (req, res) => {
+  const { user } = req;
+  const cart = await user.getCart();
+  const productSizes = await ProductSize.findAll({
+    include: [
+      {
+        model: Cart,
+        where: {
+          id: cart.id,
+        },
+        through: {
+          attributes: ['quantity'],
+        },
+        attributes: [],
+      },
+      {
+        model: ProductVariant,
+        required: true,
+        include: {
+          model: Product,
+        },
+        attributes: [],
+      },
+    ],
+    attributes: {
+      include: [
+        [Sequelize.col('product_variant.product.title'), 'title'],
+        [Sequelize.col('product_variant.product.description'), 'description'],
+        [Sequelize.col('product_variant.price'), 'price'],
+        [Sequelize.col('product_variant.img'), 'img'],
+        [Sequelize.col('carts.cart_item.quantity'), 'quantity'],
+      ],
+      exclude: ['createdAt', 'updatedAt', 'quantity'],
+    },
+  });
+  const totalPrice = productSizes.reduce(
+    (acc, cur) => acc + Number(cur.get().price) * Number(cur.get().quantity),
+    0
+  );
+  return res.status(200).json({
+    products: productSizes,
+    totalPrice,
+    deliveryPrice: totalPrice > 0 && totalPrice < 499 ? 40 : 0,
+  });
+};
+
+const deleteCartItem = async (req, res, next) => {
+  const { user } = req;
+  const { productSizeId } = req.body;
+  try {
+    if (!Number(productSizeId)) {
+      const error = createError('Invalid product ID', 422);
+      throw error;
+    }
+    const cart = await user.getCart();
+    const productSize = await ProductSize.findByPk(productSizeId);
+    await cart.removeProductsize(productSize);
+    return res.status(200).json({ message: 'success' });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+const modifyCartItem = async (req, res, next) => {
+  const { user } = req;
+  const { productSizeId, quantity } = req.body;
+  try {
+    if (!Number(productSizeId)) {
+      const error = createError('Invalid product ID', 422);
+      throw error;
+    }
+    if (!Number(quantity) && Number(quantity) !== 0) {
+      const error = createError('Invalid Quantity', 422);
+      throw error;
+    }
+    if (Number(quantity) <= 0) {
+      return deleteCartItem(req, res, next);
+    }
+    const cart = await user.getCart();
+    const cartItem = await CartItem.findOne({
+      where: {
+        productsizeId: productSizeId,
+        cartId: cart.id,
+      },
+    });
+    if (!cartItem) {
+      const error = createError('Product not found in cart', 404);
+      throw error;
+    }
+    await cartItem.update({
+      quantity: Number(quantity),
+    });
+    return res.sendStatus(200);
   } catch (error) {
     return next(error);
   }
@@ -236,4 +330,7 @@ module.exports = {
   getAllCategories,
   getAllSizes,
   addProductToCart,
+  getUserCart,
+  deleteCartItem,
+  modifyCartItem,
 };

@@ -24,6 +24,10 @@ const ProductVariant = sequelize.define('product_variant', {
   price: {
     type: DataTypes.DECIMAL(8, 2),
     allowNull: false,
+    get() {
+      const value = this.getDataValue('price');
+      return value === null ? null : parseFloat(value);
+    },
   },
   productId: {
     type: DataTypes.INTEGER,

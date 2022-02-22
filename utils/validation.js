@@ -72,6 +72,7 @@ const registrationSchema = {
     normalizeEmail: true,
     custom: {
       options: async (value) => {
+        console.log('LOOKING IN DB');
         const user = await User.findOne({
           where: {
             email: value,
@@ -126,7 +127,93 @@ const loginSchema = {
   },
 };
 
+const productSchema = {
+  title: {
+    notEmpty: {
+      errorMessage: 'Product title cannot be empty',
+    },
+    isAlpha: {
+      locale: 'en-US',
+      options: {
+        ignore: ' -',
+      },
+      errorMessage: 'Title can only contain letters, no numbers',
+    },
+    isLength: {
+      options: {
+        min: 20,
+      },
+      errorMessage: 'Title cannot be less than 20 characters',
+    },
+  },
+  description: {
+    notEmpty: {
+      errorMessage: 'Description cannot be empty',
+    },
+    isLength: {
+      options: {
+        min: 20,
+      },
+      errorMessage: 'Description cannot be less than 20 characters',
+    },
+  },
+  color: {
+    notEmpty: {
+      errorMessage: 'Color cannot be empty',
+    },
+  },
+  img: {
+    notEmpty: {
+      errorMessage: 'Image cannot be empty',
+    },
+    isURL: {
+      errorMessage: 'Image must be a valid URL',
+    },
+  },
+  price: {
+    isEmpty: {
+      errorMessage: 'Price cannot be empty',
+    },
+    isNumeric: {
+      errorMessage: 'Price must be numeric',
+    },
+  },
+  sizes: {
+    isArray: {
+      errorMessage:
+        'Sizes should be an array of objects containing size and quantity',
+    },
+  },
+  categories: {
+    isArray: {
+      errorMessage:
+        'Categories should be an array of objects containing size and quantity',
+    },
+  },
+};
+
+const cartItemSchema = {
+  productSizeId: {
+    notEmpty: {
+      errorMessage: 'ID cannot be null',
+    },
+    isNumeric: {
+      errorMessage: 'ID must be numeric',
+    },
+  },
+  quantity: {
+    notEmpty: {
+      errorMessage: 'Quantity cannot be null',
+    },
+    isNumeric: {
+      errorMessage: 'Quantity must be a number',
+    },
+  },
+};
+
 module.exports = {
   registrationSchema,
   loginSchema,
+  productSchema,
+  cartItemSchema,
 };

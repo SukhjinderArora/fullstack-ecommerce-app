@@ -1,27 +1,23 @@
 const router = require('express').Router();
-const { body } = require('express-validator');
+const { checkSchema } = require('express-validator');
 
 const shopController = require('../controllers/shop');
-const { isAuthenticated } = require('../utils/middlewares');
+const { isAuthenticated, validateRequest } = require('../utils/middlewares');
+const { cartItemSchema } = require('../utils/validation');
 
 router.get('/products', shopController.getAllProducts);
 router.get('/product/:id', shopController.getProductById);
 router.get('/categories', shopController.getAllCategories);
 router.get('/sizes', shopController.getAllSizes);
 router.post(
-  '/cart/add',
+  '/cart',
   isAuthenticated,
-  body('productSizeId')
-    .notEmpty()
-    .withMessage('ID cannot be null')
-    .isNumeric()
-    .withMessage('ID can only be numeric'),
-  body('quantity')
-    .notEmpty()
-    .withMessage('Quantity cannot be null')
-    .isNumeric()
-    .withMessage('Quantity must be a number'),
+  checkSchema(cartItemSchema),
+  validateRequest,
   shopController.addProductToCart
 );
+router.get('/cart', isAuthenticated, shopController.getUserCart);
+router.delete('/cart', isAuthenticated, shopController.deleteCartItem);
+router.patch('/cart', isAuthenticated, shopController.modifyCartItem);
 
 module.exports = router;
