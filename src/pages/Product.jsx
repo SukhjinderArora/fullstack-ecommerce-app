@@ -1,18 +1,21 @@
-import { useEffect } from 'react';
+import { useEffect, useState, lazy } from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { Minus, Plus } from 'react-feather';
 
 import PrimaryButton from '../components/shared/PrimaryButton';
 import Carousel from '../components/Carousel';
 import ProductView from '../components/Product';
 import Spinner from '../components/shared/SpinnerRect';
+import SpinnerCircle from '../components/shared/SpinnerCircle';
 
 import PageNotFound from './PageNotFound';
 
 import { fetchProduct, clearProduct } from '../store/productSlice';
 import { fetchProducts, clearProducts } from '../store/productsSlice';
+import { addProductToCart } from '../store/cartSlice';
 
 import { checkIfEmpty } from '../utils/index';
 
@@ -20,10 +23,16 @@ const Product = () => {
   const params = useParams();
   const id = Number(params.id);
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch();
   const { product, status } = useSelector((state) => state.product);
   const { products: relatedProducts } = useSelector((state) => state.products);
+  const { isAuthenticated } = useSelector((state) => state.auth);
   const { title, img, price, description, sizes, category, colors } = product;
+
+  const [productQuantity, setProductQuantity] = useState(1);
+  const [selectedSize, setSelectedSize] = useState(null);
+  const [navigateToCart, setNavigateToCart] = useState(false);
 
   useEffect(() => {
     dispatch(
@@ -34,6 +43,9 @@ const Product = () => {
     return () => {
       dispatch(clearProduct());
       dispatch(clearProducts());
+      setSelectedSize(null);
+      setProductQuantity(1);
+      setNavigateToCart(false);
     };
   }, [dispatch, id]);
 
@@ -47,6 +59,45 @@ const Product = () => {
       );
     }
   }, [category, dispatch, id]);
+
+  const productSizeChangeHandler = (size) => {
+    setSelectedSize(size);
+  };
+
+  const addToCartHandler = async () => {
+    if (!isAuthenticated) {
+      toast.error('Please login to continue');
+      navigate('/login', {
+        state: {
+          from: location,
+        },
+      });
+      return;
+    }
+    if (!selectedSize) {
+      toast.error('Please select the product size');
+      return;
+    }
+    if (productQuantity < 1) {
+      toast.error('Product quantity cannot be less than 1');
+      return;
+    }
+    try {
+      await dispatch(
+        addProductToCart({
+          productId: selectedSize.id,
+          quantity: productQuantity,
+        })
+      ).unwrap();
+      toast.success('Product successfully added to the cart');
+      setNavigateToCart(true);
+      setTimeout(() => {
+        navigate('/cart');
+      }, 1000);
+    } catch (error) {
+      toast.error('Something went wrong!');
+    }
+  };
 
   if (status === 'failed') return <PageNotFound />;
 
@@ -73,7 +124,13 @@ const Product = () => {
           <SizeLabel>Size:</SizeLabel>
           <SizesContainer>
             {sizes.map((size) => (
-              <SizeBox key={size.id}>{size.size.toUpperCase()}</SizeBox>
+              <SizeBox
+                key={size.id}
+                onClick={() => productSizeChangeHandler(size)}
+                className={selectedSize?.id === size.id && 'selected'}
+              >
+                {size.size.toUpperCase()}
+              </SizeBox>
             ))}
           </SizesContainer>
           <ColorLabel>Color:</ColorLabel>
@@ -92,17 +149,38 @@ const Product = () => {
           <QuantityContainer>
             <QuantityLabel>Qty:</QuantityLabel>
             <QuantityBox>
-              <DecreaseQtyButton>
+              <DecreaseQtyButton
+                onClick={() =>
+                  setProductQuantity((qty) => (qty > 1 ? qty - 1 : qty))
+                }
+              >
                 <Minus />
               </DecreaseQtyButton>
-              <Quantity value={1} />
-              <IncreaseQtyButton>
+              <Quantity
+                type="number"
+                value={productQuantity}
+                min="1"
+                required
+                onChange={(evt) => setProductQuantity(Number(evt.target.value))}
+              />
+              <IncreaseQtyButton
+                onClick={() => setProductQuantity((qty) => qty + 1)}
+              >
                 <Plus />
               </IncreaseQtyButton>
             </QuantityBox>
           </QuantityContainer>
           <ProductButtonsContainer>
-            <AddToCartButton>Add to Cart</AddToCartButton>
+            <AddToCartButton onClick={addToCartHandler}>
+              {navigateToCart ? (
+                <>
+                  <SpinnerCircle width="20px" height="20px" />
+                  <span>Going To Cart</span>
+                </>
+              ) : (
+                'Add to Cart'
+              )}
+            </AddToCartButton>
             <BuyNowButton>Buy Now</BuyNowButton>
           </ProductButtonsContainer>
         </ProductInfoContainer>
@@ -224,6 +302,11 @@ const SizeBox = styled.div`
   justify-content: center;
   margin-right: 10px;
   cursor: pointer;
+  &.selected {
+    border: 1px solid teal;
+    background: teal;
+    color: white;
+  }
 `;
 
 const ColorsContainer = styled.div`
@@ -266,6 +349,7 @@ const DecreaseQtyButton = styled.button`
   height: 30px;
   border-radius: 50%;
   border: 1px solid grey;
+  cursor: pointer;
 `;
 
 const Quantity = styled.input`
@@ -285,24 +369,35 @@ const IncreaseQtyButton = styled.button`
   height: 30px;
   border-radius: 50%;
   border: 1px solid grey;
+  cursor: pointer;
 `;
 
-const ProductButtonsContainer = styled.div``;
+const ProductButtonsContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
 
 const AddToCartButton = styled(PrimaryButton)`
-  font-size: 18px;
+  font-size: 16px;
   padding: 10px 15px;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   margin-right: 20px;
   border: 1px solid transparent;
+  height: 50px;
+  width: 200px;
 `;
 
 const BuyNowButton = styled(PrimaryButton)`
-  font-size: 18px;
+  font-size: 16px;
   padding: 10px 15px;
   color: teal;
   background: white;
   border: 1px solid teal;
+  height: 50px;
+  width: 200px;
 `;
 
 const DescriptionContainer = styled.div`

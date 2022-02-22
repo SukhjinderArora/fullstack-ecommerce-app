@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
 
 import axios from '../utils/axios';
 import { STATUS, cookies } from '../utils';
+import { getCart } from './cartSlice';
 
 const initialState = {
   user: null,
@@ -10,6 +11,7 @@ const initialState = {
   expiresAt: null,
   isAuthenticated: false,
   status: STATUS.IDLE,
+  verifyingToken: false,
 };
 
 const setTokens = (accessToken, xsrfToken) => {
@@ -30,7 +32,7 @@ const clearTokens = () => {
 
 export const login = createAsyncThunk(
   'auth/login',
-  async ({ email, password }, { rejectWithValue }) => {
+  async ({ email, password }, { rejectWithValue, dispatch }) => {
     try {
       const response = await axios.post('/api/auth/login', {
         email,
@@ -39,6 +41,7 @@ export const login = createAsyncThunk(
       const accessToken = response.data.token;
       const xsrfToken = cookies.get('XSRF-TOKEN');
       setTokens(accessToken, xsrfToken);
+      dispatch(getCart());
       return response.data;
     } catch (error) {
       clearTokens();
@@ -92,9 +95,11 @@ export const verifyToken = createAsyncThunk(
     }
   },
   {
-    condition: () => {
+    condition: (_, { getState }) => {
       const xsrfToken = cookies.get('XSRF-TOKEN');
       axios.defaults.headers.common['x-xsrf-token'] = xsrfToken;
+      const { status, verifyingToken } = getState().auth;
+      if (status === STATUS.LOADING || verifyingToken) return false;
       return true;
     },
   }
@@ -115,14 +120,31 @@ const authSlice = createSlice({
       return initialState;
     });
     builder
+      .addCase(verifyToken.pending, (state) => {
+        state.status = STATUS.LOADING;
+        state.verifyingToken = true;
+      })
+      .addCase(verifyToken.fulfilled, (state, action) => {
+        state.status = STATUS.SUCCEEDED;
+        state.user = action.payload?.user || null;
+        state.token = action.payload?.token || null;
+        state.expiresAt = action.payload?.expiresAt || null;
+        state.error = null;
+        state.isAuthenticated = !!action.payload?.user;
+        state.verifyingToken = false;
+      })
+      .addCase(verifyToken.rejected, (state, action) => {
+        state.status = STATUS.FAILED;
+        state.user = null;
+        state.error = action.payload;
+        state.verifyingToken = false;
+      });
+    builder
+      .addMatcher(isAnyOf(login.pending, register.pending), (state) => {
+        state.status = STATUS.LOADING;
+      })
       .addMatcher(
-        isAnyOf(login.pending, register.pending, verifyToken.pending),
-        (state) => {
-          state.status = STATUS.LOADING;
-        }
-      )
-      .addMatcher(
-        isAnyOf(login.fulfilled, register.fulfilled, verifyToken.fulfilled),
+        isAnyOf(login.fulfilled, register.fulfilled),
         (state, action) => {
           state.status = STATUS.SUCCEEDED;
           state.user = action.payload?.user || null;
@@ -133,7 +155,7 @@ const authSlice = createSlice({
         }
       )
       .addMatcher(
-        isAnyOf(login.rejected, register.rejected, verifyToken.rejected),
+        isAnyOf(login.rejected, register.rejected),
         (state, action) => {
           state.status = STATUS.FAILED;
           state.user = null;

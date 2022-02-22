@@ -98,13 +98,13 @@ const Home = () => {
           categoryUrl="/products/hoodies"
           imagePosition="right"
         />
-        {/* <FeaturedCategory
+        <FeaturedCategory
           categoryName="WOMEN'S NIGHT SUIT"
           description="A CURATION OF VIVID ENSEMBLES LADEN WITH SPARKLES AND BRIGHT COLORS"
-          imgUrl="https://funkytrend.in/themes/oxygen/assets/images/side-s-4.jpg"
+          imgUrl="https://firebasestorage.googleapis.com/v0/b/ecommerce-app-d78cc.appspot.com/o/side-s-4.jpg?alt=media&token=8cd44a71-e6ab-4766-8881-919ccf099637"
           categoryUrl="/products/womens-night-suit"
           imagePosition="left"
-        /> */}
+        />
       </Section>
       <Section>
         <SectionTitle>New Arrivals</SectionTitle>

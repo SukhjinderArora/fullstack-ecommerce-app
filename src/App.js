@@ -1,21 +1,23 @@
-import { useEffect } from 'react';
+import { useEffect, Suspense, lazy } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import Layout from './components/Layout';
-
-import Home from './pages/Home';
-import Product from './pages/Product';
-import Cart from './pages/Cart';
-import Products from './pages/Products';
-import Register from './pages/Register';
-import Login from './pages/Login';
-import PageNotFound from './pages/PageNotFound';
+import Spinner from './components/shared/SpinnerRect';
 
 import useScrollToTop from './hooks/useScrollToTop';
 
 import { verifyToken } from './store/authSlice';
+import { getCart } from './store/cartSlice';
+
+const Home = lazy(() => import('./pages/Home'));
+const Product = lazy(() => import('./pages/Product'));
+const Products = lazy(() => import('./pages/Products'));
+const Register = lazy(() => import('./pages/Register'));
+const Login = lazy(() => import('./pages/Login'));
+const Cart = lazy(() => import('./pages/Cart'));
+const PageNotFound = lazy(() => import('./pages/PageNotFound'));
 
 const App = () => {
   useScrollToTop();
@@ -23,7 +25,16 @@ const App = () => {
   const { isAuthenticated, expiresAt } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    dispatch(verifyToken());
+    (async () => {
+      try {
+        const response = await dispatch(verifyToken()).unwrap();
+        if (response) {
+          dispatch(getCart());
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    })();
   }, [dispatch]);
 
   useEffect(() => {
@@ -41,41 +52,43 @@ const App = () => {
   }, [isAuthenticated, expiresAt, dispatch]);
 
   return (
-    <Routes>
-      <Route path="/" element={<Layout />}>
-        <Route index element={<Home />} />
-        <Route path="product/:id" element={<Product />} />
-        <Route
-          path="cart"
-          element={
-            <RequireAuth redirectTo="/login">
-              <Cart />
-            </RequireAuth>
-          }
-        />
-        <Route path="products">
-          <Route index element={<Products />} />
-          <Route path=":categorySlug" element={<Products />} />
+    <Suspense fallback={<Spinner />}>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path="product/:id" element={<Product />} />
+          <Route
+            path="cart"
+            element={
+              <RequireAuth redirectTo="/login">
+                <Cart />
+              </RequireAuth>
+            }
+          />
+          <Route path="products">
+            <Route index element={<Products />} />
+            <Route path=":categorySlug" element={<Products />} />
+          </Route>
+          <Route
+            path="register"
+            element={
+              <RedirectIfLoggedIn redirectTo="/">
+                <Register />
+              </RedirectIfLoggedIn>
+            }
+          />
+          <Route
+            path="login"
+            element={
+              <RedirectIfLoggedIn redirectTo="/">
+                <Login />
+              </RedirectIfLoggedIn>
+            }
+          />
+          <Route path="*" element={<PageNotFound />} />
         </Route>
-        <Route
-          path="register"
-          element={
-            <RedirectIfLoggedIn redirectTo="/">
-              <Register />
-            </RedirectIfLoggedIn>
-          }
-        />
-        <Route
-          path="login"
-          element={
-            <RedirectIfLoggedIn redirectTo="/">
-              <Login />
-            </RedirectIfLoggedIn>
-          }
-        />
-        <Route path="*" element={<PageNotFound />} />
-      </Route>
-    </Routes>
+      </Routes>
+    </Suspense>
   );
 };
 
@@ -90,10 +103,23 @@ const RequireAuth = ({ children, redirectTo }) => {
 };
 
 const RedirectIfLoggedIn = ({ children, redirectTo }) => {
-  const { isAuthenticated, status } = useSelector((state) => state.auth);
+  const { isAuthenticated, verifyingToken } = useSelector(
+    (state) => state.auth
+  );
+  const location = useLocation();
 
-  // if (status === 'loading') return <Spinner />;
-  return isAuthenticated ? <Navigate to={redirectTo} /> : children;
+  if (verifyingToken) return <Spinner />;
+  return isAuthenticated ? (
+    <Navigate
+      to={
+        location.state?.from?.pathname
+          ? location.state.from.pathname
+          : redirectTo
+      }
+    />
+  ) : (
+    children
+  );
 };
 
 RequireAuth.propTypes = {

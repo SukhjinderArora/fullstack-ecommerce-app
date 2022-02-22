@@ -1,4 +1,5 @@
 import { Outlet } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
 
 import styled from 'styled-components';
 import Footer from './Footer';
@@ -15,6 +16,17 @@ const Layout = () => {
       <Navbar />
       <Container>
         <Outlet />
+        <Toaster
+          position="bottom-center"
+          toastOptions={{
+            success: {
+              iconTheme: {
+                primary: 'teal',
+                secondary: 'white',
+              },
+            },
+          }}
+        />
       </Container>
       <Footer />
     </div>

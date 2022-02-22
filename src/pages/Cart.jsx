@@ -1,19 +1,74 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { ChevronLeft, Minus, Plus, Trash2 } from 'react-feather';
+import { ChevronLeft, Minus, Plus } from 'react-feather';
+import { useDispatch, useSelector } from 'react-redux';
+import toast from 'react-hot-toast';
 
 import PrimaryButton from '../components/shared/PrimaryButton';
+import Spinner from '../components/shared/SpinnerRect';
+import CartItem from '../components/CartItem';
+
 import usePageTitle from '../hooks/usePageTitle';
 
+import { STATUS, debounce } from '../utils/index';
+
+import {
+  getCart,
+  clearCart,
+  removeCartItem,
+  modifyCartItem,
+} from '../store/cartSlice';
+
 const Cart = () => {
-  usePageTitle('Cart | Fashionista');
-  const [isCartEmpty, setIsEmpty] = useState(false);
+  usePageTitle('Shopping Cart | Fashionista');
+  const { cart, status } = useSelector((state) => state.cart);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getCart());
+    return () => clearCart();
+  }, [dispatch]);
+
+  const removeCartItemHandler = async (id) => {
+    try {
+      await dispatch(
+        removeCartItem({
+          id,
+        })
+      ).unwrap();
+      setTimeout(() => {
+        toast.success('Product successfully removed from the cart');
+      }, 500);
+      dispatch(getCart());
+    } catch (error) {
+      toast.error('Something went wrong!');
+    }
+  };
+
+  const modifyCartItemHandler = debounce(async (id, quantity) => {
+    try {
+      await dispatch(
+        modifyCartItem({
+          id,
+          quantity,
+        })
+      ).unwrap();
+      setTimeout(() => {
+        dispatch(getCart());
+      }, 500);
+    } catch (error) {
+      toast.error('Something went wrong!');
+    }
+  });
+
+  if (status === STATUS.LOADING) return <Spinner />;
+
   return (
     <Container>
-      <Title>My Cart</Title>
-      {isCartEmpty && (
+      {cart.items.length <= 0 ? (
         <Wrapper>
+          <Title>My Cart</Title>
           <Text>You have no items in your shopping cart.</Text>
           <Text>
             Click <StyledLink to="/">here</StyledLink> to continue shopping.
@@ -27,91 +82,46 @@ const Cart = () => {
             </ContinueShoppingButton>
           </ButtonWrapperLink>
         </Wrapper>
-      )}
-      {!isCartEmpty && (
-        <Wrapper>
-          <CartItem>
-            <ImageContainer>
-              <Image src="https://images-do.nyc3.cdn.digitaloceanspaces.com/rtUgAvkUMm/product_images/1628749615.Screenshot_2021-08-12_at_11-56-00_Multi_Moon_Printed_Shirt_For_Men_Warivos.png" />
-            </ImageContainer>
-            <CartItemInfo>
-              <ItemTitle>Multi Moon Printed Shirt For Men</ItemTitle>
-              <ItemSize>
-                <strong>Size: </strong>M
-              </ItemSize>
-              <ItemPrice>INR 499.00</ItemPrice>
-              <QuantityContainer>
-                <QuantityLabel>Qty:</QuantityLabel>
-                <QuantityBox>
-                  <QtyButton>
-                    <Minus />
-                  </QtyButton>
-                  <Quantity value="2" />
-                  <QtyButton>
-                    <Plus />
-                  </QtyButton>
-                </QuantityBox>
-              </QuantityContainer>
-            </CartItemInfo>
-            <DeleteCartItemBtn>
-              <Trash2 stroke="grey" />
-            </DeleteCartItemBtn>
-          </CartItem>
-          <CartItem>
-            <ImageContainer>
-              <Image src="https://images-do.nyc3.cdn.digitaloceanspaces.com/rtUgAvkUMm/product_images/1631088484.86.jpg" />
-            </ImageContainer>
-            <CartItemInfo>
-              <ItemTitle>BROWN TEXTURED RIB TURTLE NECK T-SHIRT</ItemTitle>
-              <ItemSize>
-                <strong>Size: </strong>XL
-              </ItemSize>
-              <ItemPrice>INR 499.00</ItemPrice>
-              <QuantityContainer>
-                <QuantityLabel>Qty:</QuantityLabel>
-                <QuantityBox>
-                  <QtyButton>
-                    <Minus />
-                  </QtyButton>
-                  <Quantity value="2" />
-                  <QtyButton>
-                    <Plus />
-                  </QtyButton>
-                </QuantityBox>
-              </QuantityContainer>
-            </CartItemInfo>
-            <DeleteCartItemBtn>
-              <Trash2 stroke="grey" />
-            </DeleteCartItemBtn>
-          </CartItem>
-          <CartItem>
-            <ImageContainer>
-              <Image src="https://images-do.nyc3.cdn.digitaloceanspaces.com/rtUgAvkUMm/product_images/1628749615.Screenshot_2021-08-12_at_11-56-00_Multi_Moon_Printed_Shirt_For_Men_Warivos.png" />
-            </ImageContainer>
-            <CartItemInfo>
-              <ItemTitle>Multi Moon Printed Shirt For Men</ItemTitle>
-              <ItemSize>
-                <strong>Size: </strong>M
-              </ItemSize>
-              <ItemPrice>INR 499.00</ItemPrice>
-              <QuantityContainer>
-                <QuantityLabel>Qty:</QuantityLabel>
-                <QuantityBox>
-                  <QtyButton>
-                    <Minus />
-                  </QtyButton>
-                  <Quantity value="2" />
-                  <QtyButton>
-                    <Plus />
-                  </QtyButton>
-                </QuantityBox>
-              </QuantityContainer>
-            </CartItemInfo>
-            <DeleteCartItemBtn>
-              <Trash2 stroke="grey" />
-            </DeleteCartItemBtn>
-          </CartItem>
-        </Wrapper>
+      ) : (
+        <>
+          <CartContainer>
+            <CartHeader>My Cart ({cart.items.length})</CartHeader>
+            <CartItemsContainer>
+              {cart.items.map((item) => (
+                <CartItem
+                  key={item.id}
+                  item={item}
+                  removeCartItem={removeCartItemHandler}
+                  modifyCartItem={modifyCartItemHandler}
+                />
+              ))}
+            </CartItemsContainer>
+          </CartContainer>
+          <CheckoutContainer>
+            <CheckoutHeader>Price Details</CheckoutHeader>
+            <CheckoutSummary>
+              <SummaryItem>
+                <ItemName>Price ({cart.items.length} Items)</ItemName>
+                <ItemValue>₹ {cart.totalPrice}</ItemValue>
+              </SummaryItem>
+              <SummaryItem>
+                <ItemName>Delivery Charges</ItemName>
+                <ItemValue>
+                  {cart.deliveryPrice ? `₹ ${cart.deliveryPrice}` : 'Free'}
+                </ItemValue>
+              </SummaryItem>
+              <TotalAmount>
+                <SummaryItem>
+                  <ItemName>Total Amount</ItemName>
+                  <ItemValue>
+                    ₹ {cart.totalPrice + cart.deliveryPrice}
+                  </ItemValue>
+                </SummaryItem>
+              </TotalAmount>
+              <CheckoutButton>Place Order</CheckoutButton>
+            </CheckoutSummary>
+          </CheckoutContainer>
+        </>
       )}
     </Container>
   );
@@ -119,10 +129,15 @@ const Cart = () => {
 
 const Container = styled.div`
   padding: 50px 20px;
+  display: flex;
+  gap: 20px;
+  background: #f1f3f6;
+  align-items: flex-start;
+  min-height: 100vh;
 `;
 
 const Wrapper = styled.div`
-  margin-top: 40px;
+  flex: 1;
 `;
 
 const Title = styled.h1`
@@ -143,7 +158,7 @@ const ButtonWrapperLink = styled(Link)`
 `;
 
 const ContinueShoppingButton = styled(PrimaryButton)`
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   margin-top: 20px;
@@ -153,101 +168,79 @@ const IconWrapper = styled.span`
   display: flex;
 `;
 
-const CartItem = styled.div`
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  border: 1px solid #c7c7c7;
-  padding: 20px 15px;
-  margin-bottom: 20px;
+const CartContainer = styled.div`
+  flex: 3;
+  background: #fff;
+  box-shadow: rgb(0 0 0 / 20%) 0px 1px 2px 0px;
 `;
 
-const ImageContainer = styled.div`
-  width: 200px;
-  height: 200px;
-`;
-
-const Image = styled.img`
-  height: 100%;
-  width: 100%;
-  object-fit: cover;
-`;
-
-const CartItemInfo = styled.div`
-  flex: 1;
-  padding: 0 20px;
-`;
-
-const ItemTitle = styled.h1`
-  font-size: 22px;
-  text-transform: uppercase;
-  color: #1b2839;
-  margin-bottom: 10px;
+const CartHeader = styled.h1`
+  font-size: 18px;
   font-weight: 500;
+  padding: 15px 24px;
 `;
 
-const ItemSize = styled.p`
-  & strong {
-    margin-right: 5px;
-  }
+const CartItemsContainer = styled.div``;
+
+const CheckoutContainer = styled.div`
+  flex: 1;
+  background: #fff;
+  box-shadow: rgb(0 0 0 / 20%) 0px 1px 2px 0px;
+  position: sticky;
+  top: 80px;
 `;
 
-const ItemPrice = styled.p`
-  font-weight: 700;
-  color: teal;
-  margin-top: 10px;
-  font-size: 18px;
+const CheckoutHeader = styled.h1`
+  padding: 13px 24px;
+  font-size: 16px;
+  text-transform: uppercase;
+  color: #878787;
+  border-bottom: 1px solid #f0f0f0;
 `;
 
-const QuantityContainer = styled.div`
+const CheckoutSummary = styled.div`
+  padding: 0 24px;
+`;
+
+const SummaryItem = styled.div`
   display: flex;
-  align-items: center;
+  justify-content: space-between;
   margin: 20px 0;
+  align-items: flex-start;
 `;
 
-const QuantityLabel = styled.span`
-  font-size: 18px;
+const ItemName = styled.p``;
+
+const ItemValue = styled.p``;
+
+const TotalAmount = styled.div`
+  font-size: 20px;
+  font-weight: 700;
+  margin: 30px 0;
+  color: #212121;
+  border-top: 1px dashed #e0e0e0;
+  border-bottom: 1px dashed #e0e0e0;
 `;
 
-const QuantityBox = styled.div`
-  display: flex;
-  margin-left: 10px;
-`;
-
-const QtyButton = styled.button`
-  background: white;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  border: 1px solid grey;
-  & svg {
-    width: 16px;
-    height: 16px;
-  }
-`;
-
-const Quantity = styled.input`
-  width: 50px;
-  height: 30px;
-  font-size: 18px;
-  padding: 5px;
-  text-align: center;
-  vertical-align: middle;
+const CheckoutButton = styled.button`
   display: inline-block;
-  margin: 0 8px;
-`;
-
-const IncreaseQtyButton = styled.button`
-  background: white;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  border: 1px solid grey;
-`;
-
-const DeleteCartItemBtn = styled.button`
-  background: transparent;
-  border: navajowhite;
+  background-color: teal;
+  color: white;
+  border: 1px solid transparent;
+  text-transform: uppercase;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 20%);
+  padding: 16px 30px;
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 2px;
+  margin-bottom: 20px;
+  transition: all 0.3s;
+  cursor: pointer;
+  &:hover {
+    background-color: white;
+    color: teal;
+    border: 1px solid teal;
+  }
 `;
 
 export default Cart;

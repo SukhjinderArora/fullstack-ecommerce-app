@@ -1,15 +1,20 @@
 import styled from 'styled-components';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
+import toast from 'react-hot-toast';
 import { Heart, User, ShoppingCart, Search as SearchIcon } from 'react-feather';
 
 import { logout } from '../store/authSlice';
 import { STATUS } from '../utils';
 
 const Navbar = () => {
-  const { isAuthenticated, status } = useSelector((state) => state.auth);
+  const { isAuthenticated, verifyingToken } = useSelector(
+    (state) => state.auth
+  );
+  const { cart } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   return (
     <Header>
       <Navigation>
@@ -23,56 +28,68 @@ const Navbar = () => {
           </SearchButton>
         </SearchContainer>
         <NavigationList>
-          {!isAuthenticated && (
-            <NavigationItem>
-              <NavigationLink to="/register">Register</NavigationLink>
-            </NavigationItem>
+          {!verifyingToken && (
+            <>
+              {!isAuthenticated && (
+                <NavigationItem>
+                  <NavigationLink to="/register" state={{ from: location }}>
+                    Register
+                  </NavigationLink>
+                </NavigationItem>
+              )}
+              {!isAuthenticated && (
+                <NavigationItem>
+                  <NavigationLink to="/login" state={{ from: location }}>
+                    Login
+                  </NavigationLink>
+                </NavigationItem>
+              )}
+              {isAuthenticated && (
+                <NavigationItem>
+                  <NavigationLink
+                    as="button"
+                    onClick={async () => {
+                      try {
+                        await dispatch(logout()).unwrap();
+                        navigate('/login');
+                      } catch (error) {
+                        toast.error('Something went wrong');
+                      }
+                    }}
+                  >
+                    Logout
+                  </NavigationLink>
+                </NavigationItem>
+              )}
+              <NavigationItem>
+                <NavigationLink
+                  to={isAuthenticated ? '/' : '/login'}
+                  title="Wishlist"
+                >
+                  <Heart color="#1b2839" size="20" />
+                  <LinkDescription>Wishlist</LinkDescription>
+                </NavigationLink>
+              </NavigationItem>
+              <NavigationItem>
+                <NavigationLink
+                  to={isAuthenticated ? '/' : '/login'}
+                  title="Profile"
+                >
+                  <User color="#1b2839" size="20" />
+                  <LinkDescription>Profile</LinkDescription>
+                </NavigationLink>
+              </NavigationItem>
+              <NavigationItem>
+                <NavigationLink to="/cart" title="Cart">
+                  <IconContainer>
+                    <ShoppingCart color="#1b2839" size="20" />
+                    <CartBadge>{cart.items.length}</CartBadge>
+                  </IconContainer>
+                  <LinkDescription>Cart</LinkDescription>
+                </NavigationLink>
+              </NavigationItem>
+            </>
           )}
-          {!isAuthenticated && (
-            <NavigationItem>
-              <NavigationLink to="/login">Login</NavigationLink>
-            </NavigationItem>
-          )}
-          {isAuthenticated && (
-            <NavigationItem>
-              <NavigationLink
-                as="button"
-                onClick={() => {
-                  dispatch(logout());
-                  navigate('/');
-                }}
-              >
-                Logout
-              </NavigationLink>
-            </NavigationItem>
-          )}
-          <NavigationItem>
-            <NavigationLink
-              to={isAuthenticated ? '/' : '/login'}
-              title="Wishlist"
-            >
-              <Heart color="#1b2839" size="20" />
-              <LinkDescription>Wishlist</LinkDescription>
-            </NavigationLink>
-          </NavigationItem>
-          <NavigationItem>
-            <NavigationLink
-              to={isAuthenticated ? '/' : '/login'}
-              title="Profile"
-            >
-              <User color="#1b2839" size="20" />
-              <LinkDescription>Profile</LinkDescription>
-            </NavigationLink>
-          </NavigationItem>
-          <NavigationItem>
-            <NavigationLink to="/cart" title="Cart">
-              <IconContainer>
-                <ShoppingCart color="#1b2839" size="20" />
-                <CartBadge>12</CartBadge>
-              </IconContainer>
-              <LinkDescription>Cart</LinkDescription>
-            </NavigationLink>
-          </NavigationItem>
         </NavigationList>
       </Navigation>
     </Header>

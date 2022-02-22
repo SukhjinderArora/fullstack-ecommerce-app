@@ -30,3 +30,27 @@ export const cookies = {
       ?.split('=')[1];
   },
 };
+
+export const debounce = (func, delay = 300) => {
+  let timer;
+  return (...arg) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      func.apply(this, arg);
+    }, delay);
+  };
+};
+
+// eslint-disable-next-line camelcase
+export const debounce_leading = (func, timeout = 300) => {
+  let timer;
+  return (...args) => {
+    if (!timer) {
+      func.apply(this, args);
+    }
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      timer = undefined;
+    }, timeout);
+  };
+};
