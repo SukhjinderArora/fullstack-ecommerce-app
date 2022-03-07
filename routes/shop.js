@@ -19,5 +19,9 @@ router.post(
 router.get('/cart', isAuthenticated, shopController.getUserCart);
 router.delete('/cart', isAuthenticated, shopController.deleteCartItem);
 router.patch('/cart', isAuthenticated, shopController.modifyCartItem);
+router.get('/address', isAuthenticated, shopController.getUserAddresses);
+router.post('/order', isAuthenticated, shopController.createNewOrder);
+router.get('/order/:id', isAuthenticated, shopController.getOrderById);
+router.get('/orders', isAuthenticated, shopController.getAllOrdersByAUser);
 
 module.exports = router;

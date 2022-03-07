@@ -13,6 +13,10 @@ const ProductVariant = require('./models/productVariant');
 const ProductSize = require('./models/productSize');
 const Category = require('./models/category');
 const ProductCategory = require('./models/productCategory');
+const Address = require('./models/address');
+const ShippingAddress = require('./models/shippingAddress');
+const Order = require('./models/order');
+const OrderItem = require('./models/orderItem');
 const Token = require('./models/token');
 
 (async function setupDatabase() {
@@ -23,6 +27,20 @@ const Token = require('./models/token');
       onDelete: 'CASCADE',
     });
     Cart.belongsTo(User);
+    User.hasMany(Address);
+    Address.belongsTo(User);
+    User.hasMany(Order, {
+      onDelete: 'CASCADE',
+    });
+    Order.belongsTo(User);
+    ShippingAddress.hasMany(Order, {
+      onDelete: 'RESTRICT',
+    });
+    Order.belongsTo(ShippingAddress);
+    Order.hasMany(OrderItem, {
+      as: 'items',
+    });
+    OrderItem.belongsTo(Order);
     User.hasMany(Product, {
       onDelete: 'CASCADE',
     });

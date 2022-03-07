@@ -7,8 +7,13 @@ const Category = require('../models/category');
 const CartItem = require('../models/cartItem');
 const Size = require('../models/size');
 const Cart = require('../models/cart');
+const Address = require('../models/address');
+const ShippingAddress = require('../models/shippingAddress');
 
 const { createError } = require('../utils');
+const sequelize = require('../utils/database');
+const Order = require('../models/order');
+const OrderItem = require('../models/orderItem');
 
 const getAllProducts = async (req, res, next) => {
   const {
@@ -226,15 +231,13 @@ const addProductToCart = async (req, res, next) => {
   }
 };
 
-const getUserCart = async (req, res) => {
-  const { user } = req;
-  const cart = await user.getCart();
+const getCartItems = async (cartId) => {
   const productSizes = await ProductSize.findAll({
     include: [
       {
         model: Cart,
         where: {
-          id: cart.id,
+          id: cartId,
         },
         through: {
           attributes: ['quantity'],
@@ -261,12 +264,19 @@ const getUserCart = async (req, res) => {
       exclude: ['createdAt', 'updatedAt', 'quantity'],
     },
   });
-  const totalPrice = productSizes.reduce(
+  return productSizes;
+};
+
+const getUserCart = async (req, res) => {
+  const { user } = req;
+  const cart = await user.getCart();
+  const cartItems = await getCartItems(cart.id);
+  const totalPrice = cartItems.reduce(
     (acc, cur) => acc + Number(cur.get().price) * Number(cur.get().quantity),
     0
   );
   return res.status(200).json({
-    products: productSizes,
+    products: cartItems,
     totalPrice,
     deliveryPrice: totalPrice > 0 && totalPrice < 499 ? 40 : 0,
   });
@@ -324,6 +334,159 @@ const modifyCartItem = async (req, res, next) => {
   }
 };
 
+const getUserAddresses = async (req, res, next) => {
+  const { user } = req;
+  try {
+    const addresses = await user.getAddresses();
+    return res.status(200).json({ addresses });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+const createNewOrder = async (req, res, next) => {
+  const { user } = req;
+  const { addressId } = req.body;
+  const t = await sequelize.transaction();
+  try {
+    if (!Number(addressId)) {
+      const error = createError('Invalid address ID', 422);
+      throw error;
+    }
+    const userAddress = await Address.findOne({
+      where: {
+        id: addressId,
+        userId: user.id,
+      },
+    });
+    if (!userAddress) {
+      const error = createError('Invalid address', 422);
+      throw error;
+    }
+    const cart = await user.getCart();
+    const cartItems = await getCartItems(cart.id);
+    if (cartItems.length === 0) {
+      const error = createError(`User's cart is empty`, 404);
+      throw error;
+    }
+    const { name, phoneNumber, pincode, address, locality, city, state } =
+      userAddress;
+    const shippingAddress = await ShippingAddress.create(
+      {
+        name,
+        phoneNumber,
+        pincode,
+        address,
+        locality,
+        city,
+        state,
+      },
+      { transaction: t }
+    );
+    const order = await user.createOrder(
+      {
+        shippingaddressId: shippingAddress.id,
+      },
+      { transaction: t }
+    );
+    const orderItems = [];
+    await Promise.all(
+      cartItems.map(async (item) => {
+        const { title, size, price, img, quantity, productVariantId } =
+          item.get();
+        try {
+          const orderItem = await order.createOrder_item(
+            {
+              productTitle: title,
+              productSize: size,
+              productPrice: price,
+              productImg: img,
+              quantity,
+              productVariantId,
+            },
+            { transaction: t }
+          );
+          return orderItems.push(orderItem);
+        } catch (error) {
+          return next(error);
+        }
+      })
+    );
+    await CartItem.destroy(
+      {
+        where: {
+          cartId: cart.id,
+        },
+      },
+      { transaction: t }
+    );
+    await t.commit();
+    return res.status(200).json({
+      message: 'Order successfully placed',
+      orderId: order.id,
+    });
+  } catch (error) {
+    await t.rollback();
+    return next(error);
+  }
+};
+
+const getAllOrdersByAUser = async (req, res, next) => {
+  const { user } = req;
+  try {
+    const orders = await Order.findAll({
+      where: {
+        userId: user.id,
+      },
+      include: [
+        {
+          model: ShippingAddress,
+          required: true,
+        },
+        {
+          model: OrderItem,
+          required: true,
+          as: 'items',
+        },
+      ],
+    });
+    return res.status(200).json(orders);
+  } catch (error) {
+    return next(error);
+  }
+};
+
+const getOrderById = async (req, res, next) => {
+  const { user } = req;
+  const { id } = req.params;
+  try {
+    const order = await Order.findOne({
+      where: {
+        id,
+        userId: user.id,
+      },
+      include: [
+        {
+          model: ShippingAddress,
+          required: true,
+        },
+        {
+          model: OrderItem,
+          required: true,
+          as: 'items',
+        },
+      ],
+    });
+    if (!order) {
+      const error = createError('Order does not exist', 404);
+      throw error;
+    }
+    return res.status(200).json(order);
+  } catch (error) {
+    return next(error);
+  }
+};
+
 module.exports = {
   getAllProducts,
   getProductById,
@@ -333,4 +496,8 @@ module.exports = {
   getUserCart,
   deleteCartItem,
   modifyCartItem,
+  getUserAddresses,
+  createNewOrder,
+  getAllOrdersByAUser,
+  getOrderById,
 };

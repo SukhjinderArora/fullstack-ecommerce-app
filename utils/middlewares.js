@@ -93,14 +93,10 @@ const isAuthenticated = async (req, res, next) => {
       const error = createError('Invalid Credentials', 401);
       throw error;
     }
-    console.log('ACCESS TOKEN - ', jwToken);
-    console.log(xsrfToken);
-    console.log(xsrfTokenFromCookie);
     let decodedToken;
     try {
       decodedToken = jwt.verify(jwToken, process.env.JWT_SECRET + xsrfToken);
     } catch (err) {
-      console.log(err);
       const error = createError('Invalid Credentials', 401);
       return next(error);
     }
