@@ -390,12 +390,12 @@ const createNewOrder = async (req, res, next) => {
       { transaction: t }
     );
     const orderItems = [];
-    await Promise.all(
-      cartItems.map(async (item) => {
-        const { title, size, price, img, quantity, productVariantId } =
-          item.get();
-        try {
-          const orderItem = await order.createOrder_item(
+    try {
+      await Promise.all(
+        cartItems.map(async (item) => {
+          const { title, size, price, img, quantity, productVariantId } =
+            item.get();
+          const orderItem = await order.createItem(
             {
               productTitle: title,
               productSize: size,
@@ -406,12 +406,13 @@ const createNewOrder = async (req, res, next) => {
             },
             { transaction: t }
           );
-          return orderItems.push(orderItem);
-        } catch (error) {
-          return next(error);
-        }
-      })
-    );
+          orderItems.push(orderItem);
+        })
+      );
+    } catch (error) {
+      await t.rollback();
+      return next(error);
+    }
     await CartItem.destroy(
       {
         where: {

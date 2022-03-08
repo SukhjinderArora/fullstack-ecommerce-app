@@ -1,13 +1,11 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const ms = require('ms');
 
 const User = require('../models/user');
 const Token = require('../models/token');
 const {
   generateAccessAndXSRFToken,
   createError,
-  COOKIE_OPTIONS,
   clearTokens,
 } = require('../utils');
 
@@ -89,29 +87,9 @@ const verifyAndGenerateToken = async (req, res, next) => {
         const error = createError('Invalid credentials', 401);
         throw error;
       }
-      const {
-        token: accessToken,
-        xsrfToken: newXsrfToken,
-        expiresAt,
-      } = generateAccessAndXSRFToken(user.id);
-      await Token.update(
-        { xsrfToken: newXsrfToken },
-        {
-          where: {
-            refreshToken,
-          },
-        }
+      const { token: accessToken, expiresAt } = generateAccessAndXSRFToken(
+        user.id
       );
-      res.cookie('XSRF-TOKEN', newXsrfToken, {
-        ...COOKIE_OPTIONS,
-        httpOnly: false,
-        signed: false,
-        expires: new Date(Date.now() + ms(process.env.REFRESH_TOKEN_LIFE)),
-      });
-      res.cookie('XSRF-TOKEN-HTTP-ONLY', newXsrfToken, {
-        ...COOKIE_OPTIONS,
-        expires: new Date(Date.now() + ms(process.env.REFRESH_TOKEN_LIFE)),
-      });
       return res.status(200).json({
         user,
         token: accessToken,

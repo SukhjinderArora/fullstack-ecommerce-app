@@ -95,7 +95,9 @@ const isAuthenticated = async (req, res, next) => {
     }
     let decodedToken;
     try {
-      decodedToken = jwt.verify(jwToken, process.env.JWT_SECRET + xsrfToken);
+      console.log(xsrfToken);
+      // decodedToken = jwt.verify(jwToken, process.env.JWT_SECRET + xsrfToken);
+      decodedToken = jwt.verify(jwToken, process.env.JWT_SECRET);
     } catch (err) {
       const error = createError('Invalid Credentials', 401);
       return next(error);
