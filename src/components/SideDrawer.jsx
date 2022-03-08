@@ -10,7 +10,7 @@ const SideDrawer = ({
   onSideDrawerClose,
 }) => {
   return createPortal(
-    <>
+    <div>
       <Backdrop
         showBackdrop={showSideDrawer}
         onBackdropClick={onSideDrawerClose}
@@ -18,8 +18,8 @@ const SideDrawer = ({
       <StyledSideDrawer direction={direction} showSideDrawer={showSideDrawer}>
         {children}
       </StyledSideDrawer>
-    </>,
-    document.getElementById('modal-root')
+    </div>,
+    document.body
   );
 };
 

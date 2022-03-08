@@ -92,7 +92,7 @@ const Product = () => {
       toast.success('Product successfully added to the cart');
       setNavigateToCart(true);
       setTimeout(() => {
-        navigate('/cart');
+        navigate('/checkout/cart');
       }, 1000);
     } catch (error) {
       toast.error('Something went wrong!');

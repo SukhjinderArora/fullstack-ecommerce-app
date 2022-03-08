@@ -16,11 +16,12 @@ const PageNotFound = () => {
 
 const Container = styled.div`
   text-align: center;
-  height: 80vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  background: #f1f3f6;
 `;
 
 const Text = styled.h1`

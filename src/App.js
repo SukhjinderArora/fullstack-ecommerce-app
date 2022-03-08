@@ -1,5 +1,11 @@
 import { useEffect, Suspense, lazy } from 'react';
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import {
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+  useMatch,
+} from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 
@@ -17,7 +23,10 @@ const Products = lazy(() => import('./pages/Products'));
 const Register = lazy(() => import('./pages/Register'));
 const Login = lazy(() => import('./pages/Login'));
 const Cart = lazy(() => import('./pages/Cart'));
+const Address = lazy(() => import('./pages/Address'));
 const PageNotFound = lazy(() => import('./pages/PageNotFound'));
+const Payment = lazy(() => import('./pages/Payment'));
+const PaymentSuccess = lazy(() => import('./pages/PaymentSuccess'));
 
 const App = () => {
   useScrollToTop();
@@ -58,10 +67,34 @@ const App = () => {
           <Route index element={<Home />} />
           <Route path="product/:id" element={<Product />} />
           <Route
-            path="cart"
+            path="checkout/cart"
             element={
               <RequireAuth redirectTo="/login">
                 <Cart />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="checkout/address"
+            element={
+              <RequireAuth redirectTo="/login">
+                <Address />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="checkout/payment"
+            element={
+              <RequireAuth redirectTo="/login">
+                <Payment />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="checkout/payment-success"
+            element={
+              <RequireAuth redirectTo="/login">
+                <PaymentSuccess />
               </RequireAuth>
             }
           />
@@ -95,6 +128,7 @@ const App = () => {
 const RequireAuth = ({ children, redirectTo }) => {
   const { isAuthenticated } = useSelector((state) => state.auth);
   const location = useLocation();
+
   return isAuthenticated ? (
     children
   ) : (

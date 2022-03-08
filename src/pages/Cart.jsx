@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-import { ChevronLeft, Minus, Plus } from 'react-feather';
+import { Link, useNavigate } from 'react-router-dom';
+import { ChevronLeft } from 'react-feather';
 import { useDispatch, useSelector } from 'react-redux';
 import toast from 'react-hot-toast';
 
@@ -19,18 +19,20 @@ import {
   removeCartItem,
   modifyCartItem,
 } from '../store/cartSlice';
+import PriceDetails from '../components/PriceDetails';
 
 const Cart = () => {
   usePageTitle('Shopping Cart | Fashionista');
   const { cart, status } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(getCart());
     return () => clearCart();
   }, [dispatch]);
 
-  const removeCartItemHandler = async (id) => {
+  const removeCartItemHandler = async (id, title) => {
     try {
       await dispatch(
         removeCartItem({
@@ -38,7 +40,9 @@ const Cart = () => {
         })
       ).unwrap();
       setTimeout(() => {
-        toast.success('Product successfully removed from the cart');
+        toast.success(
+          `Successfully removed ${title.slice(0, 30)}.... from your cart`
+        );
       }, 500);
       dispatch(getCart());
     } catch (error) {
@@ -46,21 +50,35 @@ const Cart = () => {
     }
   };
 
-  const modifyCartItemHandler = debounce(async (id, quantity) => {
-    try {
-      await dispatch(
-        modifyCartItem({
-          id,
-          quantity,
-        })
-      ).unwrap();
-      setTimeout(() => {
-        dispatch(getCart());
-      }, 500);
-    } catch (error) {
-      toast.error('Something went wrong!');
-    }
-  });
+  const modifyCartItemHandler = useMemo(
+    () =>
+      debounce(async (id, quantity, title) => {
+        try {
+          await dispatch(
+            modifyCartItem({
+              id,
+              quantity,
+            })
+          ).unwrap();
+          toast.success(
+            `You have changed ${title.slice(
+              0,
+              30
+            )}....  QUANTITY to ${quantity}`
+          );
+          setTimeout(() => {
+            dispatch(getCart());
+          }, 500);
+        } catch (error) {
+          toast.error('Something went wrong!');
+        }
+      }, 400),
+    [dispatch]
+  );
+
+  const placeOrderHandler = () => {
+    navigate('/checkout/address');
+  };
 
   if (status === STATUS.LOADING) return <Spinner />;
 
@@ -97,30 +115,12 @@ const Cart = () => {
               ))}
             </CartItemsContainer>
           </CartContainer>
-          <CheckoutContainer>
-            <CheckoutHeader>Price Details</CheckoutHeader>
-            <CheckoutSummary>
-              <SummaryItem>
-                <ItemName>Price ({cart.items.length} Items)</ItemName>
-                <ItemValue>₹ {cart.totalPrice}</ItemValue>
-              </SummaryItem>
-              <SummaryItem>
-                <ItemName>Delivery Charges</ItemName>
-                <ItemValue>
-                  {cart.deliveryPrice ? `₹ ${cart.deliveryPrice}` : 'Free'}
-                </ItemValue>
-              </SummaryItem>
-              <TotalAmount>
-                <SummaryItem>
-                  <ItemName>Total Amount</ItemName>
-                  <ItemValue>
-                    ₹ {cart.totalPrice + cart.deliveryPrice}
-                  </ItemValue>
-                </SummaryItem>
-              </TotalAmount>
-              <CheckoutButton>Place Order</CheckoutButton>
-            </CheckoutSummary>
-          </CheckoutContainer>
+          <PriceDetailsContainer>
+            <PriceDetails
+              checkoutButtonHandler={placeOrderHandler}
+              buttonTitle="Place Order"
+            />
+          </PriceDetailsContainer>
         </>
       )}
     </Container>
@@ -138,13 +138,15 @@ const Container = styled.div`
 
 const Wrapper = styled.div`
   flex: 1;
+  background: #fff;
+  box-shadow: rgb(0 0 0 / 20%) 0px 1px 2px 0px;
+  padding: 20px 20px 40px 20px;
 `;
 
 const Title = styled.h1`
-  text-align: center;
-  color: rgb(27, 40, 57);
-  text-transform: uppercase;
+  font-size: 18px;
   font-weight: 500;
+  padding-bottom: 15px;
 `;
 
 const Text = styled.p`
@@ -182,65 +184,10 @@ const CartHeader = styled.h1`
 
 const CartItemsContainer = styled.div``;
 
-const CheckoutContainer = styled.div`
+const PriceDetailsContainer = styled.div`
   flex: 1;
-  background: #fff;
-  box-shadow: rgb(0 0 0 / 20%) 0px 1px 2px 0px;
   position: sticky;
   top: 80px;
-`;
-
-const CheckoutHeader = styled.h1`
-  padding: 13px 24px;
-  font-size: 16px;
-  text-transform: uppercase;
-  color: #878787;
-  border-bottom: 1px solid #f0f0f0;
-`;
-
-const CheckoutSummary = styled.div`
-  padding: 0 24px;
-`;
-
-const SummaryItem = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin: 20px 0;
-  align-items: flex-start;
-`;
-
-const ItemName = styled.p``;
-
-const ItemValue = styled.p``;
-
-const TotalAmount = styled.div`
-  font-size: 20px;
-  font-weight: 700;
-  margin: 30px 0;
-  color: #212121;
-  border-top: 1px dashed #e0e0e0;
-  border-bottom: 1px dashed #e0e0e0;
-`;
-
-const CheckoutButton = styled.button`
-  display: inline-block;
-  background-color: teal;
-  color: white;
-  border: 1px solid transparent;
-  text-transform: uppercase;
-  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 20%);
-  padding: 16px 30px;
-  font-size: 16px;
-  font-weight: 500;
-  border-radius: 2px;
-  margin-bottom: 20px;
-  transition: all 0.3s;
-  cursor: pointer;
-  &:hover {
-    background-color: white;
-    color: teal;
-    border: 1px solid teal;
-  }
 `;
 
 export default Cart;

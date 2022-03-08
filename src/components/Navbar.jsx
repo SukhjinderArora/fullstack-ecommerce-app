@@ -80,7 +80,7 @@ const Navbar = () => {
                 </NavigationLink>
               </NavigationItem>
               <NavigationItem>
-                <NavigationLink to="/cart" title="Cart">
+                <NavigationLink to="/checkout/cart" title="Cart">
                   <IconContainer>
                     <ShoppingCart color="#1b2839" size="20" />
                     <CartBadge>{cart.items.length}</CartBadge>

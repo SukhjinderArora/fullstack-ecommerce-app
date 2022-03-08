@@ -89,17 +89,6 @@ const cartSlice = createSlice({
   },
   extraReducers(builder) {
     builder
-      .addCase(addProductToCart.pending, (state) => {
-        state.status = STATUS.LOADING;
-      })
-      .addCase(addProductToCart.fulfilled, (state) => {
-        state.status = STATUS.SUCCEEDED;
-      })
-      .addCase(addProductToCart.rejected, (state, action) => {
-        state.error = action.payload;
-      });
-
-    builder
       .addCase(getCart.pending, (state) => {
         state.status = STATUS.LOADING;
       })
@@ -110,28 +99,6 @@ const cartSlice = createSlice({
         state.cart.deliveryPrice = action.payload.deliveryPrice;
       })
       .addCase(getCart.rejected, (state, action) => {
-        state.error = action.payload;
-      });
-
-    builder
-      .addCase(removeCartItem.pending, (state) => {
-        state.status = STATUS.LOADING;
-      })
-      .addCase(removeCartItem.fulfilled, (state) => {
-        state.status = STATUS.SUCCEEDED;
-      })
-      .addCase(removeCartItem.rejected, (state, action) => {
-        state.error = action.payload;
-      });
-
-    builder
-      .addCase(modifyCartItem.pending, () => {
-        // state.status = STATUS.LOADING;
-      })
-      .addCase(modifyCartItem.fulfilled, (state) => {
-        state.status = STATUS.SUCCEEDED;
-      })
-      .addCase(modifyCartItem.rejected, (state, action) => {
         state.error = action.payload;
       });
   },

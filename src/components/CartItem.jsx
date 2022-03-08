@@ -8,13 +8,14 @@ const CartItem = ({ item, removeCartItem, modifyCartItem }) => {
   const [quantity, setQuantity] = useState(item.quantity);
   const isInitialRender = useRef(true);
   useEffect(() => {
-    if (!isInitialRender.current) {
-      if (quantity) {
-        modifyCartItem(item.id, quantity);
-      }
+    if (isInitialRender.current) {
+      isInitialRender.current = false;
+      return;
     }
-    isInitialRender.current = false;
-  }, [quantity, modifyCartItem, item.id]);
+    if (quantity) {
+      modifyCartItem(item.id, quantity, item.title);
+    }
+  }, [quantity, modifyCartItem, item.id, item.title]);
   const modifyCartItemHandler = (evt) => {
     setQuantity(evt.target.value);
   };
@@ -37,7 +38,11 @@ const CartItem = ({ item, removeCartItem, modifyCartItem }) => {
       </CartItemInfo>
       <CartItemActions>
         <QuantityContainer>
-          <IncreaseQtyBtn onClick={() => setQuantity((qty) => qty + 1)}>
+          <IncreaseQtyBtn
+            onClick={() => {
+              setQuantity((qty) => qty + 1);
+            }}
+          >
             <Plus />
           </IncreaseQtyBtn>
           <InputQty
@@ -47,13 +52,15 @@ const CartItem = ({ item, removeCartItem, modifyCartItem }) => {
             onChange={modifyCartItemHandler}
           />
           <DecreaseQtyBtn
-            onClick={() => setQuantity((qty) => (qty <= 1 ? qty : qty - 1))}
+            onClick={() => {
+              setQuantity((qty) => (qty <= 1 ? qty : qty - 1));
+            }}
           >
             <Minus />
           </DecreaseQtyBtn>
         </QuantityContainer>
         <SaveForLater>Save For Later</SaveForLater>
-        <RemoveCartItem onClick={() => removeCartItem(item.id)}>
+        <RemoveCartItem onClick={() => removeCartItem(item.id, item.title)}>
           Remove
         </RemoveCartItem>
       </CartItemActions>
