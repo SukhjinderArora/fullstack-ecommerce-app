@@ -1,4 +1,7 @@
 const { Op, Sequelize } = require('sequelize');
+const Razorpay = require('razorpay');
+const { nanoid } = require('nanoid');
+const crypto = require('crypto');
 
 const Product = require('../models/product');
 const ProductVariant = require('../models/productVariant');
@@ -432,6 +435,59 @@ const createNewOrder = async (req, res, next) => {
   }
 };
 
+const createRazorPayOrder = async (req, res, next) => {
+  try {
+    const { user } = req;
+    const cart = await user.getCart();
+    const cartItems = await getCartItems(cart.id);
+    let totalPrice = cartItems.reduce(
+      (acc, cur) => acc + Number(cur.get().price) * Number(cur.get().quantity),
+      0
+    );
+    totalPrice = totalPrice < 499 ? totalPrice + 40 : totalPrice;
+
+    const instance = new Razorpay({
+      key_id: process.env.RAZORPAY_KEY_ID,
+      key_secret: process.env.RAZORPAY_SECRET,
+    });
+    const options = {
+      amount: totalPrice * 100,
+      currency: 'INR',
+      receipt: `receipt_${nanoid()}`,
+    };
+
+    const order = await instance.orders.create(options);
+    if (!order) {
+      const error = createError('Something went wrong!', 500);
+      throw error;
+    }
+    return res.status(200).json(order);
+  } catch (error) {
+    return next(error);
+  }
+};
+
+const verifyPayment = (req, res, next) => {
+  try {
+    const { orderId, razorpayPaymentId, razorpayOrderId, razorpaySignature } =
+      req.body;
+    const shasum = crypto.createHmac('sha256', process.env.RAZORPAY_SECRET);
+    shasum.update(`${orderId}|${razorpayPaymentId}`);
+    const digest = shasum.digest('hex');
+    if (digest !== razorpaySignature) {
+      const error = createError('Transaction not legit', 400);
+      throw error;
+    }
+    return res.status(200).json({
+      msg: 'success',
+      orderId: razorpayOrderId,
+      paymentid: razorpayPaymentId,
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
+
 const getAllOrdersByAUser = async (req, res, next) => {
   const { user } = req;
   try {
@@ -499,6 +555,8 @@ module.exports = {
   modifyCartItem,
   getUserAddresses,
   createNewOrder,
+  createRazorPayOrder,
+  verifyPayment,
   getAllOrdersByAUser,
   getOrderById,
 };

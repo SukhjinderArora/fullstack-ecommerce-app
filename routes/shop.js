@@ -23,5 +23,15 @@ router.get('/address', isAuthenticated, shopController.getUserAddresses);
 router.post('/order', isAuthenticated, shopController.createNewOrder);
 router.get('/order/:id', isAuthenticated, shopController.getOrderById);
 router.get('/orders', isAuthenticated, shopController.getAllOrdersByAUser);
+router.post(
+  '/order/razorpay',
+  isAuthenticated,
+  shopController.createRazorPayOrder
+);
+router.post(
+  '/order/verify-payment',
+  isAuthenticated,
+  shopController.verifyPayment
+);
 
 module.exports = router;
