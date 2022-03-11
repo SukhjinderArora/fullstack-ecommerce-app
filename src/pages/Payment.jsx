@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
@@ -9,6 +9,10 @@ import CustomRadioButton from '../components/shared/CustomRadioButton';
 
 import axios from '../utils/axios';
 import Spinner from '../components/shared/SpinnerRect';
+
+import { clearCart } from '../store/cartSlice';
+
+import { RAZORPAY_KEY_ID } from '../utils/config';
 
 const paymentMethods = [
   {
@@ -25,10 +29,12 @@ const paymentMethods = [
 
 const Payment = () => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
-  const { selectedAddress } = useSelector((state) => state.address);
   const [creatingOrder, setCreatingOrder] = useState(false);
+  const { selectedAddress } = useSelector((state) => state.address);
+  const { user } = useSelector((state) => state.auth);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const selectPaymentMethod = (paymentMethodId) => {
     setSelectedPaymentMethod(
@@ -36,13 +42,101 @@ const Payment = () => {
     );
   };
 
+  const loadScript = (src) => {
+    return new Promise((resolve) => {
+      const script = document.createElement('script');
+      script.src = src;
+      script.onload = () => {
+        resolve(true);
+      };
+      script.onerror = () => {
+        resolve(false);
+      };
+      document.body.appendChild(script);
+    });
+  };
+
+  const displayRazorpay = async () => {
+    try {
+      const res = await loadScript(
+        'https://checkout.razorpay.com/v1/checkout.js'
+      );
+      if (!res) {
+        toast.error('Razorpay SDK failed to load. Are you online?');
+        return;
+      }
+      const result = await axios.post('/api/shop/order/razorpay');
+      if (!result) {
+        toast.error('Server error. Are you online?');
+        return;
+      }
+      // eslint-disable-next-line camelcase
+      const { amount, id: order_id, currency } = result.data;
+
+      const options = {
+        key: RAZORPAY_KEY_ID, // Enter the Key ID generated from the Dashboard
+        amount: amount.toString(),
+        currency,
+        name: 'Fashionista',
+        description: 'Thank you for your order',
+        image: `${process.env.PUBLIC_URL}/logo512.png`,
+        // eslint-disable-next-line camelcase
+        order_id,
+        async handler(response) {
+          try {
+            const data = {
+              // eslint-disable-next-line camelcase
+              orderId: order_id,
+              razorpayPaymentId: response.razorpay_payment_id,
+              razorpayOrderId: response.razorpay_order_id,
+              razorpaySignature: response.razorpay_signature,
+            };
+            // eslint-disable-next-line no-shadow
+            await axios.post('/api/shop/order/verify-payment', data);
+            setCreatingOrder(true);
+            // eslint-disable-next-line no-shadow
+            const res = await axios.post('/api/shop/order', {
+              addressId: selectedAddress.id,
+            });
+            dispatch(clearCart());
+            navigate('/checkout/payment-success', {
+              replace: true,
+              state: {
+                orderId: res.data.orderId,
+              },
+            });
+          } catch (error) {
+            toast.error('Something went wrong!');
+          }
+        },
+        prefill: {
+          name: `${user.firstName} ${user.lastName}`,
+          email: user.email,
+          contact: '9999999999',
+        },
+        notes: {
+          address: 'Fashionista ecommerce store',
+        },
+        theme: {
+          color: '#008080',
+        },
+      };
+
+      const paymentObject = new window.Razorpay(options);
+      paymentObject.open();
+    } catch (error) {
+      toast.error('Something went wrong!');
+    }
+  };
+
   const checkoutHandler = async () => {
-    if (selectedPaymentMethod && selectedAddress.id) {
+    if (selectedPaymentMethod.type === 'cash' && selectedAddress.id) {
       try {
+        setCreatingOrder(true);
         const response = await axios.post('/api/shop/order', {
           addressId: selectedAddress.id,
         });
-        setCreatingOrder(true);
+        dispatch(clearCart());
         setTimeout(() => {
           navigate('/checkout/payment-success', {
             replace: true,
@@ -54,6 +148,8 @@ const Payment = () => {
       } catch (error) {
         toast.error('Something went wrong!');
       }
+    } else if (selectedPaymentMethod.type === 'digital' && selectedAddress.id) {
+      displayRazorpay();
     }
   };
 

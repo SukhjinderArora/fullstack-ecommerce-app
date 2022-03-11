@@ -104,7 +104,8 @@ const ItemTitle = styled(Link)`
   margin-bottom: 10px;
   text-decoration: none;
   &:visited,
-  &:active {
+  &:active,
+  &:link {
     color: #000;
   }
 `;

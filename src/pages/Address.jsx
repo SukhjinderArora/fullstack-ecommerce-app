@@ -129,6 +129,7 @@ const Address = () => {
         <PriceDetails
           checkoutButtonHandler={checkoutHandler}
           buttonTitle="Continue"
+          buttonVisible={!!selectedAddress.id}
         />
       </PriceDetailsContainer>
     </Container>
@@ -217,6 +218,7 @@ const AddNewAddressButton = styled.button`
   font-weight: 500;
   text-transform: uppercase;
   border-radius: 5px;
+  cursor: pointer;
 
   ${AddressBlock} & {
     border: none;

@@ -90,14 +90,6 @@ const App = () => {
               </RequireAuth>
             }
           />
-          <Route
-            path="checkout/payment-success"
-            element={
-              <RequireAuth redirectTo="/login">
-                <PaymentSuccess />
-              </RequireAuth>
-            }
-          />
           <Route path="products">
             <Route index element={<Products />} />
             <Route path=":categorySlug" element={<Products />} />
@@ -120,6 +112,14 @@ const App = () => {
           />
           <Route path="*" element={<PageNotFound />} />
         </Route>
+        <Route
+          path="checkout/payment-success"
+          element={
+            <RequireAuth redirectTo="/login">
+              <PaymentSuccess />
+            </RequireAuth>
+          }
+        />
       </Routes>
     </Suspense>
   );

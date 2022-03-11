@@ -28,7 +28,6 @@ const PaymentSuccess = () => {
 
 const Container = styled.div`
   text-align: center;
-  margin-top: -70px;
   height: 100vh;
   display: flex;
   flex-direction: column;
