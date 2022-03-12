@@ -211,9 +211,75 @@ const cartItemSchema = {
   },
 };
 
+const addressSchema = {
+  name: {
+    notEmpty: {
+      errorMessage: 'Name cannot be empty',
+    },
+    trim: true,
+    isLength: {
+      errorMessage: 'Name must be atleast 1 character and atmost 40 characters',
+      options: {
+        min: 1,
+        max: 40,
+      },
+    },
+    escape: true,
+  },
+  phoneNumber: {
+    notEmpty: {
+      errorMessage: 'Phone number cannot be empty',
+    },
+    isMobilePhone: {
+      options: ['en-IN'],
+      errorMessage: 'Invalid phone number',
+    },
+  },
+  pincode: {
+    notEmpty: {
+      errorMessage: 'Name cannot be empty',
+    },
+    isNumeric: {
+      errorMessage: 'Invalid pincode',
+    },
+    isLength: {
+      errorMessage: 'Invalid pincode',
+      options: {
+        min: 6,
+        max: 6,
+      },
+    },
+    matches: {
+      errorMessage: 'Invalid pincode',
+      options: /^[1-9][0-9]{5}$/,
+    },
+  },
+  address: {
+    notEmpty: {
+      errorMessage: 'Address cannot be empty',
+    },
+  },
+  locality: {
+    notEmpty: {
+      errorMessage: 'Locality cannot be empty',
+    },
+  },
+  city: {
+    notEmpty: {
+      errorMessage: 'City cannot be empty',
+    },
+  },
+  state: {
+    notEmpty: {
+      errorMessage: 'State cannot be empty',
+    },
+  },
+};
+
 module.exports = {
   registrationSchema,
   loginSchema,
   productSchema,
   cartItemSchema,
+  addressSchema,
 };

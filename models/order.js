@@ -27,6 +27,10 @@ const Order = sequelize.define('order', {
     },
     allowNull: false,
   },
+  razorpayOrderId: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
 });
 
 module.exports = Order;
