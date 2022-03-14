@@ -97,6 +97,8 @@ const Payment = () => {
             // eslint-disable-next-line no-shadow
             const res = await axios.post('/api/shop/order', {
               addressId: selectedAddress.id,
+              // eslint-disable-next-line camelcase
+              razorpayOrderId: order_id,
             });
             dispatch(clearCart());
             navigate('/checkout/payment-success', {
@@ -121,7 +123,6 @@ const Payment = () => {
           color: '#008080',
         },
       };
-
       const paymentObject = new window.Razorpay(options);
       paymentObject.open();
     } catch (error) {

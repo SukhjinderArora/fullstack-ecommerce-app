@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -6,8 +6,9 @@ import { Plus } from 'react-feather';
 
 import PriceDetails from '../components/PriceDetails';
 import CustomRadioButton from '../components/shared/CustomRadioButton';
-
 import Spinner from '../components/shared/SpinnerRect';
+import Modal from '../components/Modal';
+import AddressForm from '../components/AddressForm';
 
 import usePageTitle from '../hooks/usePageTitle';
 
@@ -16,12 +17,9 @@ import { STATUS } from '../utils';
 
 const Address = () => {
   usePageTitle('Address | Fashionista');
+  const [showAddressModal, setShowAddressModal] = useState(false);
   const { addresses, status, defaultAddress, otherAddresses, selectedAddress } =
     useSelector((state) => state.address);
-  // const defaultAddress = addresses.find((address) => address.defaultAddress);
-  // const otherAddresses = addresses.filter((address) => !address.defaultAddress);
-
-  // const [selectedAddress, setSelectedAddress] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -53,10 +51,18 @@ const Address = () => {
 
   return (
     <Container>
+      <Modal
+        onModalClose={() => setShowAddressModal(false)}
+        showModal={showAddressModal}
+      >
+        <AddressForm />
+      </Modal>
       <AddressListContainer>
         <AddressListTitleContainer>
           <AddressListTitle>Select Delivery Address</AddressListTitle>
-          <AddNewAddressButton>Add New Address</AddNewAddressButton>
+          <AddNewAddressButton onClick={() => setShowAddressModal(true)}>
+            Add New Address
+          </AddNewAddressButton>
         </AddressListTitleContainer>
         {addresses.length > 0 && (
           <>
@@ -118,8 +124,8 @@ const Address = () => {
             ))}
           </>
         )}
-        <AddressBlock>
-          <AddNewAddressButton>
+        <AddressBlock onClick={() => setShowAddressModal(true)}>
+          <AddNewAddressButton onClick={() => setShowAddressModal(true)}>
             <Plus />
             <span>Add New Address</span>
           </AddNewAddressButton>

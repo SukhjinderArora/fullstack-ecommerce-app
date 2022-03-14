@@ -15,8 +15,8 @@ const StyledBackdrop = styled.div`
   bottom: 0;
   z-index: 300;
   background-color: rgb(0, 0, 0);
-  transition: opacity ease-in 0.3s, visibility ease-in 0.3s;
-  opacity: ${(props) => (props.showBackdrop ? 0.3 : 0)};
+  transition: all cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.3s;
+  opacity: ${(props) => (props.showBackdrop ? 0.6 : 0)};
   visibility: ${(props) => (props.showBackdrop ? 'visible' : 'hidden')};
 `;
 
