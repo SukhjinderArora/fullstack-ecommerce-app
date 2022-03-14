@@ -55,7 +55,7 @@ const Address = () => {
         onModalClose={() => setShowAddressModal(false)}
         showModal={showAddressModal}
       >
-        <AddressForm />
+        {showAddressModal && <AddressForm />}
       </Modal>
       <AddressListContainer>
         <AddressListTitleContainer>

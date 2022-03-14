@@ -1,9 +1,39 @@
 import styled from 'styled-components';
+import validator from 'validator';
 
 import useForm from '../hooks/useForm';
 
 const validate = (values) => {
   const errors = {};
+  if (!values.name.trim()) {
+    errors.name = 'This is a mandatory field';
+  } else if (values.name.length < 2) {
+    errors.name = 'Minimum length is 2';
+  } else if (values.name.length > 40) {
+    errors.name = 'Maximum length is 40';
+  }
+  if (!values.phoneNumber.trim()) {
+    errors.phoneNumber = 'This is a mandatory field';
+  } else if (!validator.isMobilePhone(values.phoneNumber, 'en-IN')) {
+    errors.phoneNumber = 'Invalid phone number';
+  }
+  if (!values.pincode.trim()) {
+    errors.pincode = 'This is a mandatory field';
+  } else if (!values.pincode.match(/^[1-9][0-9]{5}$/)) {
+    errors.pincode = 'Invalid pincode';
+  }
+  if (!values.address.trim()) {
+    errors.address = 'This is a mandatory field';
+  }
+  if (!values.locality.trim()) {
+    errors.locality = 'This is a mandatory field';
+  }
+  if (!values.city.trim()) {
+    errors.city = 'This is a mandatory field';
+  }
+  if (!values.state.trim()) {
+    errors.state = 'This is a mandatory field';
+  }
   return errors;
 };
 
@@ -46,6 +76,9 @@ const AddressForm = () => {
                 onBlur={form.handleBlur}
                 onChange={form.handleChange}
               />
+              <ValidationError>
+                {form.touched.name && form.errors.name}
+              </ValidationError>
             </FormGroup>
             <FormGroup>
               <Label
@@ -64,6 +97,9 @@ const AddressForm = () => {
                 onBlur={form.handleBlur}
                 onChange={form.handleChange}
               />
+              <ValidationError>
+                {form.touched.phoneNumber && form.errors.phoneNumber}
+              </ValidationError>
             </FormGroup>
           </ContactContainer>
           <FormHeader>ADDRESS</FormHeader>
@@ -85,6 +121,9 @@ const AddressForm = () => {
                 onBlur={form.handleBlur}
                 onChange={form.handleChange}
               />
+              <ValidationError>
+                {form.touched.pincode && form.errors.pincode}
+              </ValidationError>
             </FormGroup>
             <FormGroup>
               <Label
@@ -102,6 +141,9 @@ const AddressForm = () => {
                 onBlur={form.handleBlur}
                 onChange={form.handleChange}
               />
+              <ValidationError>
+                {form.touched.address && form.errors.address}
+              </ValidationError>
             </FormGroup>
             <FormGroup>
               <Label
@@ -119,6 +161,9 @@ const AddressForm = () => {
                 onBlur={form.handleBlur}
                 onChange={form.handleChange}
               />
+              <ValidationError>
+                {form.touched.locality && form.errors.locality}
+              </ValidationError>
             </FormGroup>
             <FlexContainer>
               <FormGroup>
@@ -137,6 +182,9 @@ const AddressForm = () => {
                   onBlur={form.handleBlur}
                   onChange={form.handleChange}
                 />
+                <ValidationError>
+                  {form.touched.city && form.errors.city}
+                </ValidationError>
               </FormGroup>
               <FormGroup>
                 <Label
@@ -154,6 +202,9 @@ const AddressForm = () => {
                   onBlur={form.handleBlur}
                   onChange={form.handleChange}
                 />
+                <ValidationError>
+                  {form.touched.state && form.errors.state}
+                </ValidationError>
               </FormGroup>
             </FlexContainer>
           </AddressContainer>
@@ -168,7 +219,7 @@ const AddressForm = () => {
 
 const Container = styled.div`
   background-color: #fff;
-  height: 65vh;
+  height: 70vh;
   width: 440px;
 `;
 
@@ -183,7 +234,7 @@ const FormTitle = styled.h1`
   font-size: 14px;
   font-weight: 700;
   border-bottom: 1px solid #d5d6d9;
-  padding: 16px;
+  padding: 20px 16px;
 `;
 
 const InputsContainer = styled.div`
@@ -229,10 +280,13 @@ const Input = styled.input`
   &:focus {
     border-color: #282c3f;
   }
+`;
 
-  &:focus ~ label {
-    color: #282c3f;
-  }
+const ValidationError = styled.p`
+  color: #ff5722;
+  padding-left: 12px;
+  font-size: 12px;
+  padding-top: 4px;
 `;
 
 const ContactContainer = styled.div`
