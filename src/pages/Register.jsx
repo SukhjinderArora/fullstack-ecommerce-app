@@ -71,7 +71,7 @@ const validate = (values) => {
 const Register = () => {
   usePageTitle('Sign Up | Fashionista');
   const dispatch = useDispatch();
-  const { error, status, user } = useSelector((state) => state.auth);
+  const { error } = useSelector((state) => state.auth);
 
   const { setFieldError, setMultipleFieldsError, ...form } = useForm({
     initialValues: {

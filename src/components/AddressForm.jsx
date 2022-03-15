@@ -1,7 +1,14 @@
+import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import validator from 'validator';
+import PropTypes from 'prop-types';
+
+import toast from 'react-hot-toast';
 
 import useForm from '../hooks/useForm';
+
+import { addNewAddress } from '../store/addressSlice';
 
 const validate = (values) => {
   const errors = {};
@@ -37,7 +44,9 @@ const validate = (values) => {
   return errors;
 };
 
-const AddressForm = () => {
+const AddressForm = ({ afterSubmitHandler }) => {
+  const { error } = useSelector((state) => state.address);
+  const dispatch = useDispatch();
   const { setFieldError, setMultipleFieldsError, ...form } = useForm({
     initialValues: {
       name: '',
@@ -50,9 +59,32 @@ const AddressForm = () => {
     },
     validate,
     onSubmit: (values, { resetForm }) => {
-      console.log('form submitted');
+      dispatch(
+        addNewAddress({
+          ...values,
+        })
+      )
+        .unwrap()
+        .then(() => {
+          afterSubmitHandler();
+        })
+        .catch(() => {
+          toast.error('Something went wrong!');
+        });
     },
   });
+
+  useEffect(() => {
+    if (error) {
+      if (Array.isArray(error)) {
+        const errors = error.reduce((acc, cur) => {
+          acc[cur.param] = cur.msg;
+          return acc;
+        }, {});
+        setMultipleFieldsError(errors);
+      }
+    }
+  }, [error, setMultipleFieldsError]);
   return (
     <Container>
       <Form onSubmit={form.handleSubmit}>
@@ -319,5 +351,13 @@ const SaveButton = styled.button`
   border-radius: 5px;
   cursor: pointer;
 `;
+
+AddressForm.propTypes = {
+  afterSubmitHandler: PropTypes.func,
+};
+
+AddressForm.defaultProps = {
+  afterSubmitHandler: () => {},
+};
 
 export default AddressForm;

@@ -114,7 +114,7 @@ const Payment = () => {
         prefill: {
           name: `${user.firstName} ${user.lastName}`,
           email: user.email,
-          contact: '9999999999',
+          contact: selectedAddress.phoneNumber,
         },
         notes: {
           address: 'Fashionista ecommerce store',
