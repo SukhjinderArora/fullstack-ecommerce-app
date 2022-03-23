@@ -31,6 +31,15 @@ const Order = sequelize.define('order', {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  deliveryPrice: {
+    type: DataTypes.DECIMAL(8, 2),
+    allowNull: false,
+    defaultValue: 0,
+    get() {
+      const value = this.getDataValue('deliveryPrice');
+      return value === null ? null : parseFloat(value);
+    },
+  },
 });
 
 module.exports = Order;

@@ -92,6 +92,14 @@ const createNewOrder = async (req, res, next) => {
       { transaction: t }
     );
     await t.commit();
+    const totalPrice = orderItems.reduce(
+      (acc, cur) =>
+        acc + Number(cur.get().productPrice) * Number(cur.get().quantity),
+      0
+    );
+    const deliveryPrice = totalPrice > 0 && totalPrice < 499 ? 40 : 0;
+    order.deliveryPrice = deliveryPrice;
+    await order.save();
     return res.status(200).json({
       message: 'Order successfully placed',
       orderId: order.id,
@@ -173,6 +181,7 @@ const getAllOrdersByAUser = async (req, res, next) => {
           as: 'items',
         },
       ],
+      order: [['createdAt', 'DESC']],
     });
     return res.status(200).json(orders);
   } catch (error) {

@@ -220,7 +220,7 @@ const addressSchema = {
     isLength: {
       errorMessage: 'Name must be atleast 1 character and atmost 40 characters',
       options: {
-        min: 1,
+        min: 2,
         max: 40,
       },
     },
