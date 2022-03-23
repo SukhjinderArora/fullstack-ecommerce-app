@@ -5,7 +5,6 @@ import toast from 'react-hot-toast';
 import { Heart, User, ShoppingCart, Search as SearchIcon } from 'react-feather';
 
 import { logout } from '../store/authSlice';
-import { STATUS } from '../utils';
 
 const Navbar = () => {
   const { isAuthenticated, verifyingToken } = useSelector(
@@ -72,7 +71,7 @@ const Navbar = () => {
               </NavigationItem>
               <NavigationItem>
                 <NavigationLink
-                  to={isAuthenticated ? '/' : '/login'}
+                  to={isAuthenticated ? '/my/dashboard' : '/login'}
                   title="Profile"
                 >
                   <User color="#1b2839" size="20" />

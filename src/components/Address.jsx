@@ -1,14 +1,11 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { Plus } from 'react-feather';
 
-import PriceDetails from '../components/PriceDetails';
-import CustomRadioButton from '../components/shared/CustomRadioButton';
-import Spinner from '../components/shared/SpinnerRect';
-import Modal from '../components/Modal';
-import AddressForm from '../components/AddressForm';
+import Spinner from './shared/SpinnerRect';
+import Modal from './Modal';
+import AddressForm from './AddressForm';
 
 import usePageTitle from '../hooks/usePageTitle';
 
@@ -18,10 +15,10 @@ import { STATUS } from '../utils';
 const Address = () => {
   usePageTitle('Address | Fashionista');
   const [showAddressModal, setShowAddressModal] = useState(false);
-  const { addresses, status, defaultAddress, otherAddresses, selectedAddress } =
-    useSelector((state) => state.address);
+  const { addresses, status, defaultAddress, otherAddresses } = useSelector(
+    (state) => state.address
+  );
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(getUserAddresses());
@@ -32,20 +29,6 @@ const Address = () => {
       dispatch(setSelectedAddress({ address: defaultAddress }));
     }
   }, [addresses, defaultAddress, dispatch]);
-
-  const changeSelectedAddress = (addressId) => {
-    dispatch(
-      setSelectedAddress({
-        address: addresses.find((address) => address.id === addressId),
-      })
-    );
-  };
-
-  const checkoutHandler = () => {
-    navigate('/checkout/payment', {
-      replace: true,
-    });
-  };
 
   if (status === STATUS.LOADING) return <Spinner />;
 
@@ -61,7 +44,7 @@ const Address = () => {
       </Modal>
       <AddressListContainer>
         <AddressListTitleContainer>
-          <AddressListTitle>Select Delivery Address</AddressListTitle>
+          <AddressListTitle>Your Addresses</AddressListTitle>
           <AddNewAddressButton onClick={() => setShowAddressModal(true)}>
             Add New Address
           </AddNewAddressButton>
@@ -69,59 +52,32 @@ const Address = () => {
         {addresses.length > 0 && (
           <>
             <AddressTitle>Default Address</AddressTitle>
-            <AddressBlock
-              onClick={() => changeSelectedAddress(defaultAddress.id)}
-              selected={selectedAddress?.id === defaultAddress.id}
-            >
-              <FlexContainer>
-                <CustomRadioButton
-                  name="address"
-                  selected={selectedAddress?.id === defaultAddress.id}
-                  id={defaultAddress.id}
-                  value={defaultAddress.id}
-                />
-                <div>
-                  <AddressFieldName>{defaultAddress.name}</AddressFieldName>
-                  <AddressField>
-                    {defaultAddress.address}, {defaultAddress.locality}
-                  </AddressField>
-                  <AddressField>
-                    {defaultAddress.city}, {defaultAddress.state} -{' '}
-                    {defaultAddress.pincode}
-                  </AddressField>
-                  <AddressFieldNumber>
-                    Mobile: <span>{defaultAddress.phoneNumber}</span>
-                  </AddressFieldNumber>
-                </div>
-              </FlexContainer>
+            <AddressBlock>
+              <AddressFieldName>{defaultAddress.name}</AddressFieldName>
+              <AddressField>
+                {defaultAddress.address}, {defaultAddress.locality}
+              </AddressField>
+              <AddressField>
+                {defaultAddress.city}, {defaultAddress.state} -{' '}
+                {defaultAddress.pincode}
+              </AddressField>
+              <AddressFieldNumber>
+                Mobile: <span>{defaultAddress.phoneNumber}</span>
+              </AddressFieldNumber>
             </AddressBlock>
             <AddressTitle>Other Addresses</AddressTitle>
             {otherAddresses.map((address) => (
-              <AddressBlock
-                key={address.id}
-                onClick={() => changeSelectedAddress(address.id)}
-                selected={selectedAddress?.id === address.id}
-              >
-                <FlexContainer>
-                  <CustomRadioButton
-                    name="address"
-                    selected={selectedAddress?.id === address.id}
-                    id={address.id}
-                    value={address.id}
-                  />
-                  <div>
-                    <AddressFieldName>{address.name}</AddressFieldName>
-                    <AddressField>
-                      {address.address}, {address.locality}
-                    </AddressField>
-                    <AddressField>
-                      {address.city}, {address.state} - {address.pincode}
-                    </AddressField>
-                    <AddressFieldNumber>
-                      Mobile: <span>{address.phoneNumber}</span>
-                    </AddressFieldNumber>
-                  </div>
-                </FlexContainer>
+              <AddressBlock key={address.id}>
+                <AddressFieldName>{address.name}</AddressFieldName>
+                <AddressField>
+                  {address.address}, {address.locality}
+                </AddressField>
+                <AddressField>
+                  {address.city}, {address.state} - {address.pincode}
+                </AddressField>
+                <AddressFieldNumber>
+                  Mobile: <span>{address.phoneNumber}</span>
+                </AddressFieldNumber>
               </AddressBlock>
             ))}
           </>
@@ -133,22 +89,13 @@ const Address = () => {
           </AddNewAddressButton>
         </AddressBlock>
       </AddressListContainer>
-      <PriceDetailsContainer>
-        <PriceDetails
-          checkoutButtonHandler={checkoutHandler}
-          buttonTitle="Continue"
-          buttonVisible={!!selectedAddress.id}
-        />
-      </PriceDetailsContainer>
     </Container>
   );
 };
 
 const Container = styled.div`
-  padding: 50px 20px;
   display: flex;
   gap: 20px;
-  background: #f1f3f6;
   align-items: flex-start;
   min-height: 100vh;
 `;
@@ -156,7 +103,6 @@ const Container = styled.div`
 const AddressListContainer = styled.div`
   flex: 3;
   background: #fff;
-  box-shadow: rgb(0 0 0 / 20%) 0px 1px 2px 0px;
 `;
 
 const AddressListTitleContainer = styled.div`
@@ -164,11 +110,12 @@ const AddressListTitleContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 15px 24px;
+  padding-top: 0;
   border-bottom: 1px solid #efefef;
 `;
 
 const AddressListTitle = styled.h1`
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 500;
 `;
 
@@ -178,11 +125,6 @@ const AddressTitle = styled.p`
   font-weight: 600;
   text-transform: uppercase;
   color: #535766;
-`;
-
-const FlexContainer = styled.div`
-  display: flex;
-  gap: 10px;
 `;
 
 const AddressBlock = styled.div`
@@ -243,12 +185,6 @@ const AddNewAddressButton = styled.button`
     height: 16px;
     margin-right: 5px;
   }
-`;
-
-const PriceDetailsContainer = styled.div`
-  flex: 1;
-  position: sticky;
-  top: 80px;
 `;
 
 export default Address;

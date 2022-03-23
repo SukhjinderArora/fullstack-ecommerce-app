@@ -14,9 +14,9 @@ const PaymentSuccess = () => {
         <SuccessIcon />
       </SuccessIconContainer>
       <SuccessMessageContainer>
-        <SuccessMessageHeader>Your Order is Successful</SuccessMessageHeader>
+        <SuccessMessageHeader>Your order has been placed.</SuccessMessageHeader>
         <SuccessMessageText>
-          Thank you for your order. Your order will be dispatched soon.
+          Thank you for your purchase. Your order will be dispatched soon.
         </SuccessMessageText>
       </SuccessMessageContainer>
       <NavigateToOrder to={`/orders/${location.state?.orderId}`}>

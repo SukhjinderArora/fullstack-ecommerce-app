@@ -27,6 +27,11 @@ const Address = lazy(() => import('./pages/Address'));
 const PageNotFound = lazy(() => import('./pages/PageNotFound'));
 const Payment = lazy(() => import('./pages/Payment'));
 const PaymentSuccess = lazy(() => import('./pages/PaymentSuccess'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const Overview = lazy(() => import('./components/Overview'));
+const Profile = lazy(() => import('./components/Profile'));
+const Orders = lazy(() => import('./components/Orders'));
+const AddressComponent = lazy(() => import('./components/Address'));
 
 const App = () => {
   useScrollToTop();
@@ -66,6 +71,20 @@ const App = () => {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="product/:id" element={<Product />} />
+          <Route
+            path="my"
+            element={
+              <RequireAuth redirectTo="/login">
+                <Dashboard />
+              </RequireAuth>
+            }
+          >
+            <Route index element={<Navigate to="dashboard" />} />
+            <Route path="dashboard" element={<Overview />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="orders" element={<Orders />} />
+            <Route path="address" element={<AddressComponent />} />
+          </Route>
           <Route
             path="checkout/cart"
             element={
