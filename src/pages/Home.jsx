@@ -147,6 +147,7 @@ const ShowMoreButton = styled(Link)`
   text-decoration: none;
   width: fit-content;
   cursor: pointer;
+  margin-top: 10px;
 `;
 
 const StyledLink = styled(Link)`
