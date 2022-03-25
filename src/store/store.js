@@ -9,6 +9,7 @@ import authReducer from './authSlice';
 import cartReducer from './cartSlice';
 import addressReducer from './addressSlice';
 import ordersReducer from './ordersSlice';
+import orderReducer from './orderSlice';
 
 const combinedReducer = combineReducers({
   products: productsReducer,
@@ -20,6 +21,7 @@ const combinedReducer = combineReducers({
   cart: cartReducer,
   address: addressReducer,
   orders: ordersReducer,
+  order: orderReducer,
 });
 
 const rootReducer = (state, action) => {

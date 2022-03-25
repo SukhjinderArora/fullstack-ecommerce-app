@@ -19,7 +19,7 @@ const PaymentSuccess = () => {
           Thank you for your purchase. Your order will be dispatched soon.
         </SuccessMessageText>
       </SuccessMessageContainer>
-      <NavigateToOrder to={`/orders/${location.state?.orderId}`}>
+      <NavigateToOrder to={`/my/orders/${location.state?.orderId}`}>
         Go to Your Order
       </NavigateToOrder>
     </Container>

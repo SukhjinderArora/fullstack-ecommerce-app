@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 import Spinner from './shared/SpinnerRect';
 
@@ -49,7 +50,9 @@ const Orders = () => {
                   <OrderInfoValue># {order.id}</OrderInfoValue>
                 </div>
                 <div>
-                  <OrderInfoText>View Order Details</OrderInfoText>
+                  <OrderInfoLink to={`/my/orders/${order.id}`}>
+                    View Order Details
+                  </OrderInfoLink>
                 </div>
               </OrderInfo>
               <OrderItemsContainer>
@@ -113,8 +116,6 @@ const OrdersHeader = styled.h1`
 
 const OrdersContainer = styled.div``;
 
-const CardContainer = styled.div``;
-
 const OrderCard = styled.div`
   padding: 20px;
   border: 1px solid #ccc;
@@ -142,6 +143,11 @@ const OrderInfo = styled.div`
 const OrderInfoText = styled.p``;
 
 const OrderInfoValue = styled.p``;
+
+const OrderInfoLink = styled(Link)`
+  color: teal;
+  text-decoration: none;
+`;
 
 const OrderItemsContainer = styled.div`
   margin-top: 70px;

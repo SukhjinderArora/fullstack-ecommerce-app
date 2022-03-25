@@ -32,6 +32,7 @@ const Overview = lazy(() => import('./components/Overview'));
 const Profile = lazy(() => import('./components/Profile'));
 const Orders = lazy(() => import('./components/Orders'));
 const AddressComponent = lazy(() => import('./components/Address'));
+const Order = lazy(() => import('./pages/Order'));
 
 const App = () => {
   useScrollToTop();
@@ -84,6 +85,7 @@ const App = () => {
             <Route path="profile" element={<Profile />} />
             <Route path="orders" element={<Orders />} />
             <Route path="address" element={<AddressComponent />} />
+            <Route path="orders/:id" element={<Order />} />
           </Route>
           <Route
             path="checkout/cart"
