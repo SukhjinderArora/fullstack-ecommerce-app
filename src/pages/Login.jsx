@@ -129,12 +129,15 @@ const Container = styled.div`
   padding: 40px 20px;
 `;
 
-const FormWrapper = styled.div``;
+const FormWrapper = styled.div`
+  max-width: 500px;
+  width: 100%;
+`;
 
 const Form = styled.form`
   background-color: #fff;
   box-shadow: 2px 2px 7px 2px rgb(0 0 0 / 20%);
-  width: 500px;
+  width: 100%;
   padding: 20px 30px;
 `;
 

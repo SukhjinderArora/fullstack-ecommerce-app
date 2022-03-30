@@ -14,6 +14,7 @@ import usePageTitle from '../hooks/usePageTitle';
 
 import { getUserAddresses, setSelectedAddress } from '../store/addressSlice';
 import { STATUS } from '../utils';
+import device from '../utils/device';
 
 const Address = () => {
   usePageTitle('Address | Fashionista');
@@ -151,6 +152,14 @@ const Container = styled.div`
   background: #f1f3f6;
   align-items: flex-start;
   min-height: 100vh;
+  @media ${device.tablet} {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  @media ${device.mobileM} {
+    flex-direction: column;
+    align-items: stretch;
+  }
 `;
 
 const AddressListContainer = styled.div`

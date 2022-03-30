@@ -2,6 +2,8 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { ChevronLeft, ChevronRight } from 'react-feather';
 
+import device from '../../utils/device';
+
 const Button = styled.button`
   position: absolute;
   top: 50%;
@@ -21,6 +23,22 @@ const Button = styled.button`
   transition: all 0.3s ease-in-out;
   &:hover {
     background-color: #f5f5f5;
+  }
+  /* @media ${device.tablet} {
+    width: 30px;
+    height: 30px;
+    & svg {
+      width: 16px;
+      height: 16px;
+    }
+  } */
+  @media ${device.mobileM} {
+    width: 30px;
+    height: 30px;
+    & svg {
+      width: 16px;
+      height: 16px;
+    }
   }
 `;
 

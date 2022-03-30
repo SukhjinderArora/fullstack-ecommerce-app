@@ -12,6 +12,8 @@ import { setFilters, resetFilters } from '../store/filtersSlice';
 import { fetchAllCategories } from '../store/categoriesSlice';
 import { fetchAllSizes } from '../store/sizesSlice';
 
+import device from '../utils/device';
+
 const Filters = ({ closeSideDrawer }) => {
   const { selectedSizes: selectedSizesString, priceRange: filteredPriceRange } =
     useSelector((state) => state.filters);
@@ -113,7 +115,8 @@ const Filters = ({ closeSideDrawer }) => {
           onChange={onPriceSliderChangeHandler}
           marks
           sx={{
-            width: 300,
+            'max-width': 250,
+            width: '100%',
             color: 'teal',
           }}
         />
@@ -154,6 +157,16 @@ const Header = styled.header`
 const Title = styled.h1`
   font-weight: 300;
   font-size: 25px;
+  @media ${device.tablet} {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1b2839;
+  }
+  @media ${device.mobileM} {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1b2839;
+  }
 `;
 
 const CloseButton = styled.button`
@@ -172,6 +185,16 @@ const FilterText = styled.h2`
   font-size: 20px;
   font-weight: 500;
   margin-bottom: 10px;
+  @media ${device.tablet} {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1b2839;
+  }
+  @media ${device.mobileM} {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1b2839;
+  }
 `;
 
 const Filter = styled.div`
@@ -187,6 +210,12 @@ const CategoriesLink = styled(NavLink)`
     color: teal;
     font-weight: 500;
   }
+  @media ${device.tablet} {
+    font-size: 16px;
+  }
+  @media ${device.mobileM} {
+    font-size: 16px;
+  }
 `;
 
 const PriceRange = styled.p``;
@@ -196,9 +225,6 @@ const ButtonsContainer = styled.div`
   display: flex;
   justify-content: space-around;
   gap: 10px;
-  @media (max-width: 499px) {
-    flex-direction: column;
-  }
 `;
 
 const Button = styled.button`
@@ -212,8 +238,11 @@ const Button = styled.button`
   padding: 15px 30px;
   cursor: pointer;
   flex: 1;
-  @media (max-width: 499px) {
-    padding: 1.5rem 0;
+  @media ${device.tablet} {
+    padding: 16px 0;
+  }
+  @media ${device.mobileM} {
+    padding: 16px 0;
   }
 `;
 
@@ -225,9 +254,6 @@ const ClearButton = styled(Button)`
     background: #535665;
     color: #fff;
     border: 1px solid #535665;
-  }
-  @media (max-width: 499px) {
-    margin-bottom: 1rem;
   }
 `;
 

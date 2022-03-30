@@ -11,6 +11,7 @@ import usePageTitle from '../hooks/usePageTitle';
 
 import { fetchOrder } from '../store/orderSlice';
 import { STATUS } from '../utils';
+import device from '../utils/device';
 
 const Order = () => {
   usePageTitle('Order Details');
@@ -21,7 +22,7 @@ const Order = () => {
   const { shippingaddress, items } = order || {};
 
   const subTotal = items?.reduce(
-    (acc, cur) => acc + Number(cur.productPrice),
+    (acc, cur) => acc + Number(cur.productPrice) * Number(cur.quantity),
     0
   );
   const shippingCharges = order?.deliveryPrice;
@@ -167,6 +168,14 @@ const OrderSummaryContainer = styled.div`
   border: 1px solid #ccc;
   padding: 15px 20px;
   margin: 20px 0;
+  @media ${device.tablet} {
+    flex-direction: column;
+    gap: 20px;
+  }
+  @media ${device.mobileM} {
+    flex-direction: column;
+    gap: 20px;
+  }
 `;
 
 const OrderSummary = styled.div`
@@ -199,6 +208,12 @@ const OrderItemsContainer = styled.div`
 const OrderItem = styled.div`
   display: flex;
   margin-bottom: 16px;
+  @media ${device.tablet} {
+    gap: 20px;
+  }
+  @media ${device.mobileM} {
+    gap: 20px;
+  }
 `;
 
 const OrderItemImageContainer = styled.div`
@@ -219,7 +234,14 @@ const OrderItemImage = styled.img`
   max-height: 100%;
 `;
 
-const OrderItemDescription = styled.div``;
+const OrderItemDescription = styled.div`
+  @media ${device.tablet} {
+    flex-shrink: 2;
+  }
+  @media ${device.mobileM} {
+    flex-shrink: 2;
+  }
+`;
 
 const OrderItemTitle = styled.h2`
   font-size: 18px;

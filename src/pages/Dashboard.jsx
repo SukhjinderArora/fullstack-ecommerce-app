@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import toast from 'react-hot-toast';
 
 import { logout } from '../store/authSlice';
+import device from '../utils/device';
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -70,6 +71,9 @@ const Dashboard = () => {
 const Container = styled.div`
   display: flex;
   padding: 50px 20px;
+  @media ${device.mobileM} {
+    flex-direction: column-reverse;
+  }
 `;
 
 const SideBar = styled.aside`
@@ -83,6 +87,12 @@ const Navigation = styled.nav`
 
 const NavigationList = styled.div`
   padding: 0 24px;
+  @media ${device.tablet} {
+    padding: 24px 0;
+  }
+  @media ${device.mobileM} {
+    padding: 24px 0;
+  }
 `;
 
 const NavigationSegment = styled.div`

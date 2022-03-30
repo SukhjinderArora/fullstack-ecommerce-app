@@ -3,11 +3,16 @@ import PropTypes from 'prop-types';
 
 import Product from './Product';
 
+import device from '../utils/device';
+
 const Container = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
   justify-items: center;
+  @media ${device.mobileM} {
+    grid-template-columns: repeat(2, 1fr);
+  }
 `;
 // const Container = styled.div`
 //   display: flex;

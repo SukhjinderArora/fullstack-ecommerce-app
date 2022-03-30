@@ -6,6 +6,8 @@ import { motion, useAnimation } from 'framer-motion';
 
 import useInView from '../hooks/useInView';
 
+import device from '../utils/device';
+
 const FeaturedCategory = ({
   categoryName,
   description,
@@ -73,6 +75,9 @@ const Container = styled.div`
   overflow: hidden;
   min-height: 500px;
   margin: 50px 0;
+  @media ${device.mobileM} {
+    flex-direction: column;
+  }
 `;
 
 const ImageContainer = styled(motion.div)`
@@ -82,6 +87,12 @@ const ImageContainer = styled(motion.div)`
 
 const Image = styled.img`
   width: 400px;
+  @media ${device.tablet} {
+    width: 350px;
+  }
+  @media ${device.mobileM} {
+    width: 250px;
+  }
 `;
 
 const ContentContainer = styled.div`
@@ -95,12 +106,24 @@ const Title = styled.h1`
   font-size: 64px;
   color: #444;
   margin-bottom: 12px;
+  @media ${device.tablet} {
+    font-size: 20px;
+  }
+  @media ${device.mobileM} {
+    font-size: 20px;
+  }
 `;
 
 const Description = styled.p`
   font-size: 20px;
   color: #444;
   margin-bottom: 12px;
+  @media ${device.tablet} {
+    font-size: 16px;
+  }
+  @media ${device.mobileM} {
+    font-size: 16px;
+  }
 `;
 
 const ShowMoreButton = styled(Link)`
@@ -113,6 +136,12 @@ const ShowMoreButton = styled(Link)`
   font-size: 16px;
   text-transform: uppercase;
   cursor: pointer;
+  @media ${device.tablet} {
+    font-size: 14px;
+  }
+  @media ${device.mobileM} {
+    font-size: 14px;
+  }
 `;
 
 export default FeaturedCategory;

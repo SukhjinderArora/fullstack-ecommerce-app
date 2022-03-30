@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { Plus, Minus } from 'react-feather';
 
+import device from '../utils/device';
+
 const CartItem = ({ item, removeCartItem, modifyCartItem }) => {
   const [quantity, setQuantity] = useState(item.quantity);
   const isInitialRender = useRef(true);
@@ -59,10 +61,12 @@ const CartItem = ({ item, removeCartItem, modifyCartItem }) => {
             <Minus />
           </DecreaseQtyBtn>
         </QuantityContainer>
-        <SaveForLater>Save For Later</SaveForLater>
-        <RemoveCartItem onClick={() => removeCartItem(item.id, item.title)}>
-          Remove
-        </RemoveCartItem>
+        <ButtonsContainer>
+          <SaveForLater>Save For Later</SaveForLater>
+          <RemoveCartItem onClick={() => removeCartItem(item.id, item.title)}>
+            Remove
+          </RemoveCartItem>
+        </ButtonsContainer>
       </CartItemActions>
     </StyledCartItem>
   );
@@ -75,6 +79,12 @@ const StyledCartItem = styled.div`
 
 const CartItemInfo = styled.div`
   display: flex;
+  @media ${device.tablet} {
+    gap: 20px;
+  }
+  @media ${device.mobileM} {
+    gap: 20px;
+  }
 `;
 
 const ImageContainer = styled.div`
@@ -95,7 +105,14 @@ const Image = styled.img`
   max-height: 100%;
 `;
 
-const ItemDescription = styled.div``;
+const ItemDescription = styled.div`
+  @media ${device.tablet} {
+    flex-shrink: 2;
+  }
+  @media ${device.mobileM} {
+    flex-shrink: 2;
+  }
+`;
 
 const ItemTitle = styled(Link)`
   display: inline-block;
@@ -124,6 +141,12 @@ const CartItemActions = styled.div`
   margin-top: 20px;
   display: flex;
   gap: 20px;
+  @media ${device.tablet} {
+    flex-direction: column;
+  }
+  @media ${device.mobileM} {
+    flex-direction: column;
+  }
 `;
 
 const QuantityContainer = styled.div`
@@ -179,7 +202,11 @@ const CartActionButton = styled.button`
   }
 `;
 
-const SaveForLater = styled(CartActionButton)``;
+const ButtonsContainer = styled.div``;
+
+const SaveForLater = styled(CartActionButton)`
+  margin-right: 20px;
+`;
 
 const RemoveCartItem = styled(CartActionButton)``;
 

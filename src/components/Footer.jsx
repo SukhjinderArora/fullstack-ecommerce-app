@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { Truck, Phone, Star, Lock } from 'react-feather';
 
+import device from '../utils/device';
+
 const Footer = () => {
   return (
     <FooterContainer>
@@ -113,6 +115,14 @@ const SiteFeatures = styled.div`
   justify-content: space-evenly;
   background: teal;
   padding: 25px 0;
+  @media ${device.tablet} {
+    flex-direction: column;
+    gap: 30px;
+  }
+  @media ${device.mobileM} {
+    flex-direction: column;
+    gap: 30px;
+  }
 `;
 
 const SiteFeature = styled.div`
@@ -140,6 +150,14 @@ const MainFooter = styled.div`
   align-items: flex-start;
   justify-content: space-around;
   padding: 20px 0;
+  @media ${device.tablet} {
+    flex-direction: column;
+    padding: 20px;
+  }
+  @media ${device.mobileM} {
+    flex-direction: column;
+    padding: 20px;
+  }
 `;
 
 const FooterItem = styled.div``;

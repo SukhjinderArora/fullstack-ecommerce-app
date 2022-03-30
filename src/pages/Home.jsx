@@ -14,6 +14,8 @@ import PrimaryButton from '../components/shared/PrimaryButton';
 import usePageTitle from '../hooks/usePageTitle';
 import { fetchAllCategories } from '../store/categoriesSlice';
 
+import device from '../utils/device';
+
 const Home = () => {
   usePageTitle('Fashionista - Home');
   const dispatch = useDispatch();
@@ -125,6 +127,14 @@ const Container = styled.div``;
 const Section = styled.div`
   padding: 0 20px;
   margin: 40px 0;
+  @media ${device.tablet} {
+    font-size: 20px;
+    margin: 20px 0;
+  }
+  @media ${device.mobileM} {
+    font-size: 20px;
+    margin: 20px 0;
+  }
 `;
 
 const SectionTitle = styled.h1`
@@ -133,6 +143,14 @@ const SectionTitle = styled.h1`
   text-align: center;
   color: rgb(27, 40, 57);
   margin-bottom: 40px;
+  @media ${device.tablet} {
+    font-size: 22px;
+    margin-bottom: 20px;
+  }
+  @media ${device.mobileM} {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
 `;
 
 const ShowMoreButton = styled(Link)`
@@ -148,6 +166,14 @@ const ShowMoreButton = styled(Link)`
   width: fit-content;
   cursor: pointer;
   margin-top: 10px;
+  @media ${device.tablet} {
+    font-size: 14px;
+    margin-top: 15px;
+  }
+  @media ${device.mobileM} {
+    font-size: 14px;
+    margin-top: 15px;
+  }
 `;
 
 const StyledLink = styled(Link)`

@@ -18,6 +18,7 @@ import { fetchProducts, clearProducts } from '../store/productsSlice';
 import { addProductToCart } from '../store/cartSlice';
 
 import { checkIfEmpty } from '../utils/index';
+import device from '../utils/device';
 
 const Product = () => {
   const params = useParams();
@@ -186,8 +187,8 @@ const Product = () => {
         </ProductInfoContainer>
       </ProductContainer>
       <DescriptionContainer>
-        <p>DESCRIPTION</p>
-        <p>{description}</p>
+        <DescriptionText>DESCRIPTION</DescriptionText>
+        <DescriptionContent>{description}</DescriptionContent>
       </DescriptionContainer>
       <Section>
         <SectionTitle>Related Products</SectionTitle>
@@ -224,6 +225,9 @@ const Container = styled.div`
 const ProductContainer = styled.div`
   display: flex;
   margin-bottom: 20px;
+  @media ${device.mobileM} {
+    flex-direction: column;
+  }
 `;
 
 const ImagesContainer = styled.div`
@@ -240,6 +244,12 @@ const ThumbnailContainer = styled.div`
   width: 100px;
   margin-bottom: 10px;
   cursor: pointer;
+  @media ${device.tablet} {
+    width: 70px;
+  }
+  @media ${device.mobileM} {
+    width: 50px;
+  }
 `;
 
 const Thumbnail = styled.img`
@@ -248,15 +258,33 @@ const Thumbnail = styled.img`
 
 const ImageContainer = styled.div`
   position: relative;
+  @media ${device.tablet} {
+    text-align: center;
+  }
+  @media ${device.mobileM} {
+    text-align: center;
+  }
 `;
 
 const Image = styled.img`
   width: 450px;
+  @media ${device.tablet} {
+    width: 250px;
+  }
+  @media ${device.mobileM} {
+    width: 250px;
+  }
 `;
 
 const ProductInfoContainer = styled.div`
   flex: 1;
   padding: 0 20px;
+  @media ${device.tablet} {
+    margin-top: 20px;
+  }
+  @media ${device.mobileM} {
+    margin-top: 20px;
+  }
 `;
 
 const Title = styled.h1`
@@ -264,6 +292,14 @@ const Title = styled.h1`
   font-weight: 300;
   color: rgb(27, 40, 57);
   text-transform: uppercase;
+  @media ${device.tablet} {
+    font-size: 18px;
+    font-weight: 700;
+  }
+  @media ${device.mobileM} {
+    font-size: 18px;
+    font-weight: 700;
+  }
 `;
 
 const PriceContainer = styled.div`
@@ -275,6 +311,12 @@ const NewPrice = styled.span`
   font-weight: 700;
   color: teal;
   margin-right: 10px;
+  @media ${device.tablet} {
+    font-size: 16px;
+  }
+  @media ${device.mobileM} {
+    font-size: 16px;
+  }
 `;
 
 const OldPrice = styled.del`
@@ -285,6 +327,12 @@ const OldPrice = styled.del`
 
 const SizeLabel = styled.span`
   font-size: 18px;
+  @media ${device.tablet} {
+    font-size: 16px;
+  }
+  @media ${device.mobileM} {
+    font-size: 16px;
+  }
 `;
 
 const SizesContainer = styled.div`
@@ -315,6 +363,12 @@ const ColorsContainer = styled.div`
 
 const ColorLabel = styled.p`
   font-size: 18px;
+  @media ${device.tablet} {
+    font-size: 16px;
+  }
+  @media ${device.mobileM} {
+    font-size: 16px;
+  }
 `;
 
 const Color = styled.button`
@@ -326,6 +380,14 @@ const Color = styled.button`
   display: inline-block;
   margin-right: 10px;
   cursor: pointer;
+  @media ${device.tablet} {
+    width: 30px;
+    height: 30px;
+  }
+  @media ${device.mobileM} {
+    width: 30px;
+    height: 30px;
+  }
 `;
 
 const QuantityContainer = styled.div`
@@ -336,6 +398,12 @@ const QuantityContainer = styled.div`
 
 const QuantityLabel = styled.span`
   font-size: 18px;
+  @media ${device.tablet} {
+    font-size: 16px;
+  }
+  @media ${device.mobileM} {
+    font-size: 16px;
+  }
 `;
 
 const QuantityBox = styled.div`
@@ -350,6 +418,17 @@ const DecreaseQtyButton = styled.button`
   border-radius: 50%;
   border: 1px solid grey;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  @media ${device.tablet} {
+    width: 25px;
+    height: 25px;
+  }
+  @media ${device.mobileM} {
+    width: 25px;
+    height: 25px;
+  }
 `;
 
 const Quantity = styled.input`
@@ -370,6 +449,17 @@ const IncreaseQtyButton = styled.button`
   border-radius: 50%;
   border: 1px solid grey;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  @media ${device.tablet} {
+    width: 25px;
+    height: 25px;
+  }
+  @media ${device.mobileM} {
+    width: 25px;
+    height: 25px;
+  }
 `;
 
 const ProductButtonsContainer = styled.div`
@@ -388,6 +478,12 @@ const AddToCartButton = styled(PrimaryButton)`
   border: 1px solid transparent;
   height: 50px;
   width: 200px;
+  @media ${device.tablet} {
+    font-size: 14px;
+  }
+  @media ${device.mobileM} {
+    font-size: 14px;
+  }
 `;
 
 const BuyNowButton = styled(PrimaryButton)`
@@ -416,9 +512,28 @@ const DescriptionContainer = styled.div`
   }
 `;
 
+const DescriptionText = styled.p`
+  @media ${device.tablet} {
+    font-size: 16px;
+    font-weight: 700;
+  }
+  @media ${device.mobileM} {
+    font-size: 16px;
+    font-weight: 700;
+  }
+`;
+
+const DescriptionContent = styled.p``;
+
 const Section = styled.div`
   padding: 0 20px;
   margin: 40px 0;
+  @media ${device.tablet} {
+    padding: 0;
+  }
+  @media ${device.mobileM} {
+    padding: 0;
+  }
 `;
 
 const SectionTitle = styled.h1`
@@ -427,6 +542,14 @@ const SectionTitle = styled.h1`
   text-align: center;
   color: rgb(27, 40, 57);
   margin-bottom: 40px;
+  @media ${device.tablet} {
+    font-size: 20px;
+    font-weight: 700;
+  }
+  @media ${device.mobileM} {
+    font-size: 20px;
+    font-weight: 700;
+  }
 `;
 
 export default Product;

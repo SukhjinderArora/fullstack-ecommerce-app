@@ -2,6 +2,7 @@ import { createPortal } from 'react-dom';
 import styled from 'styled-components';
 
 import Backdrop from './Backdrop';
+import device from '../utils/device';
 
 const SideDrawer = ({
   children,
@@ -43,7 +44,11 @@ const StyledSideDrawer = styled.div`
       return '-100%';
     }}
   );
-  @media (max-width: 499px) {
+  @media ${device.tablet} {
+    max-width: 80%;
+    width: 300px;
+  }
+  @media ${device.mobileM} {
     max-width: 80%;
     width: 300px;
   }

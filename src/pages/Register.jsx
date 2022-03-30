@@ -15,6 +15,7 @@ import useForm from '../hooks/useForm';
 import { register } from '../store/authSlice';
 
 import { ReactComponent as BackgroundSVG } from '../assets/images/svg/undraw_web_shopping_re_owap.svg';
+import device from '../utils/device';
 
 const validate = (values) => {
   const errors = {};
@@ -287,6 +288,12 @@ const Form = styled.form`
   background: #fff;
   box-shadow: 2px 2px 7px 2px rgb(0 0 0 / 20%);
   margin-right: 10px;
+  @media ${device.tablet} {
+    width: 100%;
+  }
+  @media ${device.mobileM} {
+    width: 100%;
+  }
 `;
 
 const FormTitle = styled.h1`
@@ -295,6 +302,12 @@ const FormTitle = styled.h1`
   text-align: left;
   margin-bottom: 20px;
   font-size: 30px;
+  @media ${device.tablet} {
+    font-size: 22px;
+  }
+  @media ${device.mobileM} {
+    font-size: 22px;
+  }
 `;
 
 const FormGroup = styled.div`
@@ -324,6 +337,12 @@ const Input = styled.input`
   &:focus {
     outline: 1px solid teal;
   }
+  @media ${device.tablet} {
+    font-size: 14px;
+  }
+  @media ${device.mobileM} {
+    font-size: 14px;
+  }
 `;
 
 const InputIconContainer = styled.span`
@@ -352,6 +371,12 @@ const ValidationError = styled.p`
 
 const BackgroundImageContainer = styled.div`
   flex: 1;
+  @media ${device.tablet} {
+    display: none;
+  }
+  @media ${device.mobileM} {
+    display: none;
+  }
 `;
 
 const BackgroundImage = styled(BackgroundSVG)`
@@ -363,6 +388,12 @@ const BackgroundImage = styled(BackgroundSVG)`
 const Text = styled.p`
   color: #1b2839;
   font-weight: 500;
+  @media ${device.tablet} {
+    font-size: 14px;
+  }
+  @media ${device.mobileM} {
+    font-size: 14px;
+  }
 `;
 
 const StyledLink = styled(Link)`

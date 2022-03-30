@@ -12,6 +12,7 @@ import CartItem from '../components/CartItem';
 import usePageTitle from '../hooks/usePageTitle';
 
 import { STATUS, debounce } from '../utils/index';
+import device from '../utils/device';
 
 import {
   getCart,
@@ -134,6 +135,14 @@ const Container = styled.div`
   background: #f1f3f6;
   align-items: flex-start;
   min-height: 100vh;
+  @media ${device.tablet} {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  @media ${device.mobileM} {
+    flex-direction: column;
+    align-items: stretch;
+  }
 `;
 
 const Wrapper = styled.div`
@@ -174,6 +183,12 @@ const CartContainer = styled.div`
   flex: 3;
   background: #fff;
   box-shadow: rgb(0 0 0 / 20%) 0px 1px 2px 0px;
+  @media ${device.tablet} {
+    flex: 0;
+  }
+  @media ${device.mobileM} {
+    flex: 0;
+  }
 `;
 
 const CartHeader = styled.h1`

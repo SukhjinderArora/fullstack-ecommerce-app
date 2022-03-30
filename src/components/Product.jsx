@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
+import device from '../utils/device';
+
 const Product = ({ title, img, priceNew, priceOld, id }) => {
   const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
@@ -46,6 +48,12 @@ Product.propTypes = {
 const Container = styled.div`
   width: 300px;
   cursor: pointer;
+  @media ${device.tablet} {
+    width: 150px;
+  }
+  @media ${device.mobileM} {
+    width: 150px;
+  }
 `;
 
 const ProductImageContainer = styled.div`
@@ -53,12 +61,24 @@ const ProductImageContainer = styled.div`
   width: 100%;
   box-shadow: 0 0 20px 1px #0000001c;
   position: relative;
+  @media ${device.tablet} {
+    height: 160px;
+  }
+  @media ${device.mobileM} {
+    height: 160px;
+  }
 `;
 
 const ProductImage = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
+  @media ${device.tablet} {
+    object-fit: contain;
+  }
+  @media ${device.mobileM} {
+    object-fit: contain;
+  }
 `;
 
 const ProductName = styled.a`
@@ -66,9 +86,22 @@ const ProductName = styled.a`
   margin-top: 12px;
   margin-bottom: 5px;
   font-weight: 500;
+  @media ${device.tablet} {
+    font-size: 14px;
+  }
+  @media ${device.mobileM} {
+    font-size: 14px;
+  }
 `;
 
-const ProductPriceContainer = styled.div``;
+const ProductPriceContainer = styled.div`
+  @media ${device.tablet} {
+    font-size: 14px;
+  }
+  @media ${device.mobileM} {
+    font-size: 14px;
+  }
+`;
 
 const ProductPriceNew = styled.span`
   font-weight: 700;

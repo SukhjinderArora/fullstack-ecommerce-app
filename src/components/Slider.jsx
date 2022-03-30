@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { Minus } from 'react-feather';
 
 import ArrowButton from './shared/ArrowButton';
+import device from '../utils/device';
 
 const Container = styled.div`
   position: relative;
@@ -16,6 +17,12 @@ const SliderContainer = styled.div`
   width: ${(props) => props.slidesCount * 100}vw;
   transform: translateX(${(props) => props.currentSlideIndex * -100}vw);
   transition: all 0.6s ease-in-out;
+  @media ${device.tablet} {
+    height: calc(40vh - 60px);
+  }
+  @media ${device.mobileM} {
+    height: calc(40vh - 60px);
+  }
 `;
 
 const Slide = styled.div`

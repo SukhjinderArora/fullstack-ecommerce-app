@@ -9,6 +9,7 @@ import toast from 'react-hot-toast';
 import useForm from '../hooks/useForm';
 
 import { addNewAddress } from '../store/addressSlice';
+import device from '../utils/device';
 
 const validate = (values) => {
   const errors = {};
@@ -251,8 +252,13 @@ const AddressForm = ({ afterSubmitHandler }) => {
 
 const Container = styled.div`
   background-color: #fff;
-  height: 70vh;
   width: 440px;
+  @media ${device.tablet} {
+    height: 50vh;
+  }
+  @media ${device.mobileM} {
+    width: 80vw;
+  }
 `;
 
 const Form = styled.form`
@@ -332,6 +338,7 @@ const AddressContainer = styled.div`
 const FlexContainer = styled.div`
   display: flex;
   justify-content: space-between;
+  gap: 10px;
 `;
 
 const SaveButtonContainer = styled.div`

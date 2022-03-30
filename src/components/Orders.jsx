@@ -7,6 +7,7 @@ import Spinner from './shared/SpinnerRect';
 
 import { getUserOrders } from '../store/ordersSlice';
 import { STATUS } from '../utils';
+import device from '../utils/device';
 
 const Orders = () => {
   const { status, orders } = useSelector((state) => state.orders);
@@ -37,13 +38,13 @@ const Orders = () => {
               <OrderInfo>
                 <div>
                   <OrderInfoText>ORDER PLACED</OrderInfoText>
-                  <OrderInfoText>
+                  <OrderInfoValue>
                     {orderDate.toLocaleDateString('en-IN', {
                       year: 'numeric',
                       month: 'long',
                       day: 'numeric',
                     })}
-                  </OrderInfoText>
+                  </OrderInfoValue>
                 </div>
                 <div>
                   <OrderInfoText>ORDER ID</OrderInfoText>
@@ -104,6 +105,12 @@ const Orders = () => {
 
 const Container = styled.div`
   padding: 0 30px;
+  @media ${device.tablet} {
+    padding: 0;
+  }
+  @media ${device.mobileM} {
+    padding: 0;
+  }
 `;
 
 const OrdersHeader = styled.h1`
@@ -142,7 +149,9 @@ const OrderInfo = styled.div`
 
 const OrderInfoText = styled.p``;
 
-const OrderInfoValue = styled.p``;
+const OrderInfoValue = styled.p`
+  margin-top: 5px;
+`;
 
 const OrderInfoLink = styled(Link)`
   color: teal;
@@ -151,36 +160,54 @@ const OrderInfoLink = styled(Link)`
 
 const OrderItemsContainer = styled.div`
   margin-top: 70px;
+  @media ${device.tablet} {
+    margin-top: 100px;
+  }
+  @media ${device.mobileM} {
+    margin-top: 100px;
+  }
 `;
 
 const OrderItem = styled.div`
   display: flex;
   margin-bottom: 16px;
+  @media ${device.tablet} {
+    gap: 10px;
+  }
+  @media ${device.mobileM} {
+    gap: 10px;
+  }
 `;
 
 const OrderItemImageContainer = styled.div`
   height: 112px;
   width: 112px;
-  position: relative;
 `;
 
 const OrderItemImage = styled.img`
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  top: 0;
-  margin: auto;
-  opacity: 1;
-  max-width: 100%;
-  max-height: 100%;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 `;
 
-const OrderItemDescription = styled.div``;
+const OrderItemDescription = styled.div`
+  @media ${device.tablet} {
+    flex-shrink: 2;
+  }
+  @media ${device.mobileM} {
+    flex-shrink: 2;
+  }
+`;
 
 const OrderItemTitle = styled.h2`
   font-size: 18px;
   font-weight: 500;
+  @media ${device.tablet} {
+    font-size: 16px;
+  }
+  @media ${device.mobileM} {
+    font-size: 16px;
+  }
 `;
 
 const OrderItemPrice = styled.p``;
@@ -193,6 +220,12 @@ const OrderSummaryTitle = styled.p`
   font-weight: 500;
   font-size: 18px;
   margin-bottom: 10px;
+  @media ${device.tablet} {
+    font-size: 16px;
+  }
+  @media ${device.mobileM} {
+    font-size: 16px;
+  }
 `;
 
 const OrderSummary = styled.div`
@@ -207,9 +240,5 @@ const OrderSummaryItem = styled.p`
 `;
 
 const OrderSummaryValue = styled.p``;
-
-const GrandTotalText = styled.p``;
-
-const GrandTotalValue = styled.p``;
 
 export default Orders;

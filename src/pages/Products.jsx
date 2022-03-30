@@ -18,6 +18,8 @@ import { fetchProducts, clearProducts } from '../store/productsSlice';
 import { fetchAllCategories } from '../store/categoriesSlice';
 import { setSort, resetFilters } from '../store/filtersSlice';
 
+import device from '../utils/device';
+
 const sortOptions = [
   {
     sortBy: 'price',
@@ -247,6 +249,14 @@ const Wrapper = styled.div`
 const Title = styled.h1`
   font-size: 25px;
   font-weight: 500;
+  @media ${device.tablet} {
+    font-size: 18px;
+    margin-right: 10px;
+  }
+  @media ${device.mobileM} {
+    font-size: 18px;
+    margin-right: 10px;
+  }
 `;
 
 const FiltersContainer = styled.div`
@@ -276,11 +286,23 @@ const FilterButton = styled.button`
     height: 16px;
     stroke: white;
   }
+  @media ${device.tablet} {
+    font-size: 14px;
+  }
+  @media ${device.mobileM} {
+    font-size: 14px;
+  }
 `;
 
 const SortBySelect = styled.select`
   font-size: 18px;
   cursor: pointer;
+  @media ${device.tablet} {
+    font-size: 14px;
+  }
+  @media ${device.mobileM} {
+    font-size: 14px;
+  }
 `;
 
 const SortByOption = styled.option``;
@@ -297,6 +319,12 @@ const Paragraph = styled.p`
 const ShowMoreButton = styled(PrimaryButton)`
   display: block;
   margin: 20px auto;
+  @media ${device.tablet} {
+    font-size: 14px;
+  }
+  @media ${device.mobileM} {
+    font-size: 14px;
+  }
 `;
 
 export default Products;

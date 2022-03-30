@@ -3,6 +3,7 @@ import { Link, useLocation, Navigate } from 'react-router-dom';
 import { CheckCircle } from 'react-feather';
 
 import usePageTitle from '../hooks/usePageTitle';
+import device from '../utils/device';
 
 const PaymentSuccess = () => {
   usePageTitle('Order Successful');
@@ -48,12 +49,24 @@ const SuccessMessageContainer = styled.div``;
 const SuccessMessageHeader = styled.h1`
   font-size: 34px;
   color: #282c3f;
+  @media ${device.tablet} {
+    font-size: 24px;
+  }
+  @media ${device.mobileM} {
+    font-size: 24px;
+  }
 `;
 
 const SuccessMessageText = styled.p`
   font-size: 18px;
   color: #93959f;
   margin: 16px 0;
+  @media ${device.tablet} {
+    font-size: 16px;
+  }
+  @media ${device.mobileM} {
+    font-size: 16px;
+  }
 `;
 
 const NavigateToOrder = styled(Link)`

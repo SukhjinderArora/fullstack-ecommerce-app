@@ -13,6 +13,7 @@ import Spinner from '../components/shared/SpinnerRect';
 import { clearCart } from '../store/cartSlice';
 
 import { RAZORPAY_KEY_ID } from '../utils/config';
+import device from '../utils/device';
 
 const paymentMethods = [
   {
@@ -194,12 +195,26 @@ const Container = styled.div`
   background: #f1f3f6;
   align-items: flex-start;
   min-height: 100vh;
+  @media ${device.tablet} {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  @media ${device.mobileM} {
+    flex-direction: column;
+    align-items: stretch;
+  }
 `;
 
 const PaymentContainer = styled.div`
   flex: 3;
   background: #fff;
   box-shadow: rgb(0 0 0 / 20%) 0px 1px 2px 0px;
+  @media ${device.tablet} {
+    flex: 0;
+  }
+  @media ${device.mobileM} {
+    flex: 0;
+  }
 `;
 
 const Header = styled.h1`

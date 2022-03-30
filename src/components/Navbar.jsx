@@ -1,19 +1,18 @@
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import toast from 'react-hot-toast';
-import { Heart, User, ShoppingCart, Search as SearchIcon } from 'react-feather';
+import { Link, useLocation } from 'react-router-dom';
+import { Search as SearchIcon, Menu } from 'react-feather';
 
-import { logout } from '../store/authSlice';
+import NavigationList from './NavigationList';
+import Dropdown from './Dropdown';
+import device from '../utils/device';
 
 const Navbar = () => {
-  const { isAuthenticated, verifyingToken } = useSelector(
-    (state) => state.auth
-  );
-  const { cart } = useSelector((state) => state.cart);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const [showDropdown, setShowDropdown] = useState(false);
   const location = useLocation();
+  useEffect(() => {
+    setShowDropdown(false);
+  }, [location.pathname]);
   return (
     <Header>
       <Navigation>
@@ -26,71 +25,16 @@ const Navbar = () => {
             <SearchIcon color="grey" size="16" />
           </SearchButton>
         </SearchContainer>
-        <NavigationList>
-          {!verifyingToken && (
-            <>
-              {!isAuthenticated && (
-                <NavigationItem>
-                  <NavigationLink to="/register" state={{ from: location }}>
-                    Register
-                  </NavigationLink>
-                </NavigationItem>
-              )}
-              {!isAuthenticated && (
-                <NavigationItem>
-                  <NavigationLink to="/login" state={{ from: location }}>
-                    Login
-                  </NavigationLink>
-                </NavigationItem>
-              )}
-              {isAuthenticated && (
-                <NavigationItem>
-                  <NavigationLink
-                    as="button"
-                    onClick={async () => {
-                      try {
-                        await dispatch(logout()).unwrap();
-                        navigate('/login');
-                      } catch (error) {
-                        toast.error('Something went wrong');
-                      }
-                    }}
-                  >
-                    Logout
-                  </NavigationLink>
-                </NavigationItem>
-              )}
-              <NavigationItem>
-                <NavigationLink
-                  to={isAuthenticated ? '/' : '/login'}
-                  title="Wishlist"
-                >
-                  <Heart color="#1b2839" size="20" />
-                  <LinkDescription>Wishlist</LinkDescription>
-                </NavigationLink>
-              </NavigationItem>
-              <NavigationItem>
-                <NavigationLink
-                  to={isAuthenticated ? '/my/dashboard' : '/login'}
-                  title="Profile"
-                >
-                  <User color="#1b2839" size="20" />
-                  <LinkDescription>Profile</LinkDescription>
-                </NavigationLink>
-              </NavigationItem>
-              <NavigationItem>
-                <NavigationLink to="/checkout/cart" title="Cart">
-                  <IconContainer>
-                    <ShoppingCart color="#1b2839" size="20" />
-                    <CartBadge>{cart.items.length}</CartBadge>
-                  </IconContainer>
-                  <LinkDescription>Cart</LinkDescription>
-                </NavigationLink>
-              </NavigationItem>
-            </>
-          )}
-        </NavigationList>
+        <NavigationListContainer>
+          <NavigationList />
+        </NavigationListContainer>
+        <MenuButton onClick={() => setShowDropdown((prev) => !prev)}>
+          <MenuButtonIcon />
+        </MenuButton>
       </Navigation>
+      <Dropdown showDropdown={showDropdown}>
+        <NavigationList />
+      </Dropdown>
     </Header>
   );
 };
@@ -110,6 +54,12 @@ const Header = styled.header`
   left: 0;
   right: 0;
   z-index: 100;
+  @media ${device.tablet} {
+    height: 60px;
+  }
+  @media ${device.mobileM} {
+    height: 60px;
+  }
 `;
 
 const Navigation = styled.nav`
@@ -130,11 +80,23 @@ const Brand = styled(Link)`
   &:hover {
     color: teal;
   }
+  @media ${device.tablet} {
+    font-size: 22px;
+  }
+  @media ${device.mobileM} {
+    font-size: 22px;
+  }
 `;
 
 const SearchContainer = styled.div`
   width: 400px;
   position: relative;
+  @media ${device.tablet} {
+    display: none;
+  }
+  @media ${device.mobileM} {
+    display: none;
+  }
 `;
 
 const SearchInput = styled.input`
@@ -158,13 +120,28 @@ const SearchButton = styled.button`
   cursor: pointer;
 `;
 
-const NavigationList = styled.ul`
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  list-style: none;
-  flex-basis: 33%;
+const NavigationListContainer = styled.div`
+  @media ${device.tablet} {
+    display: none;
+  }
+  @media ${device.mobileM} {
+    display: none;
+  }
 `;
+
+// const NavigationList = styled.ul`
+//   display: flex;
+//   align-items: center;
+//   justify-content: flex-end;
+//   list-style: none;
+//   flex-basis: 33%;
+//   @media ${device.tablet} {
+//     display: none;
+//   }
+//   @media ${device.mobileM} {
+//     display: none;
+//   }
+// `;
 
 const NavigationItem = styled.li`
   margin-right: 20px;
@@ -224,6 +201,20 @@ const CartBadge = styled.span`
   position: absolute;
   bottom: 0;
   left: 22px;
+`;
+
+const MenuButton = styled.button`
+  display: none;
+  @media ${device.tablet} {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: block;
+  }
+`;
+
+const MenuButtonIcon = styled(Menu)`
+  stroke: #1b2839;
 `;
 
 export default Navbar;
