@@ -16,16 +16,21 @@ app.use(
     useDefaults: true,
     directives: {
       'img-src': ["'self'", 'https: data:'],
+      'script-src': ["'self'", 'razorpay.com'],
     },
   })
 );
-app.use(
-  cors({
-    origin: 'http://localhost:3000',
-    optionsSuccessStatus: 200,
-    credentials: true,
-  })
-);
+
+if (process.env.NODE_ENV === 'development') {
+  app.use(
+    cors({
+      origin: 'http://localhost:3000',
+      optionsSuccessStatus: 200,
+      credentials: true,
+    })
+  );
+}
+
 app.use(express.json({ type: 'application/json' }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(express.static(path.join(__dirname, 'public')));
