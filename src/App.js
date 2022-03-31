@@ -16,6 +16,7 @@ import useScrollToTop from './hooks/useScrollToTop';
 
 import { verifyToken } from './store/authSlice';
 import { getCart } from './store/cartSlice';
+import { getUserAddresses } from './store/addressSlice';
 
 const Home = lazy(() => import('./pages/Home'));
 const Product = lazy(() => import('./pages/Product'));
@@ -45,6 +46,7 @@ const App = () => {
         const response = await dispatch(verifyToken()).unwrap();
         if (response) {
           dispatch(getCart());
+          dispatch(getUserAddresses());
         }
       } catch (error) {
         console.log(error);

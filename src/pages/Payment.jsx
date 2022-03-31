@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -36,6 +36,10 @@ const Payment = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!selectedAddress.id) navigate('/checkout/cart');
+  }, [navigate, selectedAddress.id]);
 
   const selectPaymentMethod = (paymentMethodId) => {
     setSelectedPaymentMethod(
