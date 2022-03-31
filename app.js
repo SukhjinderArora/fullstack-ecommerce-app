@@ -16,7 +16,7 @@ app.use(
     useDefaults: true,
     directives: {
       'img-src': ["'self'", 'https: data:'],
-      'script-src': ["'self'", 'razorpay.com'],
+      'script-src': ["'self'", 'checkout.razorpay.com'],
     },
   })
 );
