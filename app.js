@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
+const path = require('path');
 
 const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
@@ -10,7 +11,14 @@ const { errorLogger, errorResponder } = require('./utils/middlewares');
 
 const app = express();
 
-app.use(helmet());
+app.use(
+  helmet.contentSecurityPolicy({
+    useDefaults: true,
+    directives: {
+      'img-src': ["'self'", 'https: data:'],
+    },
+  })
+);
 app.use(
   cors({
     origin: 'http://localhost:3000',
@@ -20,6 +28,7 @@ app.use(
 );
 app.use(express.json({ type: 'application/json' }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/shop', shopRoutes);
 app.use('/api/auth', authRoutes);
