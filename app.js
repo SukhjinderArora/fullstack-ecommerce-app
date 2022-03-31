@@ -11,6 +11,8 @@ const { errorLogger, errorResponder } = require('./utils/middlewares');
 
 const app = express();
 
+const isDev = process.env.NODE_ENV === 'development';
+
 app.use(
   helmet.contentSecurityPolicy({
     useDefaults: true,
@@ -22,7 +24,7 @@ app.use(
   })
 );
 
-if (process.env.NODE_ENV === 'development') {
+if (isDev) {
   app.use(
     cors({
       origin: 'http://localhost:3000',
@@ -39,6 +41,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api/shop', shopRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
+
+if (!isDev) {
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
+  });
+}
+
 app.use((req, res, next) => {
   const error = new Error('Not Found');
   error.status = 404;
