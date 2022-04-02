@@ -115,7 +115,7 @@ const Filters = ({ closeSideDrawer }) => {
           onChange={onPriceSliderChangeHandler}
           marks
           sx={{
-            'max-width': 250,
+            maxWidth: 250,
             width: '100%',
             color: 'teal',
           }}

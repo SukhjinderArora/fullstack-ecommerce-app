@@ -253,6 +253,7 @@ const AddressForm = ({ afterSubmitHandler }) => {
 const Container = styled.div`
   background-color: #fff;
   width: 440px;
+  height: 70vh;
   @media ${device.tablet} {
     height: 50vh;
   }
