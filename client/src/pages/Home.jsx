@@ -9,7 +9,6 @@ import Carousel from '../components/Carousel';
 import Category from '../components/Category';
 import FeaturedCategory from '../components/FeaturedCategory';
 import ProductList from '../components/ProductList';
-import PrimaryButton from '../components/shared/PrimaryButton';
 
 import usePageTitle from '../hooks/usePageTitle';
 import { fetchAllCategories } from '../store/categoriesSlice';

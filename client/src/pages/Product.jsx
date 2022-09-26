@@ -1,4 +1,4 @@
-import { useEffect, useState, lazy } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
@@ -317,12 +317,6 @@ const NewPrice = styled.span`
   @media ${device.mobileM} {
     font-size: 16px;
   }
-`;
-
-const OldPrice = styled.del`
-  font-weight: 500;
-  color: grey;
-  font-size: 18px;
 `;
 
 const SizeLabel = styled.span`

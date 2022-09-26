@@ -84,7 +84,7 @@ const Register = () => {
       confirmPassword: '',
     },
     validate,
-    onSubmit: (values, { resetForm }) => {
+    onSubmit: (values) => {
       dispatch(register({ ...values }));
     },
   });

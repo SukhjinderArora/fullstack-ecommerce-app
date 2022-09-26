@@ -68,6 +68,7 @@ const AddressForm = ({ afterSubmitHandler }) => {
         .unwrap()
         .then(() => {
           afterSubmitHandler();
+          resetForm();
         })
         .catch(() => {
           toast.error('Something went wrong!');

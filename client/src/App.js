@@ -1,16 +1,12 @@
 import { useEffect, Suspense, lazy } from 'react';
-import {
-  Routes,
-  Route,
-  Navigate,
-  useLocation,
-  useMatch,
-} from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import Layout from './components/Layout';
 import Spinner from './components/shared/SpinnerRect';
+
+import * as logger from './utils/logger';
 
 import useScrollToTop from './hooks/useScrollToTop';
 
@@ -49,7 +45,7 @@ const App = () => {
           dispatch(getUserAddresses());
         }
       } catch (error) {
-        console.log(error);
+        logger.error(error);
       }
     })();
   }, [dispatch]);

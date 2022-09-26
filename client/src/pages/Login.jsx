@@ -31,7 +31,7 @@ const Login = () => {
       password: '',
     },
     validate,
-    onSubmit: (values, { resetForm }) => {
+    onSubmit: (values) => {
       dispatch(
         login({
           email: values.email,
