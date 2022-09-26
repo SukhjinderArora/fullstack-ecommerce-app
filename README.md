@@ -1,20 +1,23 @@
-# Ecommerce Client Side Application
+# E-commerce API
 
-Ecommerce application built using React.
+E-commerce API Built Using NodeJS, ExpressJS and PostgreSQL
 
-## Features:
+## Features
 
-- See list of products
-- Filter products based on category, size and price.
-- Sort products by price and date.
-- Login and sign up using email and password
+- Add new products.
+- Login and Signup using email and password.
+- Refresh and access token based authentication to allow clients to remain authenticated for a long period of time.
+- Get list of products
+- Sort products by date and price
+- Filter products by category, size and price.
 - Add product to cart
-- Place order using Pay on delivery or using Credit card/ Debit card and UPI.
-- See list of orders
-- See individual order details
-- See list of saved addresses.
-- Add new shipping addresses.
-- Fully mobile responsive
+- Add shipping address
+- Create order using pay on delivery or using credit card / debit cart / UPI.
+- Get list of orders by a user.
+- Get order details of a order.
+- Get list of products in a user's cart.
+- Add shipping address
+- Get of list of shipping addresses of a user.
 
 ## [Live Demo](https://fashionista-ecom.herokuapp.com/)
 
