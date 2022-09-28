@@ -619,7 +619,7 @@ To be able to deploy this app to Heroku, you'll need:
 
 6. Provision the PostgreSQL database in your application dashboard on Heroku website.
 
-7. Optionally, you can restore the database from the `ecommerce.dump` file in the `database-backup` by running this command:
+7. Optionally, you can restore the database from the `ecommerce.dump` file in the `database-backup` directory by running this command:
 
    ```bash
    heroku pg:backups:restore '<URL of upload location>' DATABASE_URL --app <your-heroku-app-name>
