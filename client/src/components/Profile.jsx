@@ -1,7 +1,10 @@
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 
+import usePageTitle from '../hooks/usePageTitle';
+
 const Profile = () => {
+  usePageTitle('Profile | Fashionista');
   const { user } = useSelector((state) => state.auth);
 
   return (

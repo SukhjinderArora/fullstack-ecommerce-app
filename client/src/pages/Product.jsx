@@ -20,12 +20,15 @@ import { addProductToCart } from '../store/cartSlice';
 import { checkIfEmpty } from '../utils/index';
 import device from '../utils/device';
 
+import usePageTitle from '../hooks/usePageTitle';
+
 const Product = () => {
   const params = useParams();
   const id = Number(params.id);
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
+  const { setPageTitle } = usePageTitle();
   const { product, status } = useSelector((state) => state.product);
   const { products: relatedProducts } = useSelector((state) => state.products);
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -40,7 +43,9 @@ const Product = () => {
       fetchProduct({
         id,
       })
-    );
+    )
+      .unwrap()
+      .then((data) => setPageTitle(`${data.product.title} | Fashionista`));
     return () => {
       dispatch(clearProduct());
       dispatch(clearProducts());
@@ -48,7 +53,7 @@ const Product = () => {
       setProductQuantity(1);
       setNavigateToCart(false);
     };
-  }, [dispatch, id]);
+  }, [dispatch, id, setPageTitle]);
 
   useEffect(() => {
     if (category) {

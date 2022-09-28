@@ -4,8 +4,10 @@ import { useSelector } from 'react-redux';
 import { Package, Map, Edit } from 'react-feather';
 
 import device from '../utils/device';
+import usePageTitle from '../hooks/usePageTitle';
 
 const Overview = () => {
+  usePageTitle('Dashboard | Fashionista');
   const { user } = useSelector((state) => state.auth);
   return (
     <Container>
