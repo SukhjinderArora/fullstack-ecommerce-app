@@ -1,26 +1,26 @@
-const jwt = require('jsonwebtoken');
-const ms = require('ms');
-const { validationResult } = require('express-validator');
+const jwt = require("jsonwebtoken");
+const ms = require("ms");
+const { validationResult } = require("express-validator");
 
-const User = require('../models/user');
-const Token = require('../models/token');
-const logger = require('./logger');
+const User = require("../models/user");
+const Token = require("../models/token");
+const logger = require("./logger");
 const {
   generateJWT,
   generateAccessAndXSRFToken,
   createError,
   COOKIE_OPTIONS,
-} = require('./index');
+} = require("./index");
 
 const generateAuthTokens = async (req, res, next) => {
   try {
     if (!req.userId) {
-      const error = createError('Internal Server Error', 500);
+      const error = createError("Internal Server Error", 500);
       throw error;
     }
     const user = await User.findByPk(req.userId);
     if (!user) {
-      const error = createError('Invalid credentials', 401);
+      const error = createError("Invalid credentials", 401);
       throw error;
     }
     const refreshToken = generateJWT(
@@ -39,17 +39,17 @@ const generateAuthTokens = async (req, res, next) => {
       userId: req.userId,
       expirationTime: new Date(Date.now() + ms(process.env.REFRESH_TOKEN_LIFE)),
     });
-    res.cookie('refreshToken', refreshToken, {
+    res.cookie("refreshToken", refreshToken, {
       ...COOKIE_OPTIONS,
       expires: new Date(Date.now() + ms(process.env.REFRESH_TOKEN_LIFE)),
     });
-    res.cookie('XSRF-TOKEN', xsrfToken, {
+    res.cookie("XSRF-TOKEN", xsrfToken, {
       ...COOKIE_OPTIONS,
       httpOnly: false,
       signed: false,
       expires: new Date(Date.now() + ms(process.env.REFRESH_TOKEN_LIFE)),
     });
-    res.cookie('XSRF-TOKEN-HTTP-ONLY', xsrfToken, {
+    res.cookie("XSRF-TOKEN-HTTP-ONLY", xsrfToken, {
       ...COOKIE_OPTIONS,
       expires: new Date(Date.now() + ms(process.env.REFRESH_TOKEN_LIFE)),
     });
@@ -65,20 +65,20 @@ const generateAuthTokens = async (req, res, next) => {
 
 const isAuthenticated = async (req, res, next) => {
   try {
-    const authorizationToken = req.get('Authorization');
-    const jwToken = authorizationToken?.split('Bearer ')[1];
+    const authorizationToken = req.get("Authorization");
+    const jwToken = authorizationToken?.split("Bearer ")[1];
     if (!jwToken) {
-      const error = createError('Invalid Credentials', 401);
+      const error = createError("Invalid Credentials", 401);
       throw error;
     }
     const { signedCookies = {} } = req;
     const { refreshToken } = signedCookies;
     if (!refreshToken) {
-      const error = createError('Invalid Credentials', 401);
+      const error = createError("Invalid Credentials", 401);
       throw error;
     }
-    const xsrfToken = req.headers['x-xsrf-token'];
-    const xsrfTokenFromCookie = signedCookies['XSRF-TOKEN-HTTP-ONLY'];
+    const xsrfToken = req.headers["x-xsrf-token"];
+    const xsrfTokenFromCookie = signedCookies["XSRF-TOKEN-HTTP-ONLY"];
     const refreshTokenInDB = await Token.findOne({
       where: {
         refreshToken,
@@ -90,22 +90,20 @@ const isAuthenticated = async (req, res, next) => {
       !refreshTokenInDB ||
       refreshTokenInDB.xsrfToken !== xsrfToken
     ) {
-      const error = createError('Invalid Credentials', 401);
+      const error = createError("Invalid Credentials", 401);
       throw error;
     }
     let decodedToken;
     try {
-      console.log(xsrfToken);
-      // decodedToken = jwt.verify(jwToken, process.env.JWT_SECRET + xsrfToken);
       decodedToken = jwt.verify(jwToken, process.env.JWT_SECRET);
     } catch (err) {
-      const error = createError('Invalid Credentials', 401);
+      const error = createError("Invalid Credentials", 401);
       return next(error);
     }
     const { userId } = decodedToken;
     const user = await User.findByPk(userId);
     if (!user) {
-      const error = createError('Invalid Credentials', 401);
+      const error = createError("Invalid Credentials", 401);
       throw error;
     }
     req.user = user;
@@ -120,7 +118,7 @@ const isAdmin = (req, res, next) => {
   try {
     if (!user.isAdmin) {
       const error = createError(
-        'User is not authorized to add new products',
+        "User is not authorized to add new products",
         401
       );
       throw error;
@@ -143,7 +141,7 @@ const validateRequest = (req, res, next) => {
 };
 
 const errorLogger = (error, req, res, next) => {
-  logger.error('\x1b[31m', error);
+  logger.error("\x1b[31m", error);
   next(error);
 };
 
@@ -154,7 +152,7 @@ const errorResponder = (error, req, res, next) => {
   return res.status(error.status || 500).json({
     error: {
       status: error.status || 500,
-      message: error.status ? error.message : 'Internal Server Error',
+      message: error.status ? error.message : "Internal Server Error",
     },
   });
 };
