@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img title="kookoo" src="screenshots/logo.png" alt="Kookoo Logo" width="200" />
+  <img title="fashionista logo" src="screenshots/logo.png" alt="Fashionista Logo" width="200" />
   <br>
 Fashionista - An Ecommerce Application Built Using React, NodeJS, Express & PostgreSQL
 </h1>
