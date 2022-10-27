@@ -637,6 +637,8 @@ To be able to deploy this app to Heroku, you'll need:
 - Github: https://github.com/sukhjinderArora
 - LinkedIn: https://linkedin.com/in/sukhjinder-arora
 - Website: https://sukhjinderarora.com
+- Blog: https://medium.com/@sukhjinder
+- Blog: https://whatisweb.dev
 
 # Helpful Resources
 
