@@ -12,7 +12,8 @@
     "dev": "nodemon index.js",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "format": "prettier --write \"**/*.+(js|jsx|json|css|md)\""
+    "format": "prettier --write \"**/*.+(js|jsx|json|css|md)\"",
+    "build": "npm install && cd ../client && npm install && npm run build && rm -rf ../api/public && mv ./build ../api/public"
   },
   "author": "Sukhjinder Arora",
   "license": "ISC",
