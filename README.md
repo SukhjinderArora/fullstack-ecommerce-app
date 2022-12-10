@@ -9,7 +9,7 @@ This is an ecommerce application built using <strong><em>React</em></strong> as 
 <br><br>
 Fashionista is a web application where users can shop for products from a variety of categories. Users can filter and sort products by category, price, size, and date. They can also add, remove, and change the product quantity in the cart. Users can place orders with a card, or by using the pay at delivery option. Users can also see their past orders, view profile information, and add or remove addresses from the dashboard section.
 <br><br>
-<strong><em>Take a look at the live version here:</em></strong> https://fashionista-ecom.herokuapp.com/
+<strong><em>Take a look at the live version here:</em></strong> https://fashionista.up.railway.app/
 </p>
 
 ## Table of Contents
@@ -511,7 +511,7 @@ This component displays important links and information the users may need.
 
 # Live Demo
 
-**_Take a look on the live version here:_** https://fashionista-ecom.herokuapp.com/
+**_Take a look on the live version here:_** https://fashionista.up.railway.app/
 
 # Technologies Used
 
