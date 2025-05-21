@@ -511,7 +511,7 @@ This component displays important links and information the users may need.
 
 # Live Demo
 
-**_Take a look on the live version here:_** https://fashionista.up.railway.app/ **_or the recorded deom at:_** https://www.youtube.com/watch?v=EZKZOMEvMPE
+**_Take a look on the live version here:_** https://fashionista.up.railway.app/ **_or the recorded demo at:_** https://www.youtube.com/watch?v=EZKZOMEvMPE
 
 # Technologies Used
 
